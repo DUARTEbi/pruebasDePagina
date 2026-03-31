@@ -67,10 +67,10 @@ nav{
   padding:0 clamp(.75rem,4vw,1.8rem);
   display:flex;align-items:center;justify-content:space-between;
   height:58px;
-  animation:sD .45s var(--ease) both;
+  animation:sD .5s var(--ease) both;
   transition:border-color .5s;
 }
-@keyframes sD{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes sD{from{transform:translateY(-15px);opacity:0}to{transform:translateY(0);opacity:1}}
 
 /* LOGO */
 .logo{
@@ -778,10 +778,13 @@ footer strong{color:var(--a);transition:color .5s;font-family:'Libre Baskerville
 /* ═══ COLOR PICKER ═══ */
 const R=document.documentElement;
 let cpOpen=false;
+let currentH=130; /* Cache del color para evitar leer el DOM en cada frame */
+
 document.getElementById('cpb').onclick=e=>{e.stopPropagation();cpOpen=!cpOpen;document.getElementById('cpp').classList.toggle('open',cpOpen)};
 document.addEventListener('click',()=>{if(cpOpen){cpOpen=false;document.getElementById('cpp').classList.remove('open')}});
 document.getElementById('cpp').addEventListener('click',e=>e.stopPropagation());
 function setC(h,el){
+  currentH=h;
   R.style.setProperty('--h',h);
   document.getElementById('cpb').style.background='hsl('+h+',100%,50%)';
   document.querySelectorAll('.cp-sw').forEach(s=>s.classList.remove('on'));
@@ -790,7 +793,7 @@ function setC(h,el){
   updateNeonColor(h);
 }
 
-/* ═══ NEON LINES — rAF optimizado 30fps, pausa en hidden ═══ */
+/* ═══ NEON LINES — Ultra Rápido sin Layout Thrashing ═══ */
 const neonEls=[
   {nf:'nf-tk', sv:'sv-tk'},
   {nf:'nf-p0', sv:'sv-p0'},
@@ -808,66 +811,82 @@ function buildRRPath(w,h,r){
   return `M${r},0 L${w-r},0 Q${w},0,${w},${r} L${w},${h-r} Q${w},${h},${w-r},${h} L${r},${h} Q0,${h},0,${h-r} L0,${r} Q0,0,${r},0 Z`;
 }
 
+/* El ResizeObserver evita leer offsetWidth/Height en el loop de animación (lo cual bloqueaba los FPS) */
+const _nRO=new ResizeObserver(entries=>{
+  for(const entry of entries){
+    const par=entry.target;
+    for(const key in nState){
+      const s=nState[key];
+      if(s.par===par){
+        const w=par.offsetWidth, hh=par.offsetHeight;
+        if(w&&hh&&(s.w!==w||s.h!==hh)){
+          s.w=w; s.h=hh;
+          s.svEl.setAttribute('viewBox',`0 0 ${w} ${hh}`);
+          s.svEl.setAttribute('width',w);
+          s.svEl.setAttribute('height',hh);
+          const rr=parseFloat(getComputedStyle(par).borderRadius)||13;
+          const d=buildRRPath(w,hh,rr);
+          s.path.setAttribute('d',d);
+          s.glow.setAttribute('d',d);
+        }
+      }
+    }
+  }
+});
+
 function initNeon(){
   neonEls.forEach(({nf,sv})=>{
     const nfEl=document.getElementById(nf);
     const svEl=document.getElementById(sv);
     if(!nfEl||!svEl)return;
     const par=nfEl.parentElement;
+    
     const glow=document.createElementNS(NS,'path');
     glow.setAttribute('fill','none');
+    glow.setAttribute('stroke',`hsl(${currentH},100%,55%)`);
+    glow.setAttribute('stroke-width','5');
     glow.setAttribute('stroke-linecap','round');
     glow.setAttribute('pathLength','100');
+    glow.setAttribute('stroke-dasharray','20 80');
+    glow.setAttribute('opacity','0.2');
+    
     const path=document.createElementNS(NS,'path');
     path.setAttribute('fill','none');
+    path.setAttribute('stroke',`hsl(${currentH},100%,65%)`);
+    path.setAttribute('stroke-width','1.5');
     path.setAttribute('stroke-linecap','round');
     path.setAttribute('pathLength','100');
+    path.setAttribute('stroke-dasharray','20 80');
+    path.setAttribute('opacity','0.9');
+    
     svEl.appendChild(glow);
     svEl.appendChild(path);
-    nState[nf]={nfEl,svEl,par,path,glow,off:Math.random()*100,w:0,h:0};
+    nState[nf]={par,svEl,path,glow,off:Math.random()*100,w:0,h:0};
+    _nRO.observe(par);
   });
+}
+
+function updateNeonColor(h){
+  for(const key in nState){
+    nState[key].path.setAttribute('stroke',`hsl(${h},100%,65%)`);
+    nState[key].glow.setAttribute('stroke',`hsl(${h},100%,55%)`);
+  }
 }
 
 let _nLast=0;
 function neonFrame(ts){
   requestAnimationFrame(neonFrame);
-  if(document.hidden||ts-_nLast<33)return; /* ~30fps */
+  if(document.hidden||ts-_nLast<33)return; /* Cap natural a ~30fps */
   _nLast=ts;
-  const h=getComputedStyle(R).getPropertyValue('--h').trim();
   const spd=ts*0.014;
+  
   for(const key in nState){
     const s=nState[key];
-    const par=s.par;
-    const w=par.offsetWidth,hh=par.offsetHeight;
-    if(!w||!hh)continue;
-    if(s.w!==w||s.h!==hh){
-      s.w=w;s.h=hh;
-      s.svEl.setAttribute('viewBox',`0 0 ${w} ${hh}`);
-      s.svEl.setAttribute('width',w);
-      s.svEl.setAttribute('height',hh);
-      const rr=parseFloat(getComputedStyle(par).borderRadius)||13;
-      const d=buildRRPath(w,hh,rr);
-      s.path.setAttribute('d',d);
-      s.glow.setAttribute('d',d);
-    }
-    const pos=(spd+s.off)%100;
-    const len=20,gap=80;
-    const off=100-pos;
-    s.path.setAttribute('stroke',`hsl(${h},100%,65%)`);
-    s.path.setAttribute('stroke-width','1.5');
-    s.path.setAttribute('stroke-dasharray',`${len} ${gap}`);
+    if(!s.w||!s.h)continue;
+    const off=100-((spd+s.off)%100);
     s.path.setAttribute('stroke-dashoffset',off);
-    s.path.setAttribute('opacity','0.9');
-    s.glow.setAttribute('stroke',`hsl(${h},100%,55%)`);
-    s.glow.setAttribute('stroke-width','5');
-    s.glow.setAttribute('stroke-dasharray',`${len} ${gap}`);
     s.glow.setAttribute('stroke-dashoffset',off);
-    s.glow.setAttribute('opacity','0.2');
   }
-}
-
-function updateNeonColor(h){
-  /* el color se lee en el frame loop, nada extra necesario */
 }
 
 /* ═══ METEOROS — ultra liviano ═══ */
@@ -882,7 +901,7 @@ function updateNeonColor(h){
     const len=50+Math.random()*40;
     const x=Math.random()*(VW+100);
     const dur=2500+Math.random()*1000;
-    const h=getComputedStyle(R).getPropertyValue('--h').trim();
+    const h=currentH;
     const m=document.createElement('div');
     const mY=VH+180,mX=-Math.tan(ANG*Math.PI/180)*mY;
     Object.assign(m.style,{
