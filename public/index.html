@@ -9,431 +9,769 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>BoostSpeed – Likes de Free Fire</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@1,700&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
+/* ══════════════════════════════════════
+   VARIABLES DE TEMA — color dinámico
+══════════════════════════════════════ */
 :root{
-  --g:#00FF1E;--gm:#00e61a;--gdim:rgba(0,255,30,.10);--glow:0 0 22px rgba(0,255,30,.38);
-  --bg:#070707;--bg2:#0e0e0e;--bg3:#141414;--sur:#181818;
-  --bdr:rgba(0,255,30,.14);--txt:#eef2ee;--mut:#7a8f7a;--red:#ff4757;
+  --h:130; /* hue base verde */
+  --a:hsl(var(--h),100%,50%);
+  --am:hsl(var(--h),100%,42%);
+  --adim:hsla(var(--h),100%,50%,.10);
+  --aglow:0 0 22px hsla(var(--h),100%,50%,.38);
+  --aborder:hsla(var(--h),100%,50%,.16);
+  --atext:hsla(var(--h),100%,68%,.9);
+
+  --bg:#070707;--bg2:#0d0d0d;--bg3:#111;--sur:#161616;
+  --txt:#eef2ee;--mut:#6e826e;--red:#ff4757;
+  --r:13px;
+  --ease:cubic-bezier(.23,1,.32,1);
 }
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-*{-webkit-tap-highlight-color:transparent;tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
-button,a,[onclick]{outline:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-button:focus,a:focus,[onclick]:focus{outline:none}
-button:focus-visible,a:focus-visible{outline:2px solid var(--g);outline-offset:2px}
+*{-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+button,a,[onclick]{outline:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 html{scroll-behavior:smooth}
-body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
+body{
+  font-family:'Exo 2',sans-serif;
+  background:var(--bg);color:var(--txt);
+  min-height:100vh;overflow-x:hidden;
+  transition:color .3s
+}
 
-/* ── METEOROS OPTIMIZADOS ── */
-#meteors{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.meteor{position:absolute;pointer-events:none;will-change:transform,opacity}
+/* ══ BG GLOW ══ */
 .bg-glow{
-  position:fixed;top:-30%;left:50%;transform:translateX(-50%);
-  width:900px;height:900px;border-radius:50%;
-  background:radial-gradient(circle,rgba(0,255,30,.06) 0%,transparent 65%);
+  position:fixed;top:-25%;left:50%;translate:-50% 0;
+  width:min(900px,130vw);height:min(900px,130vw);border-radius:50%;
+  background:radial-gradient(circle,hsla(var(--h),100%,50%,.055) 0%,transparent 65%);
   pointer-events:none;z-index:0;
-  animation:pulse-bg 6s ease-in-out infinite;
+  animation:bgPulse 7s ease-in-out infinite;
+  transition:background .6s;
 }
-@keyframes pulse-bg{0%,100%{opacity:.5;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.06)}}
+@keyframes bgPulse{0%,100%{opacity:.5;scale:1}50%{opacity:1;scale:1.07}}
 
-/* ⚡ RAYITO ANIMADO CORREGIDO ⚡ */
-.logo-bolt{
-  display:inline-block;font-style:normal;margin-left:.08rem;
-  transform-origin:center center;
-  animation:thunderStrike 2.6s ease-in-out infinite;
-  filter:drop-shadow(0 0 3px rgba(0,255,30,.4));
-}
-@keyframes thunderStrike{
-  0%   {opacity:.25;transform:scale(.88) rotate(-4deg);filter:drop-shadow(0 0 1px rgba(0,255,30,.2))}
-  30%  {opacity:.3;transform:scale(.9) rotate(-6deg);filter:drop-shadow(0 0 2px rgba(255,230,0,.3))}
-  38%  {opacity:1;transform:scale(1.35) rotate(4deg) skewX(-8deg);
-        filter:drop-shadow(0 0 8px #ffe600) drop-shadow(0 0 18px rgba(255,230,0,.9)) drop-shadow(0 0 30px rgba(0,255,30,.7));
-        color:#ffe600}
-  42%  {opacity:.6;transform:scale(1.1) rotate(-3deg);filter:drop-shadow(0 0 4px #ffe600);color:#ffe600}
-  46%  {opacity:1;transform:scale(1.22) rotate(2deg) skewX(-4deg);
-        filter:drop-shadow(0 0 6px #ffe600) drop-shadow(0 0 14px rgba(0,255,30,.8));
-        color:#fff}
-  54%  {opacity:.15;transform:scale(.85) rotate(-2deg);filter:none;color:var(--g)}
-  100% {opacity:.25;transform:scale(.88) rotate(-4deg);filter:drop-shadow(0 0 1px rgba(0,255,30,.2));color:var(--g)}
+/* ══ METEOROS ══ */
+#meteors{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.meteor{
+  position:absolute;pointer-events:none;will-change:transform,opacity;
+  width:1.5px;border-radius:0 0 2px 2px;
 }
 
-/* ── NAV ── */
+/* ══ NAV ══ */
 nav{
   position:sticky;top:0;z-index:200;
-  background:rgba(7,7,7,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--bdr);padding:0 1.5rem;
+  background:rgba(7,7,7,.82);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--aborder);
+  padding:0 clamp(1rem,4vw,2rem);
   display:flex;align-items:center;justify-content:space-between;
-  height:62px;overflow:hidden;
-  animation:slideDown .6s cubic-bezier(.23,1,.32,1) both;
+  height:60px;
+  animation:slideDown .55s var(--ease) both;
+  transition:border-color .5s;
 }
-@keyframes slideDown{from{transform:translate3d(0,-100%,0);opacity:0}to{transform:translate3d(0,0,0);opacity:1}}
-.logo{
-  font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:700;
-  color:var(--g);letter-spacing:2px;text-decoration:none;
-  display:flex;align-items:center;gap:.45rem;transition:all .25s;
-  animation:logoGlow 3s ease-in-out infinite;
-}
-@keyframes logoGlow{0%,100%{text-shadow:0 0 8px rgba(0,255,30,.3)}50%{text-shadow:0 0 20px rgba(0,255,30,.75),0 0 45px rgba(0,255,30,.25)}}
-.logo:hover{letter-spacing:3px}
-.logo span{color:var(--txt);font-weight:500}
-.pulse{position:relative;width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:var(--glow);animation:blink 1.6s infinite;flex-shrink:0}
-.pulse::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(0,255,30,.4);animation:ripple 1.6s ease-out infinite}
-@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(.7)}}
-@keyframes ripple{0%{transform:scale(.5);opacity:.8}100%{transform:scale(2.5);opacity:0}}
-.nav-btns{display:flex;gap:.6rem}
+@keyframes slideDown{from{translate:0 -100%;opacity:0}to{translate:0 0;opacity:1}}
 
-/* ── BOTONES ── */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
-  padding:.55rem 1.2rem;border-radius:7px;font-family:'Exo 2',sans-serif;
-  font-weight:700;font-size:.88rem;cursor:pointer;border:none;
-  text-decoration:none;transition:all .25s;letter-spacing:.3px;
-  position:relative;overflow:hidden;will-change:transform;touch-action:manipulation;
+/* Logo tipografía premium (Libre Baskerville Italic) */
+.logo{
+  font-family:'Libre Baskerville',serif;
+  font-style:italic;font-weight:700;
+  font-size:clamp(1.25rem,3.5vw,1.55rem);
+  color:var(--a);
+  letter-spacing:-.01em;
+  text-decoration:none;
+  display:flex;align-items:center;gap:.5rem;
+  transition:color .5s,text-shadow .5s;
+  animation:logoGlow 4s ease-in-out infinite;
 }
-.btn-ghost{background:transparent;border:1px solid var(--bdr);color:var(--txt)}
-.btn-ghost:hover{border-color:var(--g);color:var(--g);box-shadow:0 0 12px rgba(0,255,30,.18)}
-.btn-p{background:var(--g);color:#000}
-.btn-p:hover{background:var(--gm);box-shadow:0 0 28px rgba(0,255,30,.55);transform:translateY(-2px)}
-.btn-p:active,.btn-ghost:active{transform:scale(.97)}
-.btn-lg{padding:.82rem 2rem;font-size:1rem;border-radius:9px}
-.btn-p.btn-lg{animation:ctaPulse 3s ease-in-out infinite}
-@keyframes ctaPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,30,0)}50%{box-shadow:0 0 0 8px rgba(0,255,30,.08),0 6px 28px rgba(0,255,30,.35)}}
+@keyframes logoGlow{
+  0%,100%{text-shadow:0 0 10px hsla(var(--h),100%,50%,.3)}
+  50%{text-shadow:0 0 28px hsla(var(--h),100%,50%,.75),0 0 55px hsla(var(--h),100%,50%,.2)}
+}
+.logo-dot{
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;
+  background:var(--a);box-shadow:var(--aglow);
+  animation:blink 1.8s ease-in-out infinite;
+  transition:background .5s,box-shadow .5s;
+}
+@keyframes blink{0%,100%{opacity:1;scale:1}50%{opacity:.2;scale:.65}}
+.logo-bolt{
+  font-style:normal;
+  animation:bolt 3s ease-in-out infinite;
+  display:inline-block;
+}
+@keyframes bolt{
+  0%,70%,100%{opacity:.3;scale:.85;color:var(--a)}
+  40%{opacity:1;scale:1.4;color:#ffe600;filter:drop-shadow(0 0 8px #ffe600)}
+  50%{opacity:.5;scale:1.1;color:#ffe600}
+}
+.logo span{
+  font-family:'Exo 2',sans-serif;
+  font-style:normal;font-weight:300;
+  font-size:.75em;letter-spacing:.15em;
+  color:var(--mut);text-transform:uppercase;
+  transition:color .5s;
+}
+
+.nav-right{display:flex;align-items:center;gap:.5rem}
+
+/* ══ COLOR PICKER ══ */
+.color-picker{
+  position:relative;display:flex;align-items:center;
+}
+.cp-btn{
+  width:30px;height:30px;border-radius:50%;
+  background:conic-gradient(#ff3d6e,#a855f7,#3b82f6,#00ff1e,#ff3d6e);
+  border:2px solid rgba(255,255,255,.15);
+  flex-shrink:0;transition:transform .2s,box-shadow .2s;
+  position:relative;overflow:hidden;
+}
+.cp-btn::after{
+  content:'';position:absolute;inset:3px;border-radius:50%;
+  background:var(--bg);transition:background .5s;
+}
+.cp-btn:hover{transform:scale(1.1);box-shadow:0 0 12px rgba(255,255,255,.2)}
+.cp-btn:active{scale:.95}
+.cp-panel{
+  position:absolute;top:calc(100% + 10px);right:0;
+  background:var(--bg2);border:1px solid var(--aborder);
+  border-radius:12px;padding:.6rem;
+  display:flex;gap:.45rem;flex-direction:row;
+  opacity:0;pointer-events:none;translate:0 -6px;
+  transition:opacity .18s var(--ease),translate .18s var(--ease);
+  z-index:300;box-shadow:0 8px 32px rgba(0,0,0,.6);
+}
+.cp-panel.open{opacity:1;pointer-events:all;translate:0 0}
+.cp-swatch{
+  width:26px;height:26px;border-radius:50%;
+  border:2px solid transparent;
+  transition:transform .15s,border-color .15s;
+  position:relative;
+}
+.cp-swatch:hover{transform:scale(1.15)}
+.cp-swatch.active{border-color:rgba(255,255,255,.7)}
+.cp-swatch[data-h="130"]{background:hsl(130,100%,50%)}
+.cp-swatch[data-h="340"]{background:hsl(340,100%,65%)}
+.cp-swatch[data-h="0"]{background:hsl(0,100%,60%)}
+.cp-swatch[data-h="220"]{background:hsl(220,100%,65%)}
+.cp-swatch[data-h="270"]{background:hsl(270,100%,70%)}
+
+/* ══ BOTONES ══ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  padding:.52rem 1.1rem;border-radius:8px;
+  font-family:'Exo 2',sans-serif;font-weight:700;font-size:.85rem;
+  border:none;text-decoration:none;
+  transition:all .2s var(--ease);
+  letter-spacing:.3px;position:relative;overflow:hidden;
+  touch-action:manipulation;will-change:transform;
+}
+.btn::before{
+  content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,0);
+  transition:background .2s;
+}
+.btn:active{scale:.97}
+.btn:hover::before{background:rgba(255,255,255,.07)}
+
+.btn-ghost{
+  background:transparent;
+  border:1px solid var(--aborder);color:var(--txt);
+  transition:border-color .5s,color .5s,box-shadow .2s,scale .1s;
+}
+.btn-ghost:hover{border-color:var(--a);color:var(--a);box-shadow:0 0 14px hsla(var(--h),100%,50%,.18)}
+
+.btn-p{
+  background:var(--a);color:#000;font-weight:800;
+  box-shadow:0 0 0 0 hsla(var(--h),100%,50%,0);
+  transition:background .5s,box-shadow .3s,scale .1s,translate .15s;
+}
+.btn-p:hover{
+  background:var(--am);
+  box-shadow:0 0 28px hsla(var(--h),100%,50%,.5),0 4px 18px hsla(var(--h),100%,50%,.25);
+  translate:0 -2px;
+}
+.btn-lg{padding:.85rem 2.2rem;font-size:1rem;border-radius:10px;letter-spacing:.4px}
+.btn-p.btn-lg{animation:ctaPulse 3.5s ease-in-out infinite}
+@keyframes ctaPulse{
+  0%,100%{box-shadow:0 0 0 0 hsla(var(--h),100%,50%,0)}
+  50%{box-shadow:0 0 0 10px hsla(var(--h),100%,50%,.07),0 6px 30px hsla(var(--h),100%,50%,.3)}
+}
 .btn-full{width:100%}
 
-/* ── HERO ── */
+/* ══ HERO ══ */
 .hero{
-  position:relative;z-index:1;min-height:calc(100vh - 62px);
+  position:relative;z-index:1;
+  min-height:calc(100svh - 60px);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:3rem 1.5rem;
+  text-align:center;padding:3rem clamp(1rem,5vw,2rem) 5rem;
+  gap:0;
 }
 .hero-chip{
-  display:inline-flex;align-items:center;gap:.5rem;background:var(--gdim);
-  border:1px solid var(--bdr);padding:.32rem .9rem;border-radius:100px;
-  font-size:.75rem;font-weight:700;color:var(--g);letter-spacing:1.2px;
-  margin-bottom:1.6rem;text-transform:uppercase;
-  animation:fadeUp .7s .1s cubic-bezier(.23,1,.32,1) both;
-  overflow:hidden;position:relative;
+  display:inline-flex;align-items:center;gap:.45rem;
+  background:var(--adim);border:1px solid var(--aborder);
+  padding:.28rem .85rem;border-radius:100px;
+  font-size:.72rem;font-weight:700;color:var(--atext);
+  letter-spacing:1.4px;text-transform:uppercase;
+  margin-bottom:1.8rem;
+  animation:fadeUp .6s .1s var(--ease) both;
+  transition:background .5s,border-color .5s,color .5s;
+  position:relative;overflow:hidden;
 }
 .hero-chip::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(0,255,30,.15),transparent);
-  animation:chipShimmer 2.5s 1s linear infinite;will-change:transform;
+  background:linear-gradient(90deg,transparent,hsla(var(--h),100%,50%,.18),transparent);
+  animation:shimmer 2.8s 1.2s linear infinite;
+  transition:background .5s;
 }
-@keyframes chipShimmer{0%{transform:translate3d(-200%,0,0)}100%{transform:translate3d(300%,0,0)}}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:blink 1.2s infinite;flex-shrink:0}
-.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(2.1rem,7vw,4.4rem);font-weight:700;line-height:1.08;margin-bottom:1rem;max-width:820px;animation:fadeUp .7s .2s cubic-bezier(.23,1,.32,1) both}
-.hero h1 em{font-style:normal;color:var(--g);animation:textGlow 3s ease-in-out infinite}
-@keyframes textGlow{0%,100%{text-shadow:0 0 28px rgba(0,255,30,.45)}50%{text-shadow:0 0 55px rgba(0,255,30,.8),0 0 90px rgba(0,255,30,.3)}}
-.hero p{color:var(--mut);font-size:1.02rem;max-width:510px;line-height:1.75;margin-bottom:2.5rem;animation:fadeUp .7s .3s cubic-bezier(.23,1,.32,1) both}
-.hero-cta{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;animation:fadeUp .7s .4s cubic-bezier(.23,1,.32,1) both}
-@keyframes fadeUp{from{transform:translate3d(0,24px,0);opacity:0}to{transform:translate3d(0,0,0);opacity:1}}
-
-.hero-status{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center;margin-bottom:2rem;animation:fadeUp .7s .35s cubic-bezier(.23,1,.32,1) both}
-.hs-chip{
-  display:inline-flex;align-items:center;gap:.38rem;
-  background:rgba(0,255,30,.06);border:1px solid rgba(0,255,30,.12);
-  border-radius:100px;padding:.25rem .7rem;font-size:.72rem;font-weight:700;
-  color:var(--mut);letter-spacing:.4px;
-  animation:badgePop .5s cubic-bezier(.23,1,.32,1) both;will-change:transform;
+@keyframes shimmer{0%{translate:-200% 0}100%{translate:300% 0}}
+.live-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--a);animation:blink 1.3s infinite;flex-shrink:0;
+  transition:background .5s;
 }
-.hs-chip:nth-child(1){animation-delay:.5s}.hs-chip:nth-child(2){animation-delay:.65s}
-.hs-chip:nth-child(3){animation-delay:.8s}.hs-chip:nth-child(4){animation-delay:.95s}
-@keyframes badgePop{from{opacity:0;transform:scale(.8) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.hs-chip svg{flex-shrink:0}
-.hs-chip strong{color:var(--g)}
 
-/* ── TICKER ── */
-.hero-ticker{
-  position:relative;z-index:1;display:flex;align-items:center;gap:1.2rem;
-  margin-top:2.8rem;background:var(--sur);border:1px solid var(--bdr);
-  border-radius:12px;padding:.9rem 1.6rem;
-  animation:fadeUp .7s .6s cubic-bezier(.23,1,.32,1) both;
-  flex-wrap:wrap;justify-content:center;overflow:hidden;
+/* Título hero — Libre Baskerville Italic */
+.hero h1{
+  font-family:'Libre Baskerville',serif;
+  font-style:italic;font-weight:700;
+  font-size:clamp(2.2rem,8vw,5rem);
+  line-height:1.06;margin-bottom:1.1rem;
+  max-width:860px;
+  animation:fadeUp .7s .2s var(--ease) both;
 }
-.ticker-item{display:flex;flex-direction:column;align-items:center;min-width:90px}
-.ticker-pulse{position:relative;width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:0 0 8px rgba(0,255,30,.55);animation:blink 1.6s infinite;margin-bottom:.32rem;flex-shrink:0}
-.ticker-pulse::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(0,255,30,.3);animation:ripple 1.6s ease-out infinite}
-.ticker-pulse.blue{background:#4dabff;box-shadow:0 0 8px rgba(77,171,255,.55)}
-.ticker-pulse.blue::after{border-color:rgba(77,171,255,.3)}
-.ticker-num{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;color:var(--g);line-height:1}
-.ticker-num.blue{color:#4dabff}
-.ticker-lbl{color:var(--mut);font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;margin-top:.1rem}
-.ticker-div{width:1px;height:42px;background:var(--bdr)}
+.hero h1 em{
+  font-style:normal;color:var(--a);
+  animation:textGlow 3.5s ease-in-out infinite;
+  transition:color .5s;
+}
+@keyframes textGlow{
+  0%,100%{text-shadow:0 0 30px hsla(var(--h),100%,50%,.4)}
+  50%{text-shadow:0 0 60px hsla(var(--h),100%,50%,.8),0 0 100px hsla(var(--h),100%,50%,.25)}
+}
 
-/* ── SCROLL HINT ── */
-.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;animation:fadeUp .7s .8s cubic-bezier(.23,1,.32,1) both}
-.scroll-arrow{width:16px;height:16px;border-right:2px solid var(--g);border-bottom:2px solid var(--g);transform:rotate(45deg);animation:bounceArrow 1.4s ease-in-out infinite}
-@keyframes bounceArrow{0%,100%{transform:rotate(45deg) translate3d(-3px,-3px,0);opacity:.5}50%{transform:rotate(45deg) translate3d(4px,4px,0);opacity:1}}
+.hero p{
+  color:var(--mut);font-size:clamp(.92rem,2.2vw,1.05rem);
+  max-width:540px;line-height:1.8;margin-bottom:2rem;
+  animation:fadeUp .7s .3s var(--ease) both;
+}
 
-.divider{position:relative;z-index:1;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--bdr),transparent)}
+/* Badges de estado */
+.hero-badges{
+  display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;
+  margin-bottom:2.2rem;
+  animation:fadeUp .7s .32s var(--ease) both;
+}
+.hbadge{
+  display:inline-flex;align-items:center;gap:.35rem;
+  background:hsla(var(--h),100%,50%,.06);
+  border:1px solid hsla(var(--h),100%,50%,.12);
+  border-radius:100px;padding:.22rem .65rem;
+  font-size:.7rem;font-weight:700;color:var(--mut);
+  letter-spacing:.4px;
+  animation:badgePop .45s var(--ease) both;
+  transition:background .5s,border-color .5s;
+}
+.hbadge:nth-child(1){animation-delay:.5s}
+.hbadge:nth-child(2){animation-delay:.62s}
+.hbadge:nth-child(3){animation-delay:.74s}
+.hbadge:nth-child(4){animation-delay:.86s}
+@keyframes badgePop{from{opacity:0;scale:.8;translate:0 6px}to{opacity:1;scale:1;translate:0 0}}
+.hbadge strong{color:var(--a);transition:color .5s}
 
-/* ── SECCIONES ── */
-.sec{position:relative;z-index:1;padding:5rem 1.5rem}
+.hero-cta{
+  display:flex;gap:.85rem;flex-wrap:wrap;justify-content:center;
+  animation:fadeUp .7s .4s var(--ease) both;
+  margin-bottom:2.8rem;
+}
+@keyframes fadeUp{from{translate:0 22px;opacity:0}to{translate:0 0;opacity:1}}
+
+/* Stats ticker */
+.ticker{
+  display:flex;align-items:center;gap:clamp(.8rem,3vw,2rem);
+  background:var(--sur);border:1px solid var(--aborder);border-radius:14px;
+  padding:.9rem clamp(1rem,4vw,2rem);
+  animation:fadeUp .7s .55s var(--ease) both;
+  transition:border-color .5s;
+  position:relative;overflow:hidden;
+}
+.ticker::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 100%,hsla(var(--h),100%,50%,.06),transparent 70%);
+  transition:background .5s;pointer-events:none;
+}
+.tk-item{display:flex;flex-direction:column;align-items:center;min-width:80px}
+.tk-num{
+  font-family:'Libre Baskerville',serif;font-style:italic;
+  font-size:clamp(1.3rem,3.5vw,1.7rem);font-weight:700;
+  color:var(--a);line-height:1;
+  transition:color .5s;
+}
+.tk-num.blue{color:#4dabff}
+.tk-lbl{color:var(--mut);font-size:.67rem;text-transform:uppercase;letter-spacing:.8px;margin-top:.15rem}
+.tk-div{width:1px;height:38px;background:var(--aborder);transition:background .5s}
+
+/* Scroll hint */
+.scroll-hint{
+  position:absolute;bottom:1.5rem;left:50%;translate:-50% 0;
+  display:flex;flex-direction:column;align-items:center;gap:.3rem;
+  animation:fadeUp .7s .9s var(--ease) both;opacity:.5;
+}
+.scroll-arrow{
+  width:14px;height:14px;
+  border-right:2px solid var(--a);border-bottom:2px solid var(--a);
+  rotate:45deg;
+  animation:bounce 1.6s ease-in-out infinite;
+  transition:border-color .5s;
+}
+@keyframes bounce{0%,100%{translate:-2px -2px;opacity:.4}50%{translate:3px 3px;opacity:1}}
+
+.divider{
+  position:relative;z-index:1;height:1px;
+  background:linear-gradient(90deg,transparent,var(--aborder),transparent);
+  transition:background .5s;
+}
+
+/* ══ SECCIONES ══ */
+.sec{position:relative;z-index:1;padding:5rem clamp(1rem,5vw,2rem)}
 .sec-title{text-align:center;margin-bottom:3rem}
-.sec-title h2{font-family:'Rajdhani',sans-serif;font-size:clamp(1.75rem,4vw,2.7rem);font-weight:700;margin-bottom:.4rem}
-.sec-title h2 span{color:var(--g)}
-.sec-title p{color:var(--mut);max-width:490px;margin:0 auto;line-height:1.72}
+.sec-title h2{
+  font-family:'Libre Baskerville',serif;font-style:italic;font-weight:700;
+  font-size:clamp(1.6rem,4vw,2.5rem);margin-bottom:.45rem;
+}
+.sec-title h2 span{color:var(--a);transition:color .5s}
+.sec-title p{color:var(--mut);max-width:480px;margin:0 auto;line-height:1.75;font-size:.93rem}
 
-/* ── GRID DE CARDS ── */
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1.1rem;max-width:1080px;margin:0 auto}
-.card{
-  background:var(--sur);border:1px solid var(--bdr);border-radius:13px;
-  padding:1.7rem;position:relative;overflow:hidden;
-  transition:border-color .3s,transform .3s,box-shadow .3s;
-  opacity:0;transform:translate3d(0,10px,0);
+/* ══ PRODUCTOS GRID ══ */
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1rem;max-width:1050px;margin:0 auto;
 }
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,30,.2),transparent);pointer-events:none}
-.card.visible{
-  opacity:1;transform:translate3d(0,0,0);
-  transition:opacity .25s cubic-bezier(.23,1,.32,1),transform .25s cubic-bezier(.23,1,.32,1),border-color .3s,box-shadow .3s;
+.prod-card{
+  background:var(--sur);border:1px solid var(--aborder);border-radius:var(--r);
+  padding:1.6rem 1.4rem;
+  display:flex;flex-direction:column;align-items:flex-start;gap:.75rem;
+  position:relative;overflow:hidden;
+  transition:border-color .3s,translate .25s,box-shadow .3s,background .5s;
+  opacity:0;translate:0 12px;
+  cursor:pointer;
 }
-.card:hover{border-color:rgba(0,255,30,.38);transform:translate3d(0,-6px,0)!important;box-shadow:0 12px 40px rgba(0,255,30,.12)}
-.c-ico{
-  width:46px;height:46px;border-radius:10px;background:var(--gdim);
-  border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;
-  margin-bottom:.9rem;transition:all .35s cubic-bezier(.23,1,.32,1);
+.prod-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,hsla(var(--h),100%,50%,.22),transparent);
+  transition:background .5s;
 }
-.card:hover .c-ico{background:rgba(0,255,30,.18);border-color:rgba(0,255,30,.45);box-shadow:0 0 20px rgba(0,255,30,.28);transform:scale(1.1)}
-.card h3{font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;margin-bottom:.4rem;transition:color .3s}
-.card:hover h3{color:var(--g)}
-.card p{color:var(--mut);font-size:.88rem;line-height:1.62}
+.prod-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 100%,hsla(var(--h),100%,50%,.05),transparent 65%);
+  opacity:0;transition:opacity .3s,background .5s;pointer-events:none;
+}
+.prod-card:hover{
+  border-color:hsla(var(--h),100%,50%,.42);
+  translate:0 -5px;
+  box-shadow:0 14px 40px hsla(var(--h),100%,50%,.1);
+}
+.prod-card:hover::after{opacity:1}
+.prod-card.visible{
+  opacity:1;translate:0 0;
+  transition:opacity .25s var(--ease),translate .25s var(--ease),border-color .3s,box-shadow .3s,background .5s;
+}
+.prod-ico{
+  width:42px;height:42px;border-radius:10px;
+  background:var(--adim);border:1px solid var(--aborder);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+  transition:background .5s,border-color .5s,transform .3s,box-shadow .3s;
+  flex-shrink:0;
+}
+.prod-card:hover .prod-ico{
+  background:hsla(var(--h),100%,50%,.18);
+  border-color:hsla(var(--h),100%,50%,.45);
+  box-shadow:0 0 18px hsla(var(--h),100%,50%,.25);
+  transform:scale(1.08);
+}
+.prod-name{
+  font-family:'Libre Baskerville',serif;font-style:italic;font-weight:700;
+  font-size:1rem;color:var(--txt);transition:color .3s;line-height:1.2;
+}
+.prod-card:hover .prod-name{color:var(--a)}
+.prod-desc{color:var(--mut);font-size:.8rem;line-height:1.6}
+.prod-tag{
+  font-size:.65rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  background:hsla(var(--h),100%,50%,.1);color:var(--atext);
+  border:1px solid hsla(var(--h),100%,50%,.2);
+  padding:.18rem .55rem;border-radius:100px;
+  transition:background .5s,color .5s,border-color .5s;
+}
 
-/* ── STEPS ── */
-.steps{display:flex;flex-direction:column;max-width:660px;margin:0 auto}
-.step{display:flex;gap:1.4rem;align-items:flex-start;padding:1.4rem 0;opacity:0;transform:translate3d(-10px,0,0)}
-.step.visible{opacity:1;transform:translate3d(0,0,0);transition:all .22s cubic-bezier(.23,1,.32,1)}
-.step+.step{border-top:1px solid var(--bdr)}
+/* Destacada */
+.prod-card.featured{
+  border-color:hsla(var(--h),100%,50%,.28);
+  background:hsla(var(--h),100%,50%,.04);
+}
+.prod-badge{
+  position:absolute;top:.75rem;right:.75rem;
+  font-size:.62rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;
+  background:var(--a);color:#000;padding:.18rem .5rem;border-radius:100px;
+  transition:background .5s;
+}
+
+/* ══ PASOS ══ */
+.steps{display:flex;flex-direction:column;max-width:620px;margin:0 auto}
+.step{
+  display:flex;gap:1.2rem;align-items:flex-start;
+  padding:1.3rem 0;
+  opacity:0;translate:-8px 0;
+}
+.step+.step{border-top:1px solid var(--aborder)}
+.step.visible{
+  opacity:1;translate:0 0;
+  transition:all .22s var(--ease);
+}
 .sn{
-  flex-shrink:0;width:42px;height:42px;border-radius:50%;
-  border:2px solid var(--g);display:flex;align-items:center;justify-content:center;
-  font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:var(--g);
-  transition:all .3s;
+  flex-shrink:0;width:38px;height:38px;border-radius:50%;
+  border:2px solid var(--a);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Libre Baskerville',serif;font-style:italic;
+  font-size:1rem;font-weight:700;color:var(--a);
+  transition:all .3s,border-color .5s,color .5s;
 }
-.step:hover .sn{background:var(--g);color:#000;box-shadow:var(--glow)}
-.sb h3{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:600;margin-bottom:.25rem;transition:color .3s}
-.step:hover .sb h3{color:var(--g)}
-.sb p{color:var(--mut);font-size:.88rem;line-height:1.62}
+.step:hover .sn{background:var(--a);color:#000;box-shadow:var(--aglow)}
+.sb h3{
+  font-family:'Libre Baskerville',serif;font-style:italic;
+  font-size:1.05rem;font-weight:700;margin-bottom:.22rem;
+  transition:color .25s;
+}
+.step:hover .sb h3{color:var(--a)}
+.sb p{color:var(--mut);font-size:.86rem;line-height:1.65}
 
-/* ── BANNER CTA ── */
+/* ══ BANNER CTA ══ */
 .banner{
-  position:relative;z-index:1;max-width:880px;margin:0 auto 5rem;
-  background:var(--bg3);border:1px solid rgba(0,255,30,.18);border-radius:17px;
-  padding:3rem 2rem;text-align:center;overflow:hidden;
-  transition:border-color .3s,box-shadow .3s;
+  position:relative;z-index:1;max-width:860px;margin:0 auto 5rem;
+  background:var(--bg3);
+  border:1px solid hsla(var(--h),100%,50%,.2);border-radius:18px;
+  padding:clamp(2rem,5vw,3.5rem) clamp(1.5rem,5vw,3rem);
+  text-align:center;overflow:hidden;
+  transition:border-color .3s,box-shadow .3s,background .5s;
 }
-.banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 130%,rgba(0,255,30,.09),transparent 65%);pointer-events:none}
-.banner:hover{border-color:rgba(0,255,30,.35);box-shadow:0 0 60px rgba(0,255,30,.08)}
-.banner h2{font-family:'Rajdhani',sans-serif;font-size:clamp(1.7rem,4vw,2.4rem);font-weight:700;margin-bottom:.65rem}
-.banner p{color:var(--mut);margin-bottom:1.8rem}
+.banner::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 130%,hsla(var(--h),100%,50%,.08),transparent 60%);
+  pointer-events:none;transition:background .5s;
+}
+.banner:hover{
+  border-color:hsla(var(--h),100%,50%,.38);
+  box-shadow:0 0 60px hsla(var(--h),100%,50%,.07);
+}
+.banner h2{
+  font-family:'Libre Baskerville',serif;font-style:italic;font-weight:700;
+  font-size:clamp(1.5rem,4vw,2.3rem);margin-bottom:.6rem;
+}
+.banner p{color:var(--mut);margin-bottom:1.8rem;font-size:.95rem;line-height:1.7}
 
-footer{position:relative;z-index:1;border-top:1px solid var(--bdr);padding:1.8rem 1.5rem;text-align:center;color:var(--mut);font-size:.83rem;overflow:hidden}
-footer strong{color:var(--g)}
+/* ══ FOOTER ══ */
+footer{
+  position:relative;z-index:1;border-top:1px solid var(--aborder);
+  padding:1.6rem clamp(1rem,5vw,2rem);
+  display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.5rem;
+  color:var(--mut);font-size:.8rem;text-align:center;
+  transition:border-color .5s;
+}
+footer strong{color:var(--a);transition:color .5s;font-family:'Libre Baskerville',serif;font-style:italic}
 
-/* ── MODALES OPTIMIZADOS ── */
+/* ══ NEON LINES — border-radius aware ══ */
+.neon-frame{
+  position:absolute;inset:0;border-radius:inherit;
+  pointer-events:none;overflow:hidden;z-index:2;
+}
+.neon-frame svg{
+  position:absolute;inset:0;width:100%;height:100%;
+  border-radius:inherit;overflow:visible;
+}
+
+/* ══ MODALES ══ */
 .ov{
-  position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;
+  position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:400;
   display:flex;align-items:center;justify-content:center;padding:1rem;
-  opacity:0;pointer-events:none;transition:opacity .15s;
+  opacity:0;pointer-events:none;transition:opacity .18s;
 }
 .ov.open{opacity:1;pointer-events:all}
 .modal{
-  background:var(--bg2);border:1px solid var(--bdr);border-radius:17px;
-  padding:2rem;width:100%;max-width:430px;position:relative;
-  transform:translateY(10px);transition:transform .15s,opacity .15s;opacity:0;
-  max-height:90vh;overflow-y:auto;overflow-x:hidden;
+  background:var(--bg2);border:1px solid var(--aborder);border-radius:18px;
+  padding:clamp(1.5rem,5vw,2rem);width:100%;max-width:420px;
+  position:relative;
+  translate:0 12px;opacity:0;
+  transition:translate .18s var(--ease),opacity .18s,border-color .5s;
+  max-height:90svh;overflow-y:auto;
 }
-.ov.open .modal{transform:translateY(0);opacity:1}
-.mc{position:absolute;top:.9rem;right:.9rem;background:none;border:none;color:var(--mut);font-size:1.35rem;cursor:pointer;padding:.2rem;line-height:1;transition:color .2s,transform .2s;z-index:10;touch-action:manipulation}
-.mc:hover{color:var(--txt);transform:rotate(90deg)}
-.modal h2{font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:700;margin-bottom:.2rem}
-.modal .sub{color:var(--mut);font-size:.87rem;margin-bottom:1.4rem;line-height:1.55}
-.fg{margin-bottom:1rem}
-.fg label{display:block;font-size:.78rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.4rem}
+.ov.open .modal{translate:0 0;opacity:1}
+.mc{
+  position:absolute;top:.85rem;right:.85rem;
+  background:none;border:none;color:var(--mut);
+  font-size:1.2rem;padding:.25rem;line-height:1;
+  transition:color .2s,rotate .2s;z-index:10;
+}
+.mc:hover{color:var(--txt);rotate:90deg}
+.modal h2{
+  font-family:'Libre Baskerville',serif;font-style:italic;font-weight:700;
+  font-size:1.5rem;margin-bottom:.2rem;
+}
+.modal .sub{color:var(--mut);font-size:.85rem;margin-bottom:1.4rem;line-height:1.55}
+.fg{margin-bottom:.9rem}
+.fg label{display:block;font-size:.75rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.38rem}
 .fg input{
-  width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;
-  padding:.72rem 1rem;color:var(--txt);font-family:'Exo 2',sans-serif;
-  font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s;
-  touch-action:manipulation;
+  width:100%;background:var(--sur);
+  border:1px solid var(--aborder);border-radius:8px;
+  padding:.7rem 1rem;color:var(--txt);
+  font-family:'Exo 2',sans-serif;font-size:16px;outline:none;
+  transition:border-color .2s,box-shadow .2s;
 }
-.fg input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,255,30,.1)}
+.fg input:focus{border-color:var(--a);box-shadow:0 0 0 3px hsla(var(--h),100%,50%,.12)}
 .fg input::placeholder{color:var(--mut)}
-.fl{font-size:.83rem;color:var(--mut);text-align:center;margin-top:.85rem}
-.fl a{color:var(--g);text-decoration:none;font-weight:700;transition:text-shadow .2s}
-.fl a:hover{text-shadow:0 0 10px rgba(0,255,30,.5)}
-.msg{padding:.65rem 1rem;border-radius:8px;font-size:.85rem;margin-bottom:.9rem;display:none}
-.msg.ok{background:rgba(0,255,30,.09);border:1px solid rgba(0,255,30,.28);color:var(--g)}
-.msg.err{background:rgba(255,71,87,.09);border:1px solid rgba(255,71,87,.28);color:var(--red)}
-.spin{display:none;width:16px;height:16px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .6s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+.fl{font-size:.82rem;color:var(--mut);text-align:center;margin-top:.8rem}
+.fl a{color:var(--a);text-decoration:none;font-weight:700;transition:text-shadow .2s,color .5s}
+.fl a:hover{text-shadow:0 0 10px hsla(var(--h),100%,50%,.5)}
+.msg{padding:.6rem .9rem;border-radius:8px;font-size:.83rem;margin-bottom:.85rem;display:none}
+.msg.ok{background:hsla(130,100%,50%,.08);border:1px solid hsla(130,100%,50%,.28);color:hsl(130,100%,60%)}
+.msg.err{background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.28);color:var(--red)}
+.spin{display:none;width:15px;height:15px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .55s linear infinite}
+@keyframes spin{to{rotate:360deg}}
 
-/* ── SOPORTE LINKS ── */
-.sup-link{display:flex;align-items:center;gap:.75rem;padding:.75rem;border-radius:10px;border:1px solid var(--bdr);background:rgba(255,255,255,.03);margin-bottom:.5rem;cursor:pointer;transition:all .22s;text-decoration:none;color:var(--txt)}
-.sup-link:hover{border-color:rgba(0,255,30,.22);transform:translateX(3px)}
-.sup-ico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* Soporte */
+.sup-link{
+  display:flex;align-items:center;gap:.7rem;padding:.7rem;
+  border-radius:10px;border:1px solid var(--aborder);
+  background:rgba(255,255,255,.02);margin-bottom:.45rem;
+  text-decoration:none;color:var(--txt);
+  transition:border-color .22s,translate .22s;
+}
+.sup-link:hover{border-color:hsla(var(--h),100%,50%,.25);translate:3px 0}
+.sup-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sup-tg{background:rgba(0,136,204,.14);border:1px solid rgba(0,136,204,.22)}
 .sup-wa{background:rgba(37,211,102,.14);border:1px solid rgba(37,211,102,.22)}
-.sup-name{font-weight:700;font-size:.85rem;margin-bottom:.06rem}
-.sup-handle{color:var(--mut);font-size:.73rem}
+.sup-name{font-weight:700;font-size:.83rem;margin-bottom:.04rem}
+.sup-handle{color:var(--mut);font-size:.71rem}
 
-/* ── RECUPERAR ── */
-.rec-info{background:rgba(0,255,30,.05);border:1px solid rgba(0,255,30,.12);border-radius:9px;padding:.75rem .9rem;margin-bottom:1rem;font-size:.8rem;color:var(--mut);line-height:1.6}
-.rec-info strong{color:var(--g)}
-.sdots{display:flex;gap:.4rem;margin-bottom:1rem}
-.sdot{width:7px;height:7px;border-radius:50%;background:var(--bdr);transition:background .3s,box-shadow .3s}
-.sdot.active{background:var(--g);box-shadow:0 0 7px rgba(0,255,30,.5)}
+/* Recuperar */
+.rec-info{background:hsla(var(--h),100%,50%,.05);border:1px solid hsla(var(--h),100%,50%,.12);border-radius:9px;padding:.7rem .85rem;margin-bottom:.9rem;font-size:.79rem;color:var(--mut);line-height:1.62;transition:background .5s,border-color .5s}
+.rec-info strong{color:var(--a);transition:color .5s}
+.sdots{display:flex;gap:.38rem;margin-bottom:.9rem}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--aborder);transition:background .3s,box-shadow .3s}
+.sdot.active{background:var(--a);box-shadow:0 0 6px hsla(var(--h),100%,50%,.5);transition:background .5s,box-shadow .5s}
 
-/* ── NOTIFICACIONES ── */
-#notif-container{position:fixed;left:18px;bottom:80px;z-index:500;display:flex;flex-direction:column-reverse;gap:.5rem;pointer-events:none;max-width:240px}
+/* Notificaciones */
+#notif-box{position:fixed;left:14px;bottom:70px;z-index:500;display:flex;flex-direction:column-reverse;gap:.45rem;pointer-events:none;max-width:230px}
 .notif{
-  background:rgba(10,18,10,.92);border:1px solid rgba(0,255,30,.3);border-radius:10px;
-  padding:.6rem .85rem;display:flex;align-items:center;gap:.55rem;
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 12px rgba(0,255,30,.1);
-  animation:notifRise 4.5s cubic-bezier(.22,1,.36,1) forwards;
+  background:rgba(10,14,10,.93);border:1px solid hsla(var(--h),100%,50%,.28);
+  border-radius:10px;padding:.55rem .8rem;
+  display:flex;align-items:center;gap:.5rem;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 4px 18px rgba(0,0,0,.5);
+  animation:notifRise 4.8s var(--ease) forwards;
+  transition:border-color .5s;
 }
 @keyframes notifRise{
-  0%{transform:translate3d(0,20px,0);opacity:0}
-  10%{transform:translate3d(0,0,0);opacity:1}
-  60%{opacity:1;transform:translate3d(0,-8px,0)}
-  100%{opacity:0;transform:translate3d(0,-60px,0)}
+  0%{translate:0 16px;opacity:0}
+  10%{translate:0 0;opacity:1}
+  65%{opacity:1;translate:0 -6px}
+  100%{opacity:0;translate:0 -52px}
 }
-.notif-ico{width:28px;height:28px;border-radius:7px;background:rgba(0,255,30,.12);border:1px solid rgba(0,255,30,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.notif-txt{flex:1;min-width:0}
-.notif-name{font-family:'Rajdhani',sans-serif;font-size:.82rem;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.notif-likes{font-size:.73rem;color:var(--g);font-weight:700}
+.notif-ico{width:26px;height:26px;border-radius:7px;background:hsla(var(--h),100%,50%,.12);border:1px solid hsla(var(--h),100%,50%,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .5s,border-color .5s}
+.notif-name{font-family:'Libre Baskerville',serif;font-style:italic;font-size:.8rem;font-weight:700;color:var(--txt)}
+.notif-likes{font-size:.7rem;color:var(--a);font-weight:700;transition:color .5s}
 
-/* ── CANVAS NEON ── */
-.nl-canvas{position:absolute;inset:0;pointer-events:none;width:100%;height:100%;z-index:3;border-radius:inherit}
-
-/* ── RESPONSIVE ── */
-@media(max-width:600px){
-  nav{padding:0 1rem}
-  .ticker-div{display:none}
-  .hero-ticker{gap:.8rem}
-  #notif-container{max-width:200px;left:10px}
+/* ══ RESPONSIVE ══ */
+@media(max-width:580px){
+  .nav-right .btn-ghost{display:none}
+  .ticker{flex-wrap:wrap;justify-content:center}
+  .tk-div{display:none}
+  #notif-box{max-width:190px;left:8px}
+  .products{grid-template-columns:1fr 1fr}
+}
+@media(max-width:380px){
+  .products{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
-<div id="meteors"></div>
-<div class="bg-glow"></div>
-<div id="notif-container"></div>
 
+<div id="meteors"></div>
+<div class="bg-glow" id="bg-glow"></div>
+<div id="notif-box"></div>
+
+<!-- ══ NAV ══ -->
 <nav id="el-nav">
-  <a class="logo" href="/"><div class="pulse"></div>Boost<span>Speed</span><i class="logo-bolt">⚡</i></a>
-  <div class="nav-btns">
+  <a class="logo" href="/">
+    <div class="logo-dot" id="logo-dot"></div>
+    BoostSpeed
+    <i class="logo-bolt">⚡</i>
+    <span>FF</span>
+  </a>
+  <div class="nav-right">
+    <!-- Color picker -->
+    <div class="color-picker" id="cp-wrap">
+      <button class="cp-btn" id="cp-btn" aria-label="Cambiar color" title="Cambiar color del tema"></button>
+      <div class="cp-panel" id="cp-panel">
+        <button class="cp-swatch active" data-h="130" title="Verde" onclick="setColor(130,this)"></button>
+        <button class="cp-swatch" data-h="340" title="Rosado" onclick="setColor(340,this)"></button>
+        <button class="cp-swatch" data-h="0" title="Rojo" onclick="setColor(0,this)"></button>
+        <button class="cp-swatch" data-h="220" title="Azul" onclick="setColor(220,this)"></button>
+        <button class="cp-swatch" data-h="270" title="Morado" onclick="setColor(270,this)"></button>
+      </div>
+    </div>
     <button class="btn btn-ghost" onclick="abrirModal('login')">Iniciar sesión</button>
     <button class="btn btn-p" onclick="abrirModal('registro')">Crear cuenta</button>
   </div>
 </nav>
 
+<!-- ══ HERO ══ -->
 <section class="hero">
-  <div class="hero-chip"><div class="live-dot"></div>Free Fire · Sistema Activo 24/7</div>
-  <h1>Aumenta tus <em>Likes de Free Fire</em><br>de forma rápida y segura</h1>
-  <p>BoostSpeed es la plataforma para impulsar tu perfil en Free Fire. Seguro, instantáneo y siempre disponible.</p>
-  <div class="hero-status">
-    <div class="hs-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Entrega <strong>Instantánea</strong></div>
-    <div class="hs-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><strong>Anti-ban</strong> activo</div>
-    <div class="hs-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Disponible <strong>24/7</strong></div>
-    <div class="hs-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><strong>99.9%</strong> uptime</div>
+  <div class="hero-chip"><div class="live-dot"></div>Free Fire · Activo 24/7</div>
+
+  <h1>Impulsa tu cuenta de<br><em>Free Fire</em> hoy</h1>
+
+  <p>Servicios rápidos, seguros y al mejor precio. BoostSpeed es la plataforma especializada en likes, fragmentos universales, honor para clan y tarjetas para Free Fire.</p>
+
+  <div class="hero-badges">
+    <div class="hbadge">⚡ Entrega <strong>instantánea</strong></div>
+    <div class="hbadge">🛡 <strong>Anti‑ban</strong> activo</div>
+    <div class="hbadge">🕐 Disponible <strong>24/7</strong></div>
+    <div class="hbadge">📈 <strong>99.9%</strong> uptime</div>
   </div>
+
   <div class="hero-cta">
-    <button class="btn btn-p btn-lg" onclick="abrirModal('registro')">Empezar Ahora →</button>
+    <button class="btn btn-p btn-lg" onclick="abrirModal('registro')">Empezar ahora →</button>
     <button class="btn btn-ghost btn-lg" onclick="abrirModal('login')">Ya tengo cuenta</button>
   </div>
-  <div class="hero-ticker" id="hero-ticker">
-    <div class="ticker-item">
-      <div class="ticker-pulse"></div>
-      <div class="ticker-num" id="tk-users">0</div>
-      <div class="ticker-lbl">Usuarios registrados</div>
+
+  <div class="ticker" id="el-ticker">
+    <div class="neon-frame" id="nf-ticker"><svg id="svg-ticker"></svg></div>
+    <div class="tk-item">
+      <div class="tk-num" id="tk-users">—</div>
+      <div class="tk-lbl">Usuarios registrados</div>
     </div>
-    <div class="ticker-div"></div>
-    <div class="ticker-item">
-      <div class="ticker-pulse"></div>
-      <div class="ticker-num" id="tk-likes">0</div>
-      <div class="ticker-lbl">Likes enviados</div>
+    <div class="tk-div"></div>
+    <div class="tk-item">
+      <div class="tk-num" id="tk-likes">—</div>
+      <div class="tk-lbl">Likes enviados</div>
     </div>
-    <div class="ticker-div"></div>
-    <div class="ticker-item">
-      <div class="ticker-pulse blue"></div>
-      <div class="ticker-num blue" id="tk-uptime">99.9%</div>
-      <div class="ticker-lbl">Tiempo activo</div>
+    <div class="tk-div"></div>
+    <div class="tk-item">
+      <div class="tk-num blue">99.9%</div>
+      <div class="tk-lbl">Tiempo activo</div>
     </div>
   </div>
+
   <div class="scroll-hint"><div class="scroll-arrow"></div></div>
 </section>
 
 <div class="divider"></div>
 
+<!-- ══ PRODUCTOS ══ -->
 <section class="sec">
   <div class="sec-title">
-    <h2>¿Por qué elegir <span>BoostSpeed</span>?</h2>
-    <p>Todo lo que necesitas para aumentar tu presencia en Free Fire en un solo lugar.</p>
+    <h2>Nuestros <span>Servicios</span></h2>
+    <p>Todo lo que necesitas para dominar Free Fire en un solo lugar.</p>
   </div>
-  <div class="grid">
-    <div class="card">
-      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-      <h3>Envío Instantáneo</h3><p>Los likes se reflejan en tu perfil en minutos. Sin esperas innecesarias.</p>
+  <div class="products" id="products-grid">
+    <div class="prod-card featured">
+      <div class="neon-frame" id="nf-p0"><svg id="svg-p0"></svg></div>
+      <div class="prod-badge">Popular</div>
+      <div class="prod-ico">❤️</div>
+      <div class="prod-name">Likes</div>
+      <div class="prod-desc">Aumenta los likes de tu perfil de Free Fire de forma instantánea y segura.</div>
+      <div class="prod-tag">Entrega inmediata</div>
     </div>
-    <div class="card">
-      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-      <h3>100% Seguro</h3><p>Sistema anti-ban activo. Tu cuenta siempre protegida, sin ningún riesgo.</p>
+    <div class="prod-card">
+      <div class="neon-frame" id="nf-p1"><svg id="svg-p1"></svg></div>
+      <div class="prod-ico">💎</div>
+      <div class="prod-name">Fragmentos Universales</div>
+      <div class="prod-desc">Obtén fragmentos para desbloquear skins y objetos exclusivos.</div>
+      <div class="prod-tag">Premium</div>
     </div>
-    <div class="card">
-      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
-      <h3>Códigos de Plan</h3><p>Canjea tu código y activa tu plan al instante. Sin complicaciones.</p>
+    <div class="prod-card">
+      <div class="neon-frame" id="nf-p2"><svg id="svg-p2"></svg></div>
+      <div class="prod-ico">🏆</div>
+      <div class="prod-name">Honor para Clan</div>
+      <div class="prod-desc">Sube el honor de tu clan y mejora su posición en el ranking.</div>
+      <div class="prod-tag">Clan boost</div>
     </div>
-    <div class="card">
-      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
-      <h3>Optimizado Mobile</h3><p>Gestiona todo desde tu celular. Diseño adaptado para cualquier pantalla.</p>
+    <div class="prod-card">
+      <div class="neon-frame" id="nf-p3"><svg id="svg-p3"></svg></div>
+      <div class="prod-ico">📅</div>
+      <div class="prod-name">Tarjeta Semanal</div>
+      <div class="prod-desc">Accede a beneficios y recompensas diarias durante 7 días.</div>
+      <div class="prod-tag">7 días</div>
     </div>
-    <div class="card">
-      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
-      <h3>Panel Completo</h3><p>Monitorea envíos, historial y plan activo desde un solo panel intuitivo.</p>
-    </div>
-    <div class="card">
-      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-      <h3>Activo 24/7</h3><p>Funciona los 7 días de la semana, las 24 horas. Siempre disponible para ti.</p>
+    <div class="prod-card">
+      <div class="neon-frame" id="nf-p4"><svg id="svg-p4"></svg></div>
+      <div class="prod-ico">🗓️</div>
+      <div class="prod-name">Tarjeta Mensual</div>
+      <div class="prod-desc">Recompensas diarias durante 30 días. El mejor valor del mercado.</div>
+      <div class="prod-tag">30 días</div>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
+<!-- ══ CÓMO FUNCIONA ══ -->
 <section class="sec" style="padding-top:3rem">
   <div class="sec-title">
     <h2>¿Cómo <span>funciona</span>?</h2>
-    <p>En tres pasos simples ya estarás recibiendo likes.</p>
+    <p>Tres pasos simples y ya estarás recibiendo tus servicios.</p>
   </div>
   <div class="steps">
-    <div class="step"><div class="sn">01</div><div class="sb"><h3>Crea tu cuenta</h3><p>Regístrate con usuario, contraseña y correo o teléfono. Obtienes tu ID único al instante.</p></div></div>
-    <div class="step"><div class="sn">02</div><div class="sb"><h3>Canjea tu código</h3><p>Ingresa el código que recibiste del administrador. Tu plan se activa automáticamente.</p></div></div>
-    <div class="step"><div class="sn">03</div><div class="sb"><h3>Envía los likes</h3><p>Ingresa el UID de Free Fire y pulsa enviar. Los likes llegan en minutos.</p></div></div>
+    <div class="step">
+      <div class="sn">1</div>
+      <div class="sb">
+        <h3>Crea tu cuenta</h3>
+        <p>Regístrate con usuario, contraseña y correo o teléfono. Obtienes tu ID único al instante.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">2</div>
+      <div class="sb">
+        <h3>Canjea tu código</h3>
+        <p>Ingresa el código del administrador. Tu plan se activa automáticamente.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">3</div>
+      <div class="sb">
+        <h3>Recibe tu servicio</h3>
+        <p>Ingresa tu UID de Free Fire y pulsa enviar. Todo llega en minutos.</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<div style="padding:0 1.5rem;position:relative;z-index:1">
+<!-- ══ BANNER CTA ══ -->
+<div style="padding:0 clamp(1rem,5vw,2rem);position:relative;z-index:1">
   <div class="banner" id="el-banner">
-    <h2>¿Listo para <span style="color:var(--g)">subir de nivel</span>?</h2>
-    <p>Únete a jugadores que ya usan BoostSpeed para impulsar su perfil en Free Fire.</p>
+    <div class="neon-frame" id="nf-banner"><svg id="svg-banner"></svg></div>
+    <h2>¿Listo para <span style="color:var(--a);transition:color .5s">subir de nivel</span>?</h2>
+    <p>Únete a los jugadores que ya usan BoostSpeed para dominar Free Fire.</p>
     <button class="btn btn-p btn-lg" onclick="abrirModal('registro')">Crear cuenta gratis →</button>
   </div>
 </div>
 
-<footer id="el-footer">
-  <strong>BoostSpeed</strong> &copy; 2026 · Plataforma de likes para Free Fire · Activo 24/7
+<footer>
+  <strong>BoostSpeed</strong> &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; Plataforma de servicios para Free Fire &nbsp;·&nbsp; 24/7
 </footer>
 
-<!-- MODAL LOGIN -->
+<!-- ══ MODAL LOGIN ══ -->
 <div class="ov" id="ov-login">
-  <div class="modal" id="modal-login">
+  <div class="modal">
     <button class="mc" onclick="cerrarModal('login')">✕</button>
     <h2>Iniciar sesión</h2>
     <p class="sub">Bienvenido de vuelta a BoostSpeed</p>
     <div class="msg" id="msg-login"></div>
     <div class="fg"><label>Usuario</label><input type="text" id="l-user" placeholder="Tu nombre de usuario" autocomplete="username"/></div>
     <div class="fg"><label>Contraseña</label><input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"/></div>
-    <button class="btn btn-p btn-full" id="btn-login" onclick="login()" style="margin-top:.3rem">
+    <button class="btn btn-p btn-full" id="btn-login" onclick="login()" style="margin-top:.2rem">
       <div class="spin" id="spin-login"></div><span id="txt-login">Entrar →</span>
     </button>
     <div class="fl"><a href="#" onclick="cerrarModal('login');abrirModal('recuperar');return false">¿Olvidaste tu contraseña?</a></div>
@@ -441,9 +779,9 @@ footer strong{color:var(--g)}
   </div>
 </div>
 
-<!-- MODAL REGISTRO -->
+<!-- ══ MODAL REGISTRO ══ -->
 <div class="ov" id="ov-registro">
-  <div class="modal" id="modal-registro">
+  <div class="modal">
     <button class="mc" onclick="cerrarModal('registro')">✕</button>
     <h2>Crear cuenta</h2>
     <p class="sub">Empieza gratis en segundos</p>
@@ -451,264 +789,301 @@ footer strong{color:var(--g)}
     <div class="fg"><label>Usuario</label><input type="text" id="r-user" placeholder="Elige un nombre de usuario" autocomplete="username"/></div>
     <div class="fg"><label>Correo o teléfono</label><input type="text" id="r-contact" placeholder="correo@ejemplo.com o +57..."/></div>
     <div class="fg"><label>Contraseña</label><input type="password" id="r-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password" onkeydown="if(event.key==='Enter')registro()"/></div>
-    <button class="btn btn-p btn-full" id="btn-registro" onclick="registro()" style="margin-top:.3rem">
+    <button class="btn btn-p btn-full" id="btn-registro" onclick="registro()" style="margin-top:.2rem">
       <div class="spin" id="spin-registro"></div><span id="txt-registro">Crear cuenta →</span>
     </button>
     <div class="fl">¿Ya tienes cuenta? <a href="#" onclick="cerrarModal('registro');abrirModal('login');return false">Iniciar sesión</a></div>
   </div>
 </div>
 
-<!-- MODAL RECUPERAR -->
+<!-- ══ MODAL RECUPERAR ══ -->
 <div class="ov" id="ov-recuperar">
-  <div class="modal" id="modal-recuperar">
+  <div class="modal">
     <button class="mc" onclick="cerrarModal('recuperar')">✕</button>
     <h2>Recuperar contraseña</h2>
     <p class="sub">Sigue estos pasos para recuperar el acceso</p>
-    <div id="rec-step1">
+    <div id="rec-s1">
       <div class="sdots"><div class="sdot active"></div><div class="sdot"></div><div class="sdot"></div></div>
-      <div class="msg" id="msg-recuperar"></div>
+      <div class="msg" id="msg-rec1"></div>
       <div class="rec-info"><strong>Paso 1:</strong> Ingresa el correo o teléfono con el que te registraste.</div>
       <div class="fg"><label>Correo o teléfono</label><input type="text" id="rec-contact" placeholder="correo@ejemplo.com o +57..."/></div>
-      <button class="btn btn-p btn-full" onclick="recuperarP1()">Verificar cuenta →</button>
-      <div class="fl"><a href="#" onclick="cerrarModal('recuperar');abrirModal('login');return false">← Volver a iniciar sesión</a></div>
+      <button class="btn btn-p btn-full" onclick="recP1()">Verificar cuenta →</button>
+      <div class="fl"><a href="#" onclick="cerrarModal('recuperar');abrirModal('login');return false">← Volver al login</a></div>
     </div>
-    <div id="rec-step2" style="display:none">
+    <div id="rec-s2" style="display:none">
       <div class="sdots"><div class="sdot"></div><div class="sdot active"></div><div class="sdot"></div></div>
-      <div class="msg" id="msg-recuperar2"></div>
-      <div class="rec-info">Cuenta encontrada: <strong id="rec-found-name">—</strong><br><br><strong>Paso 2:</strong> Contacta al administrador y dile tu nombre de usuario e ID para obtener un código de recuperación.</div>
-      <p style="font-size:.78rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.55rem">Contactar administrador:</p>
+      <div class="msg" id="msg-rec2"></div>
+      <div class="rec-info">Cuenta encontrada: <strong id="rec-found">—</strong><br><br><strong>Paso 2:</strong> Contacta al administrador con tu usuario e ID para obtener un código.</div>
+      <p style="font-size:.76rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.5rem">Contactar admin:</p>
       <a class="sup-link" href="https://t.me/DuarteStoreX" target="_blank" rel="noopener">
-        <div class="sup-ico sup-tg"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0088CC" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+        <div class="sup-ico sup-tg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0088CC" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
         <div><div class="sup-name">Telegram</div><div class="sup-handle">@DuarteStoreX · Respuesta rápida</div></div>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--mut)" stroke-width="2" style="margin-left:auto;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--mut)" stroke-width="2" style="margin-left:auto;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
       <a class="sup-link" href="https://wa.me/573164377140" target="_blank" rel="noopener">
-        <div class="sup-ico sup-wa"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+        <div class="sup-ico sup-wa"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
         <div><div class="sup-name">WhatsApp</div><div class="sup-handle">+57 316 437 7140</div></div>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--mut)" stroke-width="2" style="margin-left:auto;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--mut)" stroke-width="2" style="margin-left:auto;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
-      <div style="margin-top:1rem">
-        <div class="fg" style="margin-bottom:.5rem"><label>Código de recuperación</label><input type="text" id="rec-codigo" placeholder="Ingresa el código del admin" style="text-transform:uppercase"/></div>
-        <button class="btn btn-p btn-full" onclick="recuperarP2()">Verificar código →</button>
+      <div style="margin-top:.9rem">
+        <div class="fg" style="margin-bottom:.45rem"><label>Código de recuperación</label><input type="text" id="rec-codigo" placeholder="Código del admin" style="text-transform:uppercase"/></div>
+        <button class="btn btn-p btn-full" onclick="recP2()">Verificar código →</button>
       </div>
       <div class="fl"><a href="#" onclick="recReset();return false">← Volver</a></div>
     </div>
-    <div id="rec-step3" style="display:none">
+    <div id="rec-s3" style="display:none">
       <div class="sdots"><div class="sdot"></div><div class="sdot"></div><div class="sdot active"></div></div>
-      <div class="msg" id="msg-recuperar3"></div>
+      <div class="msg" id="msg-rec3"></div>
       <div class="rec-info"><strong>Paso 3:</strong> Código verificado. Elige tu nueva contraseña.</div>
       <div class="fg"><label>Nueva contraseña</label><input type="password" id="rec-new" placeholder="Mínimo 6 caracteres"/></div>
       <div class="fg"><label>Confirmar contraseña</label><input type="password" id="rec-confirm" placeholder="Repite la contraseña"/></div>
-      <button class="btn btn-p btn-full" onclick="recuperarP3()">Guardar nueva contraseña →</button>
+      <button class="btn btn-p btn-full" onclick="recP3()">Guardar contraseña →</button>
     </div>
   </div>
 </div>
 
 <script src="/js/api.js"></script>
 <script>
-/* ═══════════════════════════════════════════════════════
-   LÍNEAS NEON 60FPS — Ultra optimizado para J1/J2
-   ═══════════════════════════════════════════════════════ */
-let _neonCanvases = [];
-let _neonStart = null;
+/* ══════════════════════════════════════
+   CAMBIO DE COLOR — fluido
+══════════════════════════════════════ */
+const root = document.documentElement;
+const cpBtn = document.getElementById('cp-btn');
+const cpPanel = document.getElementById('cp-panel');
+let cpOpen = false;
 
-function initNeonLines() {
-  const targets = document.querySelectorAll('#el-nav, #hero-ticker, .card, #el-banner, #el-footer');
-  
-  targets.forEach(el => {
-    const canvas = document.createElement('canvas');
-    canvas.className = 'nl-canvas';
-    const pos = window.getComputedStyle(el).position;
-    if (pos === 'static') el.style.position = 'relative';
-    el.appendChild(canvas);
-    _neonCanvases.push(canvas);
+cpBtn.onclick = (e) => {
+  e.stopPropagation();
+  cpOpen = !cpOpen;
+  cpPanel.classList.toggle('open', cpOpen);
+};
+document.addEventListener('click', () => {
+  if (cpOpen) { cpOpen = false; cpPanel.classList.remove('open'); }
+});
+cpPanel.addEventListener('click', e => e.stopPropagation());
+
+function setColor(h, el) {
+  root.style.setProperty('--h', h);
+  document.querySelectorAll('.cp-swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  // Actualiza notificaciones existentes
+  document.querySelectorAll('.notif').forEach(n => {
+    n.style.borderColor = `hsla(${h},100%,50%,.28)`;
   });
-  
-  requestAnimationFrame(neonFrame);
+  cpOpen = false;
+  cpPanel.classList.remove('open');
 }
 
-function neonFrame(ts) {
-  requestAnimationFrame(neonFrame);
-  
+/* ══ NEON LINES con border-radius correcto ══ */
+function getNeonColor(){ return `hsla(${getComputedStyle(root).getPropertyValue('--h').trim()},100%,50%,` }
+
+let neonState = {};
+
+function initNeon(svgId, elId) {
+  const svg = document.getElementById(svgId);
+  const el = document.getElementById(elId);
+  if (!svg || !el) return;
+  neonState[svgId] = { svg, el, offset: Math.random() };
+}
+
+function drawNeonPath(id) {
+  const s = neonState[id];
+  if (!s) return;
+  const el = s.el;
+  const w = el.offsetWidth, h = el.offsetHeight;
+  if (!w || !h) return;
+  const svg = s.svg;
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.setAttribute('width', w);
+  svg.setAttribute('height', h);
+
+  // Calcula border-radius real
+  const cs = getComputedStyle(el);
+  const rr = parseFloat(cs.borderRadius) || 13;
+  const r = Math.min(rr, w/2, h/2);
+
+  // Path rectangular con esquinas redondeadas
+  const path = `M ${r} 0 L ${w-r} 0 Q ${w} 0 ${w} ${r} L ${w} ${h-r} Q ${w} ${h} ${w-r} ${h} L ${r} ${h} Q 0 ${h} 0 ${h-r} L 0 ${r} Q 0 0 ${r} 0 Z`;
+  const totalLen = 2*(w+h) - 8*r + 2*Math.PI*r; // perimetro aprox
+
+  if (!svg._path) {
+    const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('fill','none');
+    p.setAttribute('stroke-linecap','round');
+    svg.appendChild(p);
+    svg._path = p;
+  }
+  svg._path.setAttribute('d', path);
+  svg._path.setAttribute('pathLength','1');
+  return svg._path;
+}
+
+let _neonRAF;
+function neonLoop(ts) {
+  _neonRAF = requestAnimationFrame(neonLoop);
   if (document.hidden) return;
-  if (!_neonStart) _neonStart = ts;
-  
-  const elapsed = (ts - _neonStart) / 1000;
-  const speed = 5;
-  const segs = 25; // Solo 25 segmentos para máximo rendimiento
 
-  for (let ci = 0; ci < _neonCanvases.length; ci++) {
-    const canvas = _neonCanvases[ci];
-    const par = canvas.parentElement;
-    if (!par) continue;
-    
-    const w = par.offsetWidth;
-    const h = par.offsetHeight;
-    if (!w || !h) continue;
-    
-    if (canvas.width !== w || canvas.height !== h) {
-      canvas.width = w;
-      canvas.height = h;
+  const speed = 0.00022;
+  const h = getComputedStyle(root).getPropertyValue('--h').trim();
+
+  for (const id in neonState) {
+    const p = drawNeonPath(id);
+    if (!p) continue;
+    const s = neonState[id];
+    const t = ((ts * speed + s.offset) % 1);
+    const len = 0.28; // fracción visible del borde
+
+    // dasharray y dashoffset para mover la línea
+    const dash = len;
+    const gap = 1 - len;
+    const offset = 1 - t;
+
+    // Gradiente de opacidad via stroke-dasharray múltiple
+    p.setAttribute('stroke', `hsl(${h},100%,60%)`);
+    p.setAttribute('stroke-width', '1.4');
+    p.setAttribute('stroke-dasharray', `${dash} ${gap}`);
+    p.setAttribute('stroke-dashoffset', `${offset}`);
+    p.setAttribute('opacity', '0.85');
+
+    // Segunda línea glow
+    if (!s.svg._glow) {
+      const g = document.createElementNS('http://www.w3.org/2000/svg','path');
+      g.setAttribute('fill','none');
+      g.setAttribute('stroke-linecap','round');
+      s.svg.insertBefore(g, p);
+      s.svg._glow = g;
     }
-
-    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
-    ctx.clearRect(0, 0, w, h);
-
-    const P = 2 * (w + h);
-    const lineLen = P * 0.22;
-    const progress = (elapsed / speed) % 1;
-    const head = progress * P;
-    const tail = head - lineLen;
-
-    // Configuración fuera del loop (crítico)
-    ctx.lineCap = 'round';
-    ctx.lineWidth = 1.5;
-
-    for (let s = 0; s < segs; s++) {
-      const t0 = tail + (s / segs) * lineLen;
-      const t1 = tail + ((s + 1) / segs) * lineLen;
-      
-      const p0 = ((t0 % P) + P) % P;
-      const p1 = ((t1 % P) + P) % P;
-      
-      const [x0, y0] = getPoint(w, h, p0);
-      const [x1, y1] = getPoint(w, h, p1);
-      
-      if (Math.abs(x1 - x0) > w * 0.5 || Math.abs(y1 - y0) > h * 0.5) continue;
-      
-      const alpha = (s / segs) * 0.8;
-      
-      ctx.strokeStyle = `rgba(0, 255, 30, ${alpha})`;
-      ctx.beginPath();
-      ctx.moveTo(x0, y0);
-      ctx.lineTo(x1, y1);
-      ctx.stroke();
-    }
+    const cs = getComputedStyle(s.el);
+    s.svg._glow.setAttribute('d', p.getAttribute('d'));
+    s.svg._glow.setAttribute('pathLength','1');
+    s.svg._glow.setAttribute('stroke', `hsl(${h},100%,65%)`);
+    s.svg._glow.setAttribute('stroke-width', '3.5');
+    s.svg._glow.setAttribute('stroke-dasharray', `${dash} ${gap}`);
+    s.svg._glow.setAttribute('stroke-dashoffset', `${offset}`);
+    s.svg._glow.setAttribute('opacity', '0.28');
+    s.svg._glow.setAttribute('filter', `blur(2px)`);
   }
 }
 
-function getPoint(w, h, p) {
-  if (p < w) return [p, 0];
-  p -= w;
-  if (p < h) return [w, p];
-  p -= h;
-  if (p < w) return [w - p, h];
-  p -= w;
-  return [0, h - p];
-}
-
-/* ═══ METEOROS OPTIMIZADOS ═══ */
+/* ══ METEOROS — lightweight ══ */
 (function(){
   const c = document.getElementById('meteors');
-  const ANGLE = 25, VH = innerHeight || 900, VW = innerWidth || 800;
-  const total = VH + 200, moveY = total;
-  const moveX = -Math.tan(ANGLE * Math.PI / 180) * total;
-  const isMob = VW < 768;
+  const ANG = 25;
   let paused = false;
-  
   document.addEventListener('visibilitychange', () => { paused = document.hidden; });
-  
-  function spawnMeteor() {
-    if (paused) { setTimeout(spawnMeteor, 2000); return; }
-    
+
+  function spawn() {
+    if (paused) { setTimeout(spawn, 2500); return; }
+    const VW = innerWidth, VH = innerHeight;
+    const len = 55 + Math.random() * 45;
+    const x = Math.random() * (VW + 120);
+    const dur = 2600 + Math.random() * 1200;
+    const h = getComputedStyle(root).getPropertyValue('--h').trim();
+
     const m = document.createElement('div');
     m.className = 'meteor';
-    const len = 60 + Math.random() * 50;
-    const startX = Math.random() * (VW + 100);
-    
-    m.style.cssText = `left:${startX}px;top:${-len - 20}px;width:2px;height:${len}px;`
-      + `transform:rotate(-${ANGLE}deg) translate3d(0,0,0);`
-      + `background:linear-gradient(to bottom,transparent 0%,rgba(180,255,190,.15) 25%,rgba(0,255,30,.6) 60%,rgba(0,255,30,.95) 82%,#fff 100%);`
-      + `border-radius:0 0 2px 2px;position:absolute;opacity:0;will-change:transform,opacity`;
-    
+    const moveY = VH + 200;
+    const moveX = -Math.tan(ANG * Math.PI / 180) * moveY;
+    Object.assign(m.style, {
+      left: x + 'px', top: (-len - 20) + 'px',
+      height: len + 'px',
+      rotate: `-${ANG}deg`,
+      background: `linear-gradient(to bottom,transparent 0%,hsla(${h},100%,60%,.12) 30%,hsla(${h},100%,55%,.65) 70%,#fff 100%)`,
+      opacity: '0', willChange: 'transform,opacity'
+    });
     c.appendChild(m);
-    
-    const dur = 2800 + Math.random() * 1200;
+
     const t0 = performance.now();
-    
     function af(now) {
       if (paused) { requestAnimationFrame(af); return; }
-      
-      const t = Math.min((now - t0) / dur, 1);
-      const op = t < .12 ? t / .12 * .85 : t < .7 ? .85 - (t - .12) / .58 * .55 : Math.max(0, .3 - (t - .7) / .3 * .3);
-      
+      const p = Math.min((now - t0) / dur, 1);
+      const op = p < .1 ? p / .1 * .8 : p < .7 ? .8 - (p - .1) / .6 * .5 : Math.max(0, .3 - (p-.7)/.3*.3);
       m.style.opacity = op;
-      m.style.transform = `rotate(-${ANGLE}deg) translate3d(${moveX * t}px,${moveY * t}px,0)`;
-      
-      if (t < 1) requestAnimationFrame(af);
-      else {
-        m.remove();
-        setTimeout(spawnMeteor, 1500 + Math.random() * 4500);
-      }
+      m.style.translate = `${moveX * p}px ${moveY * p}px`;
+      if (p < 1) requestAnimationFrame(af);
+      else { m.remove(); setTimeout(spawn, 1600 + Math.random() * 4000); }
     }
-    
     requestAnimationFrame(af);
   }
-  
-  spawnMeteor();
-  if (!isMob) {
-    setTimeout(spawnMeteor, 800 + Math.random() * 1200);
-    setTimeout(spawnMeteor, 2200 + Math.random() * 1500);
-  }
+  spawn();
+  setTimeout(spawn, 1000 + Math.random() * 1200);
+  if (innerWidth > 640) setTimeout(spawn, 2500 + Math.random() * 1500);
 })();
 
-/* ── Redirigir si ya tiene sesión ── */
+/* ══ REDIRECT SI YA TIENE SESIÓN ══ */
 if (localStorage.getItem('bs_token')) location.href = '/dashboard.html';
 
-let recUserId = null;
-
-/* ── IntersectionObserver ── */
+/* ══ INTERSECTION OBSERVER ══ */
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
   });
-}, { threshold: 0, rootMargin: '0px 0px -20px 0px' });
-document.querySelectorAll('.card,.step').forEach(el => obs.observe(el));
+}, { threshold: 0, rootMargin: '0px 0px -15px 0px' });
+document.querySelectorAll('.prod-card,.step').forEach(el => obs.observe(el));
 
-/* ── Contadores instantáneos (sin animación para mejor performance) ── */
-function animCount(el, target) {
-  el.textContent = target ? target.toLocaleString('es') : '0';
-}
-
-/* ── Init ── */
+/* ══ INIT ══ */
 document.addEventListener('DOMContentLoaded', () => {
-  initNeonLines();
+  // Init neon en todos los elementos
+  ['ticker','p0','p1','p2','p3','p4','banner'].forEach(id => {
+    initNeon('svg-' + id, 'el-' + id === 'el-ticker' ? 'el-ticker' :
+      id === 'banner' ? 'el-banner' :
+      id.startsWith('p') ? null : null
+    );
+  });
+  // Mapeo manual correcto
+  initNeon('svg-ticker', 'el-ticker');
+  initNeon('svg-p0', document.querySelector('.prod-card.featured'));
+  initNeon('svg-banner', 'el-banner');
+  // Para prod-cards, usamos sus ids de nf-
+  ['nf-ticker','nf-p0','nf-p1','nf-p2','nf-p3','nf-p4','nf-banner'].forEach(nfId => {
+    const nf = document.getElementById(nfId);
+    if (!nf) return;
+    const svgEl = nf.querySelector('svg');
+    if (!svgEl) return;
+    neonState[nfId] = { svg: svgEl, el: nf.parentElement, offset: Math.random() };
+  });
+  requestAnimationFrame(neonLoop);
+
+  // Stats
   (async () => {
     try {
-      const res = await fetch('/api/public-stats');
-      if (res.ok) {
-        const d = await res.json();
-        animCount(document.getElementById('tk-users'), d.usuarios || 0);
-        animCount(document.getElementById('tk-likes'), d.likes || 0);
+      const r = await fetch('/api/public-stats');
+      if (r.ok) {
+        const d = await r.json();
+        document.getElementById('tk-users').textContent = (d.usuarios||0).toLocaleString('es');
+        document.getElementById('tk-likes').textContent = (d.likes||0).toLocaleString('es');
       }
     } catch(e) {}
   })();
 });
 
-/* ── MODALES ── */
-function abrirModal(n) {
-  document.getElementById('ov-' + n).classList.add('open');
-  // Sin líneas neón en modales para máximo rendimiento
-}
+/* ══ MODALES ══ */
+function abrirModal(n) { document.getElementById('ov-' + n).classList.add('open'); }
 function cerrarModal(n) {
   document.getElementById('ov-' + n).classList.remove('open');
   document.querySelectorAll('#ov-' + n + ' input').forEach(i => i.value = '');
-  ['msg-' + n, 'msg-' + n + '2', 'msg-' + n + '3'].forEach(id => {
-    const m = document.getElementById(id); if (m) m.style.display = 'none';
+  ['msg-' + n, 'msg-rec1', 'msg-rec2', 'msg-rec3'].forEach(id => {
+    const m = document.getElementById(id); if (m) { m.style.display = 'none'; m.textContent = ''; }
   });
   if (n === 'recuperar') recReset();
 }
-document.querySelectorAll('.ov').forEach(o =>
-  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); })
-);
+document.querySelectorAll('.ov').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
 
-function cargando(id, estado) {
-  document.getElementById('spin-' + id).style.display = estado ? 'block' : 'none';
-  document.getElementById('txt-' + id).style.display = estado ? 'none' : 'inline';
-  document.getElementById('btn-' + id).disabled = estado;
+function cargando(id, on) {
+  document.getElementById('spin-' + id).style.display = on ? 'block' : 'none';
+  document.getElementById('txt-' + id).style.display = on ? 'none' : 'inline';
+  document.getElementById('btn-' + id).disabled = on;
+}
+function mostrarMsg(id, txt, tipo) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = txt;
+  el.className = 'msg ' + tipo;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 5000);
 }
 
-/* ── LOGIN ── */
+/* ══ LOGIN ══ */
 async function login() {
   const user = document.getElementById('l-user').value.trim();
   const pass = document.getElementById('l-pass').value;
@@ -722,7 +1097,7 @@ async function login() {
   location.href = '/dashboard.html';
 }
 
-/* ── REGISTRO ── */
+/* ══ REGISTRO ══ */
 async function registro() {
   const user = document.getElementById('r-user').value.trim();
   const contact = document.getElementById('r-contact').value.trim();
@@ -737,94 +1112,76 @@ async function registro() {
   location.href = '/dashboard.html';
 }
 
-/* ── RECUPERAR ── */
+/* ══ RECUPERAR ══ */
+let recUserId = null;
 function recReset() {
-  document.getElementById('rec-step1').style.display = 'block';
-  document.getElementById('rec-step2').style.display = 'none';
-  document.getElementById('rec-step3').style.display = 'none';
+  document.getElementById('rec-s1').style.display = 'block';
+  document.getElementById('rec-s2').style.display = 'none';
+  document.getElementById('rec-s3').style.display = 'none';
   recUserId = null;
 }
-async function recuperarP1() {
-  const contact = document.getElementById('rec-contact').value.trim();
-  if (!contact) return mostrarMsg('msg-recuperar', 'Ingresa tu correo o teléfono', 'err');
-  const res = await API.post('/api/recuperar-check', { contact });
-  if (!res.ok) return mostrarMsg('msg-recuperar', res.error, 'err');
+async function recP1() {
+  const c = document.getElementById('rec-contact').value.trim();
+  if (!c) return mostrarMsg('msg-rec1', 'Ingresa tu correo o teléfono', 'err');
+  const res = await API.post('/api/recuperar-check', { contact: c });
+  if (!res.ok) return mostrarMsg('msg-rec1', res.error, 'err');
   recUserId = res.userId;
-  document.getElementById('rec-found-name').textContent = res.username;
-  document.getElementById('rec-step1').style.display = 'none';
-  document.getElementById('rec-step2').style.display = 'block';
+  document.getElementById('rec-found').textContent = res.username;
+  document.getElementById('rec-s1').style.display = 'none';
+  document.getElementById('rec-s2').style.display = 'block';
 }
-async function recuperarP2() {
-  const codigo = document.getElementById('rec-codigo').value.trim().toUpperCase();
-  if (!codigo) return mostrarMsg('msg-recuperar2', 'Ingresa el código de recuperación', 'err');
-  const res = await API.post('/api/recuperar-verificar', { userId: recUserId, codigo });
-  if (!res.ok) return mostrarMsg('msg-recuperar2', res.error, 'err');
-  document.getElementById('rec-step2').style.display = 'none';
-  document.getElementById('rec-step3').style.display = 'block';
+async function recP2() {
+  const c = document.getElementById('rec-codigo').value.trim().toUpperCase();
+  if (!c) return mostrarMsg('msg-rec2', 'Ingresa el código de recuperación', 'err');
+  const res = await API.post('/api/recuperar-verificar', { userId: recUserId, codigo: c });
+  if (!res.ok) return mostrarMsg('msg-rec2', res.error, 'err');
+  document.getElementById('rec-s2').style.display = 'none';
+  document.getElementById('rec-s3').style.display = 'block';
 }
-async function recuperarP3() {
-  const nueva = document.getElementById('rec-new').value;
-  const confirma = document.getElementById('rec-confirm').value;
-  if (!nueva || nueva.length < 6) return mostrarMsg('msg-recuperar3', 'Mínimo 6 caracteres', 'err');
-  if (nueva !== confirma) return mostrarMsg('msg-recuperar3', 'Las contraseñas no coinciden', 'err');
-  const res = await API.post('/api/recuperar-cambiar', { userId: recUserId, password_nueva: nueva });
-  if (!res.ok) return mostrarMsg('msg-recuperar3', res.error, 'err');
-  mostrarMsg('msg-recuperar3', 'Contraseña actualizada. Inicia sesión.', 'ok');
-  setTimeout(() => { cerrarModal('recuperar'); abrirModal('login'); }, 2200);
-}
-
-/* ── UTILIDADES ── */
-function mostrarMsg(id, txt, tipo) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = txt;
-  el.className = 'msg ' + tipo;
-  el.style.display = 'block';
-  setTimeout(() => { el.style.display = 'none'; }, 5500);
+async function recP3() {
+  const n = document.getElementById('rec-new').value;
+  const cn = document.getElementById('rec-confirm').value;
+  if (!n || n.length < 6) return mostrarMsg('msg-rec3', 'Mínimo 6 caracteres', 'err');
+  if (n !== cn) return mostrarMsg('msg-rec3', 'Las contraseñas no coinciden', 'err');
+  const res = await API.post('/api/recuperar-cambiar', { userId: recUserId, password_nueva: n });
+  if (!res.ok) return mostrarMsg('msg-rec3', res.error, 'err');
+  mostrarMsg('msg-rec3', 'Contraseña actualizada correctamente.', 'ok');
+  setTimeout(() => { cerrarModal('recuperar'); abrirModal('login'); }, 2000);
 }
 
-/* ── NOTIFICACIONES FLOTANTES ── */
-let notifVistas = new Set(), notifQueue = [];
-function mostrarNotif(username, likesAgregados) {
-  const cont = document.getElementById('notif-container');
+/* ══ NOTIFICACIONES ══ */
+let notifSeen = new Set(), notifQ = [];
+function pushNotif(username, likes) {
+  const cont = document.getElementById('notif-box');
   const el = document.createElement('div');
   el.className = 'notif';
+  const h = getComputedStyle(root).getPropertyValue('--h').trim();
   el.innerHTML = `
-    <div class="notif-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-    <div class="notif-txt">
+    <div class="notif-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="hsl(${h},100%,60%)" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+    <div>
       <div class="notif-name">${username}</div>
-      <div class="notif-likes">+${likesAgregados.toLocaleString('es')} likes enviados</div>
+      <div class="notif-likes">+${likes.toLocaleString('es')} likes</div>
     </div>`;
   cont.appendChild(el);
-  setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 4700);
-  while (cont.children.length > 4) cont.removeChild(cont.firstChild);
+  setTimeout(() => el.remove(), 5000);
+  while (cont.children.length > 3) cont.removeChild(cont.firstChild);
 }
-async function pollNotificaciones() {
+async function pollNotif() {
   try {
-    const res = await fetch('/api/notificaciones-likes');
-    if (!res.ok) return;
-    const data = await res.json();
-    if (!data.ok || !data.notificaciones) return;
-    data.notificaciones.forEach(n => {
-      const key = n.username + n.creado_en;
-      if (!notifVistas.has(key) && n.likes_agregados > 0) {
-        notifVistas.add(key);
-        notifQueue.push(n);
-      }
+    const r = await fetch('/api/notificaciones-likes');
+    if (!r.ok) return;
+    const d = await r.json();
+    if (!d.ok || !d.notificaciones) return;
+    d.notificaciones.forEach(n => {
+      const k = n.username + n.creado_en;
+      if (!notifSeen.has(k) && n.likes_agregados > 0) { notifSeen.add(k); notifQ.push(n); }
     });
   } catch(e) {}
 }
-function processNotifQueue() {
-  if (notifQueue.length > 0) {
-    const n = notifQueue.shift();
-    mostrarNotif(n.username, n.likes_agregados);
-  }
-}
 (async () => {
-  await pollNotificaciones();
-  notifQueue = [];
-  setInterval(pollNotificaciones, 8000);
-  setInterval(processNotifQueue, 3000);
+  await pollNotif(); notifQ = [];
+  setInterval(pollNotif, 9000);
+  setInterval(() => { if (notifQ.length) pushNotif(notifQ.shift().username, notifQ[0]?.likes_agregados || 0); }, 3200);
 })();
 </script>
 </body>
