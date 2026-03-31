@@ -70,7 +70,7 @@ nav{
   animation:sD .5s var(--ease) both;
   transition:border-color .5s;
 }
-@keyframes sD{from{transform:translateY(-15px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes sD{from{opacity:0}to{opacity:1}}
 
 /* LOGO */
 .logo{
@@ -84,8 +84,8 @@ nav{
 .logo-boost{color:var(--a);transition:color .5s}
 .logo-speed{color:#eef2ee}
 @keyframes lG{
-  0%,100%{filter:drop-shadow(0 0 6px hsla(var(--h),100%,50%,.3))}
-  50%{filter:drop-shadow(0 0 18px hsla(var(--h),100%,50%,.7))}
+  0%,100%{opacity:.75}
+  50%{opacity:1}
 }
 .logo-dot{
   width:6px;height:6px;border-radius:50%;flex-shrink:0;
@@ -100,9 +100,9 @@ nav{
   color:var(--a);transition:color .5s;
 }
 @keyframes bolt{
-  0%,60%,100%{opacity:.3;scale:.85}
-  35%{opacity:1;scale:1.4;color:#ffe600;filter:drop-shadow(0 0 6px #ffe600)}
-  45%{opacity:.5;scale:1.1;color:#ffe600}
+  0%,60%,100%{opacity:.25;transform:scale(.85)}
+  35%{opacity:1;transform:scale(1.35)}
+  45%{opacity:.5;transform:scale(1.1)}
 }
 
 /* NAV BOTONES */
@@ -180,12 +180,8 @@ nav{
 }
 .btn-lg{padding:.82rem 2.1rem;font-size:1rem;border-radius:11px}
 .btn-p.btn-lg{
-  animation:ctaP 3.5s ease-in-out infinite;
   letter-spacing:.4px;
-}
-@keyframes ctaP{
-  0%,100%{box-shadow:0 0 0 0 hsla(var(--h),100%,50%,0)}
-  50%{box-shadow:0 0 0 10px hsla(var(--h),100%,50%,.07),0 8px 30px hsla(var(--h),100%,50%,.3)}
+  transition:transform .18s var(--ease),box-shadow .22s var(--ease),background .4s;
 }
 .btn-full{width:100%}
 
@@ -224,12 +220,7 @@ nav{
 }
 .hero h1 em{
   font-style:normal;color:var(--a);
-  animation:tG 3.5s ease-in-out infinite;
   transition:color .5s;
-}
-@keyframes tG{
-  0%,100%{text-shadow:0 0 28px hsla(var(--h),100%,50%,.4)}
-  50%{text-shadow:0 0 55px hsla(var(--h),100%,50%,.8),0 0 90px hsla(var(--h),100%,50%,.2)}
 }
 .hero p{
   color:var(--mut);font-size:clamp(.88rem,2.2vw,1rem);
@@ -412,7 +403,7 @@ nav{
 /* ── BANNER CTA ── */
 .banner{
   position:relative;z-index:1;max-width:860px;margin:0 auto 4.5rem;
-  background:linear-gradient(160deg,var(--bg3),rgba(var(--h),15%,8%,.5));
+  background:var(--bg3);
   border:1px solid hsla(var(--h),100%,50%,.2);border-radius:20px;
   padding:clamp(2rem,5vw,3.2rem) clamp(1.4rem,5vw,2.8rem);
   text-align:center;overflow:hidden;
