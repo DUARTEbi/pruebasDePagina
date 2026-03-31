@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/>
+<meta name="description" content="BoostSpeed – Servicios VIP para Free Fire: likes, fragmentos, honor para clan y tarjetas. Entrega instantánea 24/7."/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0,viewport-fit=cover"/>
 <meta name="theme-color" content="#070707"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -19,45 +20,59 @@
   --adim:hsla(var(--h),100%,50%,.09);
   --aborder:hsla(var(--h),100%,50%,.15);
   --atext:hsla(var(--h),100%,65%,.9);
-  --bg:#070707;--bg2:#0d0d0d;--bg3:#111;--sur:#161616;
+  --bg:#070707;--bg2:#0c0c0c;--bg3:#101010;--sur:#161616;
   --txt:#eef2ee;--mut:#6b806b;--red:#ff4757;
   --ease:cubic-bezier(.23,1,.32,1);
+  --ease-out:cubic-bezier(0,.55,.45,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 *{-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;text-rendering:optimizeSpeed}
-html{scroll-behavior:smooth}
-body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
-button,a{outline:none;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;text-decoration:none}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  font-family:'Exo 2',sans-serif;
+  background:var(--bg);color:var(--txt);
+  min-height:100vh;overflow-x:hidden;
+  overscroll-behavior-y:none;
+}
+button,a{
+  outline:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;text-decoration:none;
+}
 button:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 
-/* BG GLOW */
+/* ── BG GLOW ── */
 .bg-glow{
-  position:fixed;top:-20%;left:50%;translate:-50% 0;
-  width:min(800px,120vw);aspect-ratio:1;border-radius:50%;
-  background:radial-gradient(circle,hsla(var(--h),100%,50%,.05) 0%,transparent 65%);
+  position:fixed;top:-25%;left:50%;
+  transform:translateX(-50%);
+  width:min(900px,130vw);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,hsla(var(--h),100%,50%,.055) 0%,transparent 65%);
   pointer-events:none;z-index:0;
-  animation:bgP 8s ease-in-out infinite;
-  transition:background .5s;
+  animation:bgP 9s ease-in-out infinite;
+  transition:background .6s;
   will-change:opacity;
+  contain:strict;
 }
-@keyframes bgP{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes bgP{0%,100%{opacity:.45}50%{opacity:1}}
 
 /* METEOROS */
 #meteors{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 
-/* NAV */
+/* ── NAV ── */
 nav{
   position:sticky;top:0;z-index:200;
-  background:rgba(7,7,7,.85);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  background:rgba(7,7,7,.88);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
   border-bottom:1px solid var(--aborder);
   padding:0 clamp(.75rem,4vw,1.8rem);
   display:flex;align-items:center;justify-content:space-between;
   height:58px;
-  animation:sD .5s var(--ease) both;
-  transition:border-color .5s;
+  animation:sD .45s var(--ease) both;
+  transition:border-color .5s,background .4s;
+  contain:layout;
 }
-@keyframes sD{from{translate:0 -100%;opacity:0}to{translate:0 0;opacity:1}}
+@keyframes sD{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
 
 /* LOGO */
 .logo{
@@ -129,35 +144,50 @@ nav{
 .cp-sw[data-h="220"]{background:hsl(220,100%,65%)}
 .cp-sw[data-h="270"]{background:hsl(270,85%,68%)}
 
-/* BOTONES */
+/* ── BOTONES ── */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:.38rem;
   padding:.5rem 1rem;border-radius:8px;
   font-family:'Exo 2',sans-serif;font-weight:700;font-size:.82rem;
-  border:none;transition:all .2s var(--ease);
+  border:none;
+  transition:transform .18s var(--ease),box-shadow .22s var(--ease),background .4s,border-color .4s,color .3s;
   letter-spacing:.25px;position:relative;overflow:hidden;
-  touch-action:manipulation;will-change:transform;
+  touch-action:manipulation;
   white-space:nowrap;
+  -webkit-user-select:none;user-select:none;
 }
-.btn:active{scale:.96}
+.btn::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at var(--bx,50%) var(--by,50%),rgba(255,255,255,.15),transparent 60%);
+  opacity:0;transition:opacity .25s;
+  pointer-events:none;
+}
+.btn:hover::after{opacity:1}
+.btn:active{transform:scale(.96)}
 .btn-ghost{
-  background:transparent;border:1px solid var(--aborder);color:var(--txt);
-  transition:border-color .5s,color .3s,box-shadow .2s,scale .1s;
+  background:transparent;border:1.5px solid var(--aborder);color:var(--txt);
 }
-.btn-ghost:hover{border-color:var(--a);color:var(--a);box-shadow:0 0 12px hsla(var(--h),100%,50%,.18)}
+.btn-ghost:hover{
+  border-color:var(--a);color:var(--a);
+  box-shadow:0 0 16px hsla(var(--h),100%,50%,.18),inset 0 0 0 1px hsla(var(--h),100%,50%,.08);
+  transform:translateY(-1px);
+}
 .btn-p{
-  background:var(--a);color:#000;font-weight:800;
-  transition:background .5s,box-shadow .25s,scale .1s,translate .15s;
+  background:linear-gradient(135deg,hsl(var(--h),100%,52%),hsl(var(--h),100%,42%));
+  color:#000;font-weight:800;
 }
 .btn-p:hover{
-  background:var(--am);translate:0 -2px;
-  box-shadow:0 4px 22px hsla(var(--h),100%,50%,.45),0 0 0 0 transparent;
+  transform:translateY(-2px);
+  box-shadow:0 6px 28px hsla(var(--h),100%,50%,.5),0 2px 8px hsla(var(--h),100%,50%,.3);
 }
-.btn-lg{padding:.8rem 2rem;font-size:.98rem;border-radius:10px}
-.btn-p.btn-lg{animation:ctaP 3.5s ease-in-out infinite}
+.btn-lg{padding:.82rem 2.1rem;font-size:1rem;border-radius:11px}
+.btn-p.btn-lg{
+  animation:ctaP 3.5s ease-in-out infinite;
+  letter-spacing:.4px;
+}
 @keyframes ctaP{
   0%,100%{box-shadow:0 0 0 0 hsla(var(--h),100%,50%,0)}
-  50%{box-shadow:0 0 0 8px hsla(var(--h),100%,50%,.07),0 6px 26px hsla(var(--h),100%,50%,.28)}
+  50%{box-shadow:0 0 0 10px hsla(var(--h),100%,50%,.07),0 8px 30px hsla(var(--h),100%,50%,.3)}
 }
 .btn-full{width:100%}
 
@@ -287,35 +317,40 @@ nav{
 .sec-title h2 span{color:var(--a);transition:color .5s}
 .sec-title p{color:var(--mut);max-width:460px;margin:0 auto;line-height:1.72;font-size:.9rem}
 
-/* PRODUCTOS */
+/* ── PRODUCTOS ── */
 .products{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(185px,1fr));
-  gap:.9rem;max-width:1000px;margin:0 auto;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:1rem;max-width:1020px;margin:0 auto;
 }
 .pc{
-  background:var(--sur);border:1px solid var(--aborder);border-radius:13px;
-  padding:1.4rem 1.25rem;
-  display:flex;flex-direction:column;align-items:flex-start;gap:.6rem;
+  background:var(--sur);border:1px solid var(--aborder);border-radius:14px;
+  padding:1.45rem 1.3rem;
+  display:flex;flex-direction:column;align-items:flex-start;gap:.65rem;
   position:relative;overflow:hidden;
-  transition:border-color .28s,translate .22s,box-shadow .28s;
-  opacity:0;translate:0 10px;
+  transition:border-color .25s var(--ease),transform .22s var(--ease),box-shadow .28s;
+  opacity:0;transform:translateY(14px);
+  contain:layout;
 }
 .pc::before{
   content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,hsla(var(--h),100%,50%,.2),transparent);
+  background:linear-gradient(90deg,transparent,hsla(var(--h),100%,50%,.25),transparent);
   transition:background .5s;
 }
 .pc::after{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 110%,hsla(var(--h),100%,50%,.04),transparent 60%);
-  opacity:0;transition:opacity .28s,background .5s;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 120%,hsla(var(--h),100%,50%,.06),transparent 55%);
+  opacity:0;transition:opacity .3s;pointer-events:none;
 }
-.pc:hover{border-color:hsla(var(--h),100%,50%,.4);translate:0 -5px;box-shadow:0 12px 36px hsla(var(--h),100%,50%,.09)}
+.pc:hover{
+  border-color:hsla(var(--h),100%,50%,.45);
+  transform:translateY(-6px);
+  box-shadow:0 16px 44px hsla(var(--h),100%,50%,.1),0 4px 12px rgba(0,0,0,.3);
+}
 .pc:hover::after{opacity:1}
 .pc.visible{
-  opacity:1;translate:0 0;
-  transition:opacity .24s var(--ease),translate .24s var(--ease),border-color .28s,box-shadow .28s;
+  opacity:1;transform:translateY(0);
+  transition:opacity .3s var(--ease),transform .3s var(--ease),border-color .25s,box-shadow .28s;
 }
 .pc.feat{border-color:hsla(var(--h),100%,50%,.25);background:hsla(var(--h),100%,50%,.03)}
 
@@ -377,25 +412,29 @@ nav{
 .step:hover .sb h3{color:var(--a)}
 .sb p{color:var(--mut);font-size:.83rem;line-height:1.62}
 
-/* BANNER */
+/* ── BANNER CTA ── */
 .banner{
-  position:relative;z-index:1;max-width:840px;margin:0 auto 4.5rem;
-  background:var(--bg3);border:1px solid hsla(var(--h),100%,50%,.18);border-radius:17px;
-  padding:clamp(1.8rem,5vw,3rem) clamp(1.25rem,5vw,2.5rem);
+  position:relative;z-index:1;max-width:860px;margin:0 auto 4.5rem;
+  background:linear-gradient(160deg,var(--bg3),rgba(var(--h),15%,8%,.5));
+  border:1px solid hsla(var(--h),100%,50%,.2);border-radius:20px;
+  padding:clamp(2rem,5vw,3.2rem) clamp(1.4rem,5vw,2.8rem);
   text-align:center;overflow:hidden;
-  transition:border-color .28s,box-shadow .28s,background .5s;
+  transition:border-color .28s,box-shadow .3s;
 }
 .banner::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 130%,hsla(var(--h),100%,50%,.07),transparent 60%);
-  pointer-events:none;transition:background .5s;
+  background:radial-gradient(ellipse at 50% 130%,hsla(var(--h),100%,50%,.09),transparent 58%);
+  pointer-events:none;transition:background .5s;border-radius:inherit;
 }
-.banner:hover{border-color:hsla(var(--h),100%,50%,.35);box-shadow:0 0 50px hsla(var(--h),100%,50%,.06)}
+.banner:hover{
+  border-color:hsla(var(--h),100%,50%,.38);
+  box-shadow:0 0 60px hsla(var(--h),100%,50%,.08),0 8px 32px rgba(0,0,0,.35);
+}
 .banner h2{
   font-family:'Libre Baskerville',serif;font-style:italic;font-weight:700;
-  font-size:clamp(1.4rem,3.8vw,2.2rem);margin-bottom:.55rem;
+  font-size:clamp(1.5rem,3.8vw,2.3rem);margin-bottom:.6rem;
 }
-.banner p{color:var(--mut);margin-bottom:1.6rem;font-size:.92rem;line-height:1.7}
+.banner p{color:var(--mut);margin-bottom:1.8rem;font-size:.94rem;line-height:1.72}
 
 footer{
   position:relative;z-index:1;border-top:1px solid var(--aborder);
@@ -476,15 +515,24 @@ footer strong{color:var(--a);transition:color .5s;font-family:'Libre Baskerville
 .n-name{font-family:'Libre Baskerville',serif;font-style:italic;font-size:.77rem;font-weight:700;color:var(--txt)}
 .n-likes{font-size:.68rem;color:var(--a);font-weight:700;transition:color .5s}
 
-/* RESPONSIVE */
+/* ── RESPONSIVE ── */
 @media(max-width:600px){
   .tk-d{display:none}
-  .ticker{flex-wrap:wrap;justify-content:center;gap:.6rem}
+  .ticker{flex-wrap:wrap;justify-content:center;gap:.55rem}
   .products{grid-template-columns:1fr 1fr}
-  #nb{max-width:180px;left:7px}
+  #nb{max-width:185px;left:8px}
+  .hero h1{line-height:1.1}
 }
-@media(max-width:360px){
+@media(max-width:380px){
   .products{grid-template-columns:1fr}
+  .hero-cta .btn-lg{width:100%}
+}
+@media(hover:none){
+  .pc:hover{transform:none;box-shadow:none}
+  .btn-ghost:hover,.btn-p:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
 </style>
 </head>
@@ -510,8 +558,7 @@ footer strong{color:var(--a);transition:color .5s;font-family:'Libre Baskerville
         <button class="cp-sw" data-h="270" onclick="setC(270,this)" title="Morado"></button>
       </div>
     </div>
-    <button class="btn btn-ghost" onclick="aM('login')">Iniciar sesi&#243;n</button>
-    <button class="btn btn-p" onclick="aM('registro')">Crear cuenta</button>
+    <button class="btn btn-ghost" id="btn-nav-login" onclick="aM('login')">Iniciar sesi&#243;n</button>
   </div>
 </nav>
 
@@ -542,7 +589,8 @@ footer strong{color:var(--a);transition:color .5s;font-family:'Libre Baskerville
   </div>
 
   <div class="hero-cta">
-    <button class="btn btn-p btn-lg" onclick="aM('registro')">Crear cuenta &#8594;</button>
+    <button class="btn btn-p btn-lg" onclick="aM('login')" id="btn-hero-login">Iniciar sesi&#243;n &#8594;</button>
+    <button class="btn btn-ghost btn-lg" onclick="aM('registro')" id="btn-hero-reg">Crear cuenta</button>
   </div>
 
   <div class="ticker">
@@ -639,7 +687,8 @@ footer strong{color:var(--a);transition:color .5s;font-family:'Libre Baskerville
     <div class="nf" id="nf-bn"><svg id="sv-bn"></svg></div>
     <h2>&#191;Listo para <span style="color:var(--a);transition:color .5s">subir de nivel</span>?</h2>
     <p>&#218;nete a los jugadores que ya usan BoostSpeed para dominar Free Fire.</p>
-    <button class="btn btn-p btn-lg" onclick="aM('registro')">Crear cuenta gratis &#8594;</button>
+    <button class="btn btn-p btn-lg" onclick="aM('registro')" id="btn-cta-reg">Crear cuenta gratis &#8594;</button>
+    <p style="margin-top:.9rem;font-size:.78rem;color:var(--mut)">&#10003; Gratis &nbsp;&#183;&nbsp; &#10003; Sin tarjeta &nbsp;&#183;&nbsp; &#10003; Instant&#225;neo</p>
   </div>
 </div>
 
@@ -741,20 +790,18 @@ function setC(h,el){
   document.querySelectorAll('.cp-sw').forEach(s=>s.classList.remove('on'));
   el.classList.add('on');
   cpOpen=false;document.getElementById('cpp').classList.remove('open');
+  updateNeonColor(h);
 }
 
-/* ═══ NEON LINES — lightweight SVG path ═══
-   Una sola línea que recorre el borde con pathLength normalizado.
-   Sin canvas, sin filtros, máximo rendimiento.
-═══ */
+/* ═══ NEON LINES — CSS animation (GPU, sin rAF por frame) ═══ */
 const neonEls=[
-  {nf:'nf-tk', sv:'sv-tk'},
-  {nf:'nf-p0', sv:'sv-p0'},
-  {nf:'nf-p1', sv:'sv-p1'},
-  {nf:'nf-p2', sv:'sv-p2'},
-  {nf:'nf-p3', sv:'sv-p3'},
-  {nf:'nf-p4', sv:'sv-p4'},
-  {nf:'nf-bn', sv:'sv-bn'}
+  {nf:'nf-tk', sv:'sv-tk', dur:5.2},
+  {nf:'nf-p0', sv:'sv-p0', dur:4.6},
+  {nf:'nf-p1', sv:'sv-p1', dur:5.8},
+  {nf:'nf-p2', sv:'sv-p2', dur:6.1},
+  {nf:'nf-p3', sv:'sv-p3', dur:5.4},
+  {nf:'nf-p4', sv:'sv-p4', dur:6.4},
+  {nf:'nf-bn', sv:'sv-bn', dur:7.0}
 ];
 const NS='http://www.w3.org/2000/svg';
 const nState={};
@@ -764,69 +811,91 @@ function buildRRPath(w,h,r){
   return `M${r},0 L${w-r},0 Q${w},0,${w},${r} L${w},${h-r} Q${w},${h},${w-r},${h} L${r},${h} Q0,${h},0,${h-r} L0,${r} Q0,0,${r},0 Z`;
 }
 
+function buildNeonCSS(h){return `
+@keyframes neon-run{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+`}
+
 function initNeon(){
-  neonEls.forEach(({nf,sv})=>{
+  const h=getComputedStyle(R).getPropertyValue('--h').trim();
+  // Inyectar keyframe una sola vez
+  if(!document.getElementById('neon-css')){
+    const st=document.createElement('style');
+    st.id='neon-css';
+    st.textContent='@keyframes neon-run{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}';
+    document.head.appendChild(st);
+  }
+  neonEls.forEach(({nf,sv,dur})=>{
     const nfEl=document.getElementById(nf);
     const svEl=document.getElementById(sv);
     if(!nfEl||!svEl)return;
     const par=nfEl.parentElement;
-    // línea principal
-    const path=document.createElementNS(NS,'path');
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke-linecap','round');
-    path.setAttribute('pathLength','100');
-    // glow suave
+    const w=par.offsetWidth||200,hh=par.offsetHeight||100;
+    const rr=parseFloat(getComputedStyle(par).borderRadius)||13;
+    const d=buildRRPath(w,hh,rr);
+    const delay=-(Math.random()*dur);
+    // glow
     const glow=document.createElementNS(NS,'path');
     glow.setAttribute('fill','none');
+    glow.setAttribute('stroke',`hsl(${h},100%,55%)`);
+    glow.setAttribute('stroke-width','5');
     glow.setAttribute('stroke-linecap','round');
     glow.setAttribute('pathLength','100');
+    glow.setAttribute('stroke-dasharray','22 78');
+    glow.setAttribute('opacity','0.18');
+    glow.style.animation=`neon-run ${dur}s linear ${delay}s infinite`;
+    glow.setAttribute('d',d);
+    // line
+    const path=document.createElementNS(NS,'path');
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke',`hsl(${h},100%,65%)`);
+    path.setAttribute('stroke-width','1.4');
+    path.setAttribute('stroke-linecap','round');
+    path.setAttribute('pathLength','100');
+    path.setAttribute('stroke-dasharray','22 78');
+    path.setAttribute('opacity','0.88');
+    path.style.animation=`neon-run ${dur}s linear ${delay}s infinite`;
+    path.setAttribute('d',d);
+    svEl.setAttribute('viewBox',`0 0 ${w} ${hh}`);
+    svEl.setAttribute('width',w);
+    svEl.setAttribute('height',hh);
     svEl.appendChild(glow);
     svEl.appendChild(path);
-    nState[nf]={nfEl,svEl,par,path,glow,off:Math.random()*100};
+    nState[nf]={nfEl,svEl,par,path,glow,w,h:hh,dur};
   });
 }
 
-let _raf,_last=0;
-function neonFrame(ts){
-  _raf=requestAnimationFrame(neonFrame);
-  if(document.hidden||ts-_last<16)return; // cap ~60fps
-  _last=ts;
-  const h=getComputedStyle(R).getPropertyValue('--h').trim();
-  const spd=ts*0.012; // velocidad
+// Resize observer para actualizar paths si cambia tamaño
+const _nRO=new ResizeObserver(()=>{
   for(const key in nState){
     const s=nState[key];
     const par=s.par;
     const w=par.offsetWidth,hh=par.offsetHeight;
-    if(!w||!hh)continue;
-    // actualiza viewBox solo si cambió tamaño
-    if(s.w!==w||s.h!==hh){
-      s.w=w;s.h=hh;
-      s.svEl.setAttribute('viewBox',`0 0 ${w} ${hh}`);
-      s.svEl.setAttribute('width',w);
-      s.svEl.setAttribute('height',hh);
-      const rr=parseFloat(getComputedStyle(par).borderRadius)||13;
-      const d=buildRRPath(w,hh,rr);
-      s.path.setAttribute('d',d);
-      s.glow.setAttribute('d',d);
-    }
-    const pos=((spd+s.off)%100);
-    const len=22; // longitud visible (%)
-    const gap=100-len;
-    const off=100-pos;
-    // línea principal
-    s.path.setAttribute('stroke',`hsl(${h},100%,62%)`);
-    s.path.setAttribute('stroke-width','1.3');
-    s.path.setAttribute('stroke-dasharray',`${len} ${gap}`);
-    s.path.setAttribute('stroke-dashoffset',off);
-    s.path.setAttribute('opacity','0.9');
-    // glow difuso
+    if(!w||!hh||s.w===w&&s.h===hh)continue;
+    s.w=w;s.h=hh;
+    const rr=parseFloat(getComputedStyle(par).borderRadius)||13;
+    const d=buildRRPath(w,hh,rr);
+    s.path.setAttribute('d',d);
+    s.glow.setAttribute('d',d);
+    s.svEl.setAttribute('viewBox',`0 0 ${w} ${hh}`);
+    s.svEl.setAttribute('width',w);
+    s.svEl.setAttribute('height',hh);
+  }
+});
+
+function initNeonRO(){
+  for(const key in nState){_nRO.observe(nState[key].par)}
+}
+
+// Actualizar color neón cuando cambia el hue
+function updateNeonColor(h){
+  for(const key in nState){
+    const s=nState[key];
+    s.path.setAttribute('stroke',`hsl(${h},100%,65%)`);
     s.glow.setAttribute('stroke',`hsl(${h},100%,55%)`);
-    s.glow.setAttribute('stroke-width','4');
-    s.glow.setAttribute('stroke-dasharray',`${len} ${gap}`);
-    s.glow.setAttribute('stroke-dashoffset',off);
-    s.glow.setAttribute('opacity','0.22');
   }
 }
+
+function neonFrame(){} // stub (ya no se usa rAF por frame)
 
 /* ═══ METEOROS — ultra liviano ═══ */
 (function(){
@@ -879,7 +948,7 @@ document.querySelectorAll('.pc,.step').forEach(el=>obs.observe(el));
 /* ═══ INIT ═══ */
 document.addEventListener('DOMContentLoaded',()=>{
   initNeon();
-  requestAnimationFrame(neonFrame);
+  initNeonRO();
   // stats
   (async()=>{
     try{
