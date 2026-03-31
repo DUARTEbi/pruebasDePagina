@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#070707"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>BoostSpeed – Likes de Free Fire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --g:#00FF1E;--gm:#00e61a;--gdim:rgba(0,255,30,.10);--glow:0 0 22px rgba(0,255,30,.38);
+  --bg:#070707;--bg2:#0e0e0e;--bg3:#141414;--sur:#181818;
+  --bdr:rgba(0,255,30,.14);--txt:#eef2ee;--mut:#7a8f7a;--red:#ff4757;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{-webkit-tap-highlight-color:transparent;tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+button,a,[onclick]{outline:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:focus,a:focus,[onclick]:focus{outline:none}
+button:focus-visible,a:focus-visible{outline:2px solid var(--g);outline-offset:2px}
+html{scroll-behavior:smooth}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
+
+/* ── METEOROS OPTIMIZADOS ── */
+#meteors{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.meteor{position:absolute;pointer-events:none;will-change:transform,opacity}
+.bg-glow{
+  position:fixed;top:-30%;left:50%;transform:translateX(-50%);
+  width:900px;height:900px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,255,30,.06) 0%,transparent 65%);
+  pointer-events:none;z-index:0;
+  animation:pulse-bg 6s ease-in-out infinite;
+}
+@keyframes pulse-bg{0%,100%{opacity:.5;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.06)}}
+
+/* ⚡ RAYITO ANIMADO CORREGIDO ⚡ */
+.logo-bolt{
+  display:inline-block;font-style:normal;margin-left:.08rem;
+  transform-origin:center center;
+  animation:thunderStrike 2.6s ease-in-out infinite;
+  filter:drop-shadow(0 0 3px rgba(0,255,30,.4));
+}
+@keyframes thunderStrike{
+  0%   {opacity:.25;transform:scale(.88) rotate(-4deg);filter:drop-shadow(0 0 1px rgba(0,255,30,.2))}
+  30%  {opacity:.3;transform:scale(.9) rotate(-6deg);filter:drop-shadow(0 0 2px rgba(255,230,0,.3))}
+  38%  {opacity:1;transform:scale(1.35) rotate(4deg) skewX(-8deg);
+        filter:drop-shadow(0 0 8px #ffe600) drop-shadow(0 0 18px rgba(255,230,0,.9)) drop-shadow(0 0 30px rgba(0,255,30,.7));
+        color:#ffe600}
+  42%  {opacity:.6;transform:scale(1.1) rotate(-3deg);filter:drop-shadow(0 0 4px #ffe600);color:#ffe600}
+  46%  {opacity:1;transform:scale(1.22) rotate(2deg) skewX(-4deg);
+        filter:drop-shadow(0 0 6px #ffe600) drop-shadow(0 0 14px rgba(0,255,30,.8));
+        color:#fff}
+  54%  {opacity:.15;transform:scale(.85) rotate(-2deg);filter:none;color:var(--g)}
+  100% {opacity:.25;transform:scale(.88) rotate(-4deg);filter:drop-shadow(0 0 1px rgba(0,255,30,.2));color:var(--g)}
+}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(7,7,7,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--bdr);padding:0 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  height:62px;overflow:hidden;
+  animation:slideDown .6s cubic-bezier(.23,1,.32,1) both;
+}
+@keyframes slideDown{from{transform:translate3d(0,-100%,0);opacity:0}to{transform:translate3d(0,0,0);opacity:1}}
+.logo{
+  font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:700;
+  color:var(--g);letter-spacing:2px;text-decoration:none;
+  display:flex;align-items:center;gap:.45rem;transition:all .25s;
+  animation:logoGlow 3s ease-in-out infinite;
+}
+@keyframes logoGlow{0%,100%{text-shadow:0 0 8px rgba(0,255,30,.3)}50%{text-shadow:0 0 20px rgba(0,255,30,.75),0 0 45px rgba(0,255,30,.25)}}
+.logo:hover{letter-spacing:3px}
+.logo span{color:var(--txt);font-weight:500}
+.pulse{position:relative;width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:var(--glow);animation:blink 1.6s infinite;flex-shrink:0}
+.pulse::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(0,255,30,.4);animation:ripple 1.6s ease-out infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(.7)}}
+@keyframes ripple{0%{transform:scale(.5);opacity:.8}100%{transform:scale(2.5);opacity:0}}
+.nav-btns{display:flex;gap:.6rem}
+
+/* ── BOTONES ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
+  padding:.55rem 1.2rem;border-radius:7px;font-family:'Exo 2',sans-serif;
+  font-weight:700;font-size:.88rem;cursor:pointer;border:none;
+  text-decoration:none;transition:all .25s;letter-spacing:.3px;
+  position:relative;overflow:hidden;will-change:transform;touch-action:manipulation;
+}
+.btn-ghost{background:transparent;border:1px solid var(--bdr);color:var(--txt)}
+.btn-ghost:hover{border-color:var(--g);color:var(--g);box-shadow:0 0 12px rgba(0,255,30,.18)}
+.btn-p{background:var(--g);color:#000}
+.btn-p:hover{background:var(--gm);box-shadow:0 0 28px rgba(0,255,30,.55);transform:translateY(-2px)}
+.btn-p:active,.btn-ghost:active{transform:scale(.97)}
+.btn-lg{padding:.82rem 2rem;font-size:1rem;border-radius:9px}
+.btn-p.btn-lg{animation:ctaPulse 3s ease-in-out infinite}
+@keyframes ctaPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,30,0)}50%{box-shadow:0 0 0 8px rgba(0,255,30,.08),0 6px 28px rgba(0,255,30,.35)}}
+.btn-full{width:100%}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:1;min-height:calc(100vh - 62px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:3rem 1.5rem;
+}
+.hero-chip{
+  display:inline-flex;align-items:center;gap:.5rem;background:var(--gdim);
+  border:1px solid var(--bdr);padding:.32rem .9rem;border-radius:100px;
+  font-size:.75rem;font-weight:700;color:var(--g);letter-spacing:1.2px;
+  margin-bottom:1.6rem;text-transform:uppercase;
+  animation:fadeUp .7s .1s cubic-bezier(.23,1,.32,1) both;
+  overflow:hidden;position:relative;
+}
+.hero-chip::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(0,255,30,.15),transparent);
+  animation:chipShimmer 2.5s 1s linear infinite;will-change:transform;
+}
+@keyframes chipShimmer{0%{transform:translate3d(-200%,0,0)}100%{transform:translate3d(300%,0,0)}}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:blink 1.2s infinite;flex-shrink:0}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(2.1rem,7vw,4.4rem);font-weight:700;line-height:1.08;margin-bottom:1rem;max-width:820px;animation:fadeUp .7s .2s cubic-bezier(.23,1,.32,1) both}
+.hero h1 em{font-style:normal;color:var(--g);animation:textGlow 3s ease-in-out infinite}
+@keyframes textGlow{0%,100%{text-shadow:0 0 28px rgba(0,255,30,.45)}50%{text-shadow:0 0 55px rgba(0,255,30,.8),0 0 90px rgba(0,255,30,.3)}}
+.hero p{color:var(--mut);font-size:1.02rem;max-width:510px;line-height:1.75;margin-bottom:2.5rem;animation:fadeUp .7s .3s cubic-bezier(.23,1,.32,1) both}
+.hero-cta{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;animation:fadeUp .7s .4s cubic-bezier(.23,1,.32,1) both}
+@keyframes fadeUp{from{transform:translate3d(0,24px,0);opacity:0}to{transform:translate3d(0,0,0);opacity:1}}
+
+.hero-status{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center;margin-bottom:2rem;animation:fadeUp .7s .35s cubic-bezier(.23,1,.32,1) both}
+.hs-chip{
+  display:inline-flex;align-items:center;gap:.38rem;
+  background:rgba(0,255,30,.06);border:1px solid rgba(0,255,30,.12);
+  border-radius:100px;padding:.25rem .7rem;font-size:.72rem;font-weight:700;
+  color:var(--mut);letter-spacing:.4px;
+  animation:badgePop .5s cubic-bezier(.23,1,.32,1) both;will-change:transform;
+}
+.hs-chip:nth-child(1){animation-delay:.5s}.hs-chip:nth-child(2){animation-delay:.65s}
+.hs-chip:nth-child(3){animation-delay:.8s}.hs-chip:nth-child(4){animation-delay:.95s}
+@keyframes badgePop{from{opacity:0;transform:scale(.8) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.hs-chip svg{flex-shrink:0}
+.hs-chip strong{color:var(--g)}
+
+/* ── TICKER ── */
+.hero-ticker{
+  position:relative;z-index:1;display:flex;align-items:center;gap:1.2rem;
+  margin-top:2.8rem;background:var(--sur);border:1px solid var(--bdr);
+  border-radius:12px;padding:.9rem 1.6rem;
+  animation:fadeUp .7s .6s cubic-bezier(.23,1,.32,1) both;
+  flex-wrap:wrap;justify-content:center;overflow:hidden;
+}
+.ticker-item{display:flex;flex-direction:column;align-items:center;min-width:90px}
+.ticker-pulse{position:relative;width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:0 0 8px rgba(0,255,30,.55);animation:blink 1.6s infinite;margin-bottom:.32rem;flex-shrink:0}
+.ticker-pulse::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(0,255,30,.3);animation:ripple 1.6s ease-out infinite}
+.ticker-pulse.blue{background:#4dabff;box-shadow:0 0 8px rgba(77,171,255,.55)}
+.ticker-pulse.blue::after{border-color:rgba(77,171,255,.3)}
+.ticker-num{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;color:var(--g);line-height:1}
+.ticker-num.blue{color:#4dabff}
+.ticker-lbl{color:var(--mut);font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;margin-top:.1rem}
+.ticker-div{width:1px;height:42px;background:var(--bdr)}
+
+/* ── SCROLL HINT ── */
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;animation:fadeUp .7s .8s cubic-bezier(.23,1,.32,1) both}
+.scroll-arrow{width:16px;height:16px;border-right:2px solid var(--g);border-bottom:2px solid var(--g);transform:rotate(45deg);animation:bounceArrow 1.4s ease-in-out infinite}
+@keyframes bounceArrow{0%,100%{transform:rotate(45deg) translate3d(-3px,-3px,0);opacity:.5}50%{transform:rotate(45deg) translate3d(4px,4px,0);opacity:1}}
+
+.divider{position:relative;z-index:1;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--bdr),transparent)}
+
+/* ── SECCIONES ── */
+.sec{position:relative;z-index:1;padding:5rem 1.5rem}
+.sec-title{text-align:center;margin-bottom:3rem}
+.sec-title h2{font-family:'Rajdhani',sans-serif;font-size:clamp(1.75rem,4vw,2.7rem);font-weight:700;margin-bottom:.4rem}
+.sec-title h2 span{color:var(--g)}
+.sec-title p{color:var(--mut);max-width:490px;margin:0 auto;line-height:1.72}
+
+/* ── GRID DE CARDS ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1.1rem;max-width:1080px;margin:0 auto}
+.card{
+  background:var(--sur);border:1px solid var(--bdr);border-radius:13px;
+  padding:1.7rem;position:relative;overflow:hidden;
+  transition:border-color .3s,transform .3s,box-shadow .3s;
+  opacity:0;transform:translate3d(0,10px,0);
+}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,30,.2),transparent);pointer-events:none}
+.card.visible{
+  opacity:1;transform:translate3d(0,0,0);
+  transition:opacity .25s cubic-bezier(.23,1,.32,1),transform .25s cubic-bezier(.23,1,.32,1),border-color .3s,box-shadow .3s;
+}
+.card:hover{border-color:rgba(0,255,30,.38);transform:translate3d(0,-6px,0)!important;box-shadow:0 12px 40px rgba(0,255,30,.12)}
+.c-ico{
+  width:46px;height:46px;border-radius:10px;background:var(--gdim);
+  border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;
+  margin-bottom:.9rem;transition:all .35s cubic-bezier(.23,1,.32,1);
+}
+.card:hover .c-ico{background:rgba(0,255,30,.18);border-color:rgba(0,255,30,.45);box-shadow:0 0 20px rgba(0,255,30,.28);transform:scale(1.1)}
+.card h3{font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;margin-bottom:.4rem;transition:color .3s}
+.card:hover h3{color:var(--g)}
+.card p{color:var(--mut);font-size:.88rem;line-height:1.62}
+
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column;max-width:660px;margin:0 auto}
+.step{display:flex;gap:1.4rem;align-items:flex-start;padding:1.4rem 0;opacity:0;transform:translate3d(-10px,0,0)}
+.step.visible{opacity:1;transform:translate3d(0,0,0);transition:all .22s cubic-bezier(.23,1,.32,1)}
+.step+.step{border-top:1px solid var(--bdr)}
+.sn{
+  flex-shrink:0;width:42px;height:42px;border-radius:50%;
+  border:2px solid var(--g);display:flex;align-items:center;justify-content:center;
+  font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:var(--g);
+  transition:all .3s;
+}
+.step:hover .sn{background:var(--g);color:#000;box-shadow:var(--glow)}
+.sb h3{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:600;margin-bottom:.25rem;transition:color .3s}
+.step:hover .sb h3{color:var(--g)}
+.sb p{color:var(--mut);font-size:.88rem;line-height:1.62}
+
+/* ── BANNER CTA ── */
+.banner{
+  position:relative;z-index:1;max-width:880px;margin:0 auto 5rem;
+  background:var(--bg3);border:1px solid rgba(0,255,30,.18);border-radius:17px;
+  padding:3rem 2rem;text-align:center;overflow:hidden;
+  transition:border-color .3s,box-shadow .3s;
+}
+.banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 130%,rgba(0,255,30,.09),transparent 65%);pointer-events:none}
+.banner:hover{border-color:rgba(0,255,30,.35);box-shadow:0 0 60px rgba(0,255,30,.08)}
+.banner h2{font-family:'Rajdhani',sans-serif;font-size:clamp(1.7rem,4vw,2.4rem);font-weight:700;margin-bottom:.65rem}
+.banner p{color:var(--mut);margin-bottom:1.8rem}
+
+footer{position:relative;z-index:1;border-top:1px solid var(--bdr);padding:1.8rem 1.5rem;text-align:center;color:var(--mut);font-size:.83rem;overflow:hidden}
+footer strong{color:var(--g)}
+
+/* ── MODALES OPTIMIZADOS ── */
+.ov{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;
+  display:flex;align-items:center;justify-content:center;padding:1rem;
+  opacity:0;pointer-events:none;transition:opacity .15s;
+}
+.ov.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--bg2);border:1px solid var(--bdr);border-radius:17px;
+  padding:2rem;width:100%;max-width:430px;position:relative;
+  transform:translateY(10px);transition:transform .15s,opacity .15s;opacity:0;
+  max-height:90vh;overflow-y:auto;overflow-x:hidden;
+}
+.ov.open .modal{transform:translateY(0);opacity:1}
+.mc{position:absolute;top:.9rem;right:.9rem;background:none;border:none;color:var(--mut);font-size:1.35rem;cursor:pointer;padding:.2rem;line-height:1;transition:color .2s,transform .2s;z-index:10;touch-action:manipulation}
+.mc:hover{color:var(--txt);transform:rotate(90deg)}
+.modal h2{font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:700;margin-bottom:.2rem}
+.modal .sub{color:var(--mut);font-size:.87rem;margin-bottom:1.4rem;line-height:1.55}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.78rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.4rem}
+.fg input{
+  width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;
+  padding:.72rem 1rem;color:var(--txt);font-family:'Exo 2',sans-serif;
+  font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s;
+  touch-action:manipulation;
+}
+.fg input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,255,30,.1)}
+.fg input::placeholder{color:var(--mut)}
+.fl{font-size:.83rem;color:var(--mut);text-align:center;margin-top:.85rem}
+.fl a{color:var(--g);text-decoration:none;font-weight:700;transition:text-shadow .2s}
+.fl a:hover{text-shadow:0 0 10px rgba(0,255,30,.5)}
+.msg{padding:.65rem 1rem;border-radius:8px;font-size:.85rem;margin-bottom:.9rem;display:none}
+.msg.ok{background:rgba(0,255,30,.09);border:1px solid rgba(0,255,30,.28);color:var(--g)}
+.msg.err{background:rgba(255,71,87,.09);border:1px solid rgba(255,71,87,.28);color:var(--red)}
+.spin{display:none;width:16px;height:16px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SOPORTE LINKS ── */
+.sup-link{display:flex;align-items:center;gap:.75rem;padding:.75rem;border-radius:10px;border:1px solid var(--bdr);background:rgba(255,255,255,.03);margin-bottom:.5rem;cursor:pointer;transition:all .22s;text-decoration:none;color:var(--txt)}
+.sup-link:hover{border-color:rgba(0,255,30,.22);transform:translateX(3px)}
+.sup-ico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sup-tg{background:rgba(0,136,204,.14);border:1px solid rgba(0,136,204,.22)}
+.sup-wa{background:rgba(37,211,102,.14);border:1px solid rgba(37,211,102,.22)}
+.sup-name{font-weight:700;font-size:.85rem;margin-bottom:.06rem}
+.sup-handle{color:var(--mut);font-size:.73rem}
+
+/* ── RECUPERAR ── */
+.rec-info{background:rgba(0,255,30,.05);border:1px solid rgba(0,255,30,.12);border-radius:9px;padding:.75rem .9rem;margin-bottom:1rem;font-size:.8rem;color:var(--mut);line-height:1.6}
+.rec-info strong{color:var(--g)}
+.sdots{display:flex;gap:.4rem;margin-bottom:1rem}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--bdr);transition:background .3s,box-shadow .3s}
+.sdot.active{background:var(--g);box-shadow:0 0 7px rgba(0,255,30,.5)}
+
+/* ── NOTIFICACIONES ── */
+#notif-container{position:fixed;left:18px;bottom:80px;z-index:500;display:flex;flex-direction:column-reverse;gap:.5rem;pointer-events:none;max-width:240px}
+.notif{
+  background:rgba(10,18,10,.92);border:1px solid rgba(0,255,30,.3);border-radius:10px;
+  padding:.6rem .85rem;display:flex;align-items:center;gap:.55rem;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 12px rgba(0,255,30,.1);
+  animation:notifRise 4.5s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes notifRise{
+  0%{transform:translate3d(0,20px,0);opacity:0}
+  10%{transform:translate3d(0,0,0);opacity:1}
+  60%{opacity:1;transform:translate3d(0,-8px,0)}
+  100%{opacity:0;transform:translate3d(0,-60px,0)}
+}
+.notif-ico{width:28px;height:28px;border-radius:7px;background:rgba(0,255,30,.12);border:1px solid rgba(0,255,30,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notif-txt{flex:1;min-width:0}
+.notif-name{font-family:'Rajdhani',sans-serif;font-size:.82rem;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.notif-likes{font-size:.73rem;color:var(--g);font-weight:700}
+
+/* ── CANVAS NEON ── */
+.nl-canvas{position:absolute;inset:0;pointer-events:none;width:100%;height:100%;z-index:3;border-radius:inherit}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  nav{padding:0 1rem}
+  .ticker-div{display:none}
+  .hero-ticker{gap:.8rem}
+  #notif-container{max-width:200px;left:10px}
+}
+</style>
+</head>
+<body>
+<div id="meteors"></div>
+<div class="bg-glow"></div>
+<div id="notif-container"></div>
+
+<nav id="el-nav">
+  <a class="logo" href="/"><div class="pulse"></div>Boost<span>Speed</span><i class="logo-bolt">⚡</i></a>
+  <div class="nav-btns">
+    <button class="btn btn-ghost" onclick="abrirModal('login')">Iniciar sesión</button>
+    <button class="btn btn-p" onclick="abrirModal('registro')">Crear cuenta</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-chip"><div class="live-dot"></div>Free Fire · Sistema Activo 24/7</div>
+  <h1>Aumenta tus <em>Likes de Free Fire</em><br>de forma rápida y segura</h1>
+  <p>BoostSpeed es la plataforma para impulsar tu perfil en Free Fire. Seguro, instantáneo y siempre disponible.</p>
+  <div class="hero-status">
+    <div class="hs-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Entrega <strong>Instantánea</strong></div>
+    <div class="hs-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><strong>Anti-ban</strong> activo</div>
+    <div class="hs-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Disponible <strong>24/7</strong></div>
+    <div class="hs-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><strong>99.9%</strong> uptime</div>
+  </div>
+  <div class="hero-cta">
+    <button class="btn btn-p btn-lg" onclick="abrirModal('registro')">Empezar Ahora →</button>
+    <button class="btn btn-ghost btn-lg" onclick="abrirModal('login')">Ya tengo cuenta</button>
+  </div>
+  <div class="hero-ticker" id="hero-ticker">
+    <div class="ticker-item">
+      <div class="ticker-pulse"></div>
+      <div class="ticker-num" id="tk-users">0</div>
+      <div class="ticker-lbl">Usuarios registrados</div>
+    </div>
+    <div class="ticker-div"></div>
+    <div class="ticker-item">
+      <div class="ticker-pulse"></div>
+      <div class="ticker-num" id="tk-likes">0</div>
+      <div class="ticker-lbl">Likes enviados</div>
+    </div>
+    <div class="ticker-div"></div>
+    <div class="ticker-item">
+      <div class="ticker-pulse blue"></div>
+      <div class="ticker-num blue" id="tk-uptime">99.9%</div>
+      <div class="ticker-lbl">Tiempo activo</div>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="scroll-arrow"></div></div>
+</section>
+
+<div class="divider"></div>
+
+<section class="sec">
+  <div class="sec-title">
+    <h2>¿Por qué elegir <span>BoostSpeed</span>?</h2>
+    <p>Todo lo que necesitas para aumentar tu presencia en Free Fire en un solo lugar.</p>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      <h3>Envío Instantáneo</h3><p>Los likes se reflejan en tu perfil en minutos. Sin esperas innecesarias.</p>
+    </div>
+    <div class="card">
+      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <h3>100% Seguro</h3><p>Sistema anti-ban activo. Tu cuenta siempre protegida, sin ningún riesgo.</p>
+    </div>
+    <div class="card">
+      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+      <h3>Códigos de Plan</h3><p>Canjea tu código y activa tu plan al instante. Sin complicaciones.</p>
+    </div>
+    <div class="card">
+      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+      <h3>Optimizado Mobile</h3><p>Gestiona todo desde tu celular. Diseño adaptado para cualquier pantalla.</p>
+    </div>
+    <div class="card">
+      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+      <h3>Panel Completo</h3><p>Monitorea envíos, historial y plan activo desde un solo panel intuitivo.</p>
+    </div>
+    <div class="card">
+      <div class="c-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <h3>Activo 24/7</h3><p>Funciona los 7 días de la semana, las 24 horas. Siempre disponible para ti.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="sec" style="padding-top:3rem">
+  <div class="sec-title">
+    <h2>¿Cómo <span>funciona</span>?</h2>
+    <p>En tres pasos simples ya estarás recibiendo likes.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="sn">01</div><div class="sb"><h3>Crea tu cuenta</h3><p>Regístrate con usuario, contraseña y correo o teléfono. Obtienes tu ID único al instante.</p></div></div>
+    <div class="step"><div class="sn">02</div><div class="sb"><h3>Canjea tu código</h3><p>Ingresa el código que recibiste del administrador. Tu plan se activa automáticamente.</p></div></div>
+    <div class="step"><div class="sn">03</div><div class="sb"><h3>Envía los likes</h3><p>Ingresa el UID de Free Fire y pulsa enviar. Los likes llegan en minutos.</p></div></div>
+  </div>
+</section>
+
+<div style="padding:0 1.5rem;position:relative;z-index:1">
+  <div class="banner" id="el-banner">
+    <h2>¿Listo para <span style="color:var(--g)">subir de nivel</span>?</h2>
+    <p>Únete a jugadores que ya usan BoostSpeed para impulsar su perfil en Free Fire.</p>
+    <button class="btn btn-p btn-lg" onclick="abrirModal('registro')">Crear cuenta gratis →</button>
+  </div>
+</div>
+
+<footer id="el-footer">
+  <strong>BoostSpeed</strong> &copy; 2026 · Plataforma de likes para Free Fire · Activo 24/7
+</footer>
+
+<!-- MODAL LOGIN -->
+<div class="ov" id="ov-login">
+  <div class="modal" id="modal-login">
+    <button class="mc" onclick="cerrarModal('login')">✕</button>
+    <h2>Iniciar sesión</h2>
+    <p class="sub">Bienvenido de vuelta a BoostSpeed</p>
+    <div class="msg" id="msg-login"></div>
+    <div class="fg"><label>Usuario</label><input type="text" id="l-user" placeholder="Tu nombre de usuario" autocomplete="username"/></div>
+    <div class="fg"><label>Contraseña</label><input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"/></div>
+    <button class="btn btn-p btn-full" id="btn-login" onclick="login()" style="margin-top:.3rem">
+      <div class="spin" id="spin-login"></div><span id="txt-login">Entrar →</span>
+    </button>
+    <div class="fl"><a href="#" onclick="cerrarModal('login');abrirModal('recuperar');return false">¿Olvidaste tu contraseña?</a></div>
+    <div class="fl">¿No tienes cuenta? <a href="#" onclick="cerrarModal('login');abrirModal('registro');return false">Crear cuenta</a></div>
+  </div>
+</div>
+
+<!-- MODAL REGISTRO -->
+<div class="ov" id="ov-registro">
+  <div class="modal" id="modal-registro">
+    <button class="mc" onclick="cerrarModal('registro')">✕</button>
+    <h2>Crear cuenta</h2>
+    <p class="sub">Empieza gratis en segundos</p>
+    <div class="msg" id="msg-registro"></div>
+    <div class="fg"><label>Usuario</label><input type="text" id="r-user" placeholder="Elige un nombre de usuario" autocomplete="username"/></div>
+    <div class="fg"><label>Correo o teléfono</label><input type="text" id="r-contact" placeholder="correo@ejemplo.com o +57..."/></div>
+    <div class="fg"><label>Contraseña</label><input type="password" id="r-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password" onkeydown="if(event.key==='Enter')registro()"/></div>
+    <button class="btn btn-p btn-full" id="btn-registro" onclick="registro()" style="margin-top:.3rem">
+      <div class="spin" id="spin-registro"></div><span id="txt-registro">Crear cuenta →</span>
+    </button>
+    <div class="fl">¿Ya tienes cuenta? <a href="#" onclick="cerrarModal('registro');abrirModal('login');return false">Iniciar sesión</a></div>
+  </div>
+</div>
+
+<!-- MODAL RECUPERAR -->
+<div class="ov" id="ov-recuperar">
+  <div class="modal" id="modal-recuperar">
+    <button class="mc" onclick="cerrarModal('recuperar')">✕</button>
+    <h2>Recuperar contraseña</h2>
+    <p class="sub">Sigue estos pasos para recuperar el acceso</p>
+    <div id="rec-step1">
+      <div class="sdots"><div class="sdot active"></div><div class="sdot"></div><div class="sdot"></div></div>
+      <div class="msg" id="msg-recuperar"></div>
+      <div class="rec-info"><strong>Paso 1:</strong> Ingresa el correo o teléfono con el que te registraste.</div>
+      <div class="fg"><label>Correo o teléfono</label><input type="text" id="rec-contact" placeholder="correo@ejemplo.com o +57..."/></div>
+      <button class="btn btn-p btn-full" onclick="recuperarP1()">Verificar cuenta →</button>
+      <div class="fl"><a href="#" onclick="cerrarModal('recuperar');abrirModal('login');return false">← Volver a iniciar sesión</a></div>
+    </div>
+    <div id="rec-step2" style="display:none">
+      <div class="sdots"><div class="sdot"></div><div class="sdot active"></div><div class="sdot"></div></div>
+      <div class="msg" id="msg-recuperar2"></div>
+      <div class="rec-info">Cuenta encontrada: <strong id="rec-found-name">—</strong><br><br><strong>Paso 2:</strong> Contacta al administrador y dile tu nombre de usuario e ID para obtener un código de recuperación.</div>
+      <p style="font-size:.78rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.55rem">Contactar administrador:</p>
+      <a class="sup-link" href="https://t.me/DuarteStoreX" target="_blank" rel="noopener">
+        <div class="sup-ico sup-tg"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0088CC" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+        <div><div class="sup-name">Telegram</div><div class="sup-handle">@DuarteStoreX · Respuesta rápida</div></div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--mut)" stroke-width="2" style="margin-left:auto;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a class="sup-link" href="https://wa.me/573164377140" target="_blank" rel="noopener">
+        <div class="sup-ico sup-wa"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+        <div><div class="sup-name">WhatsApp</div><div class="sup-handle">+57 316 437 7140</div></div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--mut)" stroke-width="2" style="margin-left:auto;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <div style="margin-top:1rem">
+        <div class="fg" style="margin-bottom:.5rem"><label>Código de recuperación</label><input type="text" id="rec-codigo" placeholder="Ingresa el código del admin" style="text-transform:uppercase"/></div>
+        <button class="btn btn-p btn-full" onclick="recuperarP2()">Verificar código →</button>
+      </div>
+      <div class="fl"><a href="#" onclick="recReset();return false">← Volver</a></div>
+    </div>
+    <div id="rec-step3" style="display:none">
+      <div class="sdots"><div class="sdot"></div><div class="sdot"></div><div class="sdot active"></div></div>
+      <div class="msg" id="msg-recuperar3"></div>
+      <div class="rec-info"><strong>Paso 3:</strong> Código verificado. Elige tu nueva contraseña.</div>
+      <div class="fg"><label>Nueva contraseña</label><input type="password" id="rec-new" placeholder="Mínimo 6 caracteres"/></div>
+      <div class="fg"><label>Confirmar contraseña</label><input type="password" id="rec-confirm" placeholder="Repite la contraseña"/></div>
+      <button class="btn btn-p btn-full" onclick="recuperarP3()">Guardar nueva contraseña →</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════
+   LÍNEAS NEON 60FPS — Ultra optimizado para J1/J2
+   ═══════════════════════════════════════════════════════ */
+let _neonCanvases = [];
+let _neonStart = null;
+
+function initNeonLines() {
+  const targets = document.querySelectorAll('#el-nav, #hero-ticker, .card, #el-banner, #el-footer');
+  
+  targets.forEach(el => {
+    const canvas = document.createElement('canvas');
+    canvas.className = 'nl-canvas';
+    const pos = window.getComputedStyle(el).position;
+    if (pos === 'static') el.style.position = 'relative';
+    el.appendChild(canvas);
+    _neonCanvases.push(canvas);
+  });
+  
+  requestAnimationFrame(neonFrame);
+}
+
+function neonFrame(ts) {
+  requestAnimationFrame(neonFrame);
+  
+  if (document.hidden) return;
+  if (!_neonStart) _neonStart = ts;
+  
+  const elapsed = (ts - _neonStart) / 1000;
+  const speed = 5;
+  const segs = 25; // Solo 25 segmentos para máximo rendimiento
+
+  for (let ci = 0; ci < _neonCanvases.length; ci++) {
+    const canvas = _neonCanvases[ci];
+    const par = canvas.parentElement;
+    if (!par) continue;
+    
+    const w = par.offsetWidth;
+    const h = par.offsetHeight;
+    if (!w || !h) continue;
+    
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+
+    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+    ctx.clearRect(0, 0, w, h);
+
+    const P = 2 * (w + h);
+    const lineLen = P * 0.22;
+    const progress = (elapsed / speed) % 1;
+    const head = progress * P;
+    const tail = head - lineLen;
+
+    // Configuración fuera del loop (crítico)
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 1.5;
+
+    for (let s = 0; s < segs; s++) {
+      const t0 = tail + (s / segs) * lineLen;
+      const t1 = tail + ((s + 1) / segs) * lineLen;
+      
+      const p0 = ((t0 % P) + P) % P;
+      const p1 = ((t1 % P) + P) % P;
+      
+      const [x0, y0] = getPoint(w, h, p0);
+      const [x1, y1] = getPoint(w, h, p1);
+      
+      if (Math.abs(x1 - x0) > w * 0.5 || Math.abs(y1 - y0) > h * 0.5) continue;
+      
+      const alpha = (s / segs) * 0.8;
+      
+      ctx.strokeStyle = `rgba(0, 255, 30, ${alpha})`;
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x1, y1);
+      ctx.stroke();
+    }
+  }
+}
+
+function getPoint(w, h, p) {
+  if (p < w) return [p, 0];
+  p -= w;
+  if (p < h) return [w, p];
+  p -= h;
+  if (p < w) return [w - p, h];
+  p -= w;
+  return [0, h - p];
+}
+
+/* ═══ METEOROS OPTIMIZADOS ═══ */
+(function(){
+  const c = document.getElementById('meteors');
+  const ANGLE = 25, VH = innerHeight || 900, VW = innerWidth || 800;
+  const total = VH + 200, moveY = total;
+  const moveX = -Math.tan(ANGLE * Math.PI / 180) * total;
+  const isMob = VW < 768;
+  let paused = false;
+  
+  document.addEventListener('visibilitychange', () => { paused = document.hidden; });
+  
+  function spawnMeteor() {
+    if (paused) { setTimeout(spawnMeteor, 2000); return; }
+    
+    const m = document.createElement('div');
+    m.className = 'meteor';
+    const len = 60 + Math.random() * 50;
+    const startX = Math.random() * (VW + 100);
+    
+    m.style.cssText = `left:${startX}px;top:${-len - 20}px;width:2px;height:${len}px;`
+      + `transform:rotate(-${ANGLE}deg) translate3d(0,0,0);`
+      + `background:linear-gradient(to bottom,transparent 0%,rgba(180,255,190,.15) 25%,rgba(0,255,30,.6) 60%,rgba(0,255,30,.95) 82%,#fff 100%);`
+      + `border-radius:0 0 2px 2px;position:absolute;opacity:0;will-change:transform,opacity`;
+    
+    c.appendChild(m);
+    
+    const dur = 2800 + Math.random() * 1200;
+    const t0 = performance.now();
+    
+    function af(now) {
+      if (paused) { requestAnimationFrame(af); return; }
+      
+      const t = Math.min((now - t0) / dur, 1);
+      const op = t < .12 ? t / .12 * .85 : t < .7 ? .85 - (t - .12) / .58 * .55 : Math.max(0, .3 - (t - .7) / .3 * .3);
+      
+      m.style.opacity = op;
+      m.style.transform = `rotate(-${ANGLE}deg) translate3d(${moveX * t}px,${moveY * t}px,0)`;
+      
+      if (t < 1) requestAnimationFrame(af);
+      else {
+        m.remove();
+        setTimeout(spawnMeteor, 1500 + Math.random() * 4500);
+      }
+    }
+    
+    requestAnimationFrame(af);
+  }
+  
+  spawnMeteor();
+  if (!isMob) {
+    setTimeout(spawnMeteor, 800 + Math.random() * 1200);
+    setTimeout(spawnMeteor, 2200 + Math.random() * 1500);
+  }
+})();
+
+/* ── Redirigir si ya tiene sesión ── */
+if (localStorage.getItem('bs_token')) location.href = '/dashboard.html';
+
+let recUserId = null;
+
+/* ── IntersectionObserver ── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0, rootMargin: '0px 0px -20px 0px' });
+document.querySelectorAll('.card,.step').forEach(el => obs.observe(el));
+
+/* ── Contadores instantáneos (sin animación para mejor performance) ── */
+function animCount(el, target) {
+  el.textContent = target ? target.toLocaleString('es') : '0';
+}
+
+/* ── Init ── */
+document.addEventListener('DOMContentLoaded', () => {
+  initNeonLines();
+  (async () => {
+    try {
+      const res = await fetch('/api/public-stats');
+      if (res.ok) {
+        const d = await res.json();
+        animCount(document.getElementById('tk-users'), d.usuarios || 0);
+        animCount(document.getElementById('tk-likes'), d.likes || 0);
+      }
+    } catch(e) {}
+  })();
+});
+
+/* ── MODALES ── */
+function abrirModal(n) {
+  document.getElementById('ov-' + n).classList.add('open');
+  // Sin líneas neón en modales para máximo rendimiento
+}
+function cerrarModal(n) {
+  document.getElementById('ov-' + n).classList.remove('open');
+  document.querySelectorAll('#ov-' + n + ' input').forEach(i => i.value = '');
+  ['msg-' + n, 'msg-' + n + '2', 'msg-' + n + '3'].forEach(id => {
+    const m = document.getElementById(id); if (m) m.style.display = 'none';
+  });
+  if (n === 'recuperar') recReset();
+}
+document.querySelectorAll('.ov').forEach(o =>
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); })
+);
+
+function cargando(id, estado) {
+  document.getElementById('spin-' + id).style.display = estado ? 'block' : 'none';
+  document.getElementById('txt-' + id).style.display = estado ? 'none' : 'inline';
+  document.getElementById('btn-' + id).disabled = estado;
+}
+
+/* ── LOGIN ── */
+async function login() {
+  const user = document.getElementById('l-user').value.trim();
+  const pass = document.getElementById('l-pass').value;
+  if (!user || !pass) return mostrarMsg('msg-login', 'Completa todos los campos', 'err');
+  cargando('login', true);
+  const res = await API.post('/api/login', { username: user, password: pass });
+  cargando('login', false);
+  if (!res.ok) return mostrarMsg('msg-login', res.error, 'err');
+  localStorage.setItem('bs_token', res.token);
+  localStorage.setItem('bs_user', JSON.stringify(res.user));
+  location.href = '/dashboard.html';
+}
+
+/* ── REGISTRO ── */
+async function registro() {
+  const user = document.getElementById('r-user').value.trim();
+  const contact = document.getElementById('r-contact').value.trim();
+  const pass = document.getElementById('r-pass').value;
+  if (!user || !contact || !pass) return mostrarMsg('msg-registro', 'Completa todos los campos', 'err');
+  cargando('registro', true);
+  const res = await API.post('/api/registro', { username: user, contact, password: pass });
+  cargando('registro', false);
+  if (!res.ok) return mostrarMsg('msg-registro', res.error, 'err');
+  localStorage.setItem('bs_token', res.token);
+  localStorage.setItem('bs_user', JSON.stringify(res.user));
+  location.href = '/dashboard.html';
+}
+
+/* ── RECUPERAR ── */
+function recReset() {
+  document.getElementById('rec-step1').style.display = 'block';
+  document.getElementById('rec-step2').style.display = 'none';
+  document.getElementById('rec-step3').style.display = 'none';
+  recUserId = null;
+}
+async function recuperarP1() {
+  const contact = document.getElementById('rec-contact').value.trim();
+  if (!contact) return mostrarMsg('msg-recuperar', 'Ingresa tu correo o teléfono', 'err');
+  const res = await API.post('/api/recuperar-check', { contact });
+  if (!res.ok) return mostrarMsg('msg-recuperar', res.error, 'err');
+  recUserId = res.userId;
+  document.getElementById('rec-found-name').textContent = res.username;
+  document.getElementById('rec-step1').style.display = 'none';
+  document.getElementById('rec-step2').style.display = 'block';
+}
+async function recuperarP2() {
+  const codigo = document.getElementById('rec-codigo').value.trim().toUpperCase();
+  if (!codigo) return mostrarMsg('msg-recuperar2', 'Ingresa el código de recuperación', 'err');
+  const res = await API.post('/api/recuperar-verificar', { userId: recUserId, codigo });
+  if (!res.ok) return mostrarMsg('msg-recuperar2', res.error, 'err');
+  document.getElementById('rec-step2').style.display = 'none';
+  document.getElementById('rec-step3').style.display = 'block';
+}
+async function recuperarP3() {
+  const nueva = document.getElementById('rec-new').value;
+  const confirma = document.getElementById('rec-confirm').value;
+  if (!nueva || nueva.length < 6) return mostrarMsg('msg-recuperar3', 'Mínimo 6 caracteres', 'err');
+  if (nueva !== confirma) return mostrarMsg('msg-recuperar3', 'Las contraseñas no coinciden', 'err');
+  const res = await API.post('/api/recuperar-cambiar', { userId: recUserId, password_nueva: nueva });
+  if (!res.ok) return mostrarMsg('msg-recuperar3', res.error, 'err');
+  mostrarMsg('msg-recuperar3', 'Contraseña actualizada. Inicia sesión.', 'ok');
+  setTimeout(() => { cerrarModal('recuperar'); abrirModal('login'); }, 2200);
+}
+
+/* ── UTILIDADES ── */
+function mostrarMsg(id, txt, tipo) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = txt;
+  el.className = 'msg ' + tipo;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 5500);
+}
+
+/* ── NOTIFICACIONES FLOTANTES ── */
+let notifVistas = new Set(), notifQueue = [];
+function mostrarNotif(username, likesAgregados) {
+  const cont = document.getElementById('notif-container');
+  const el = document.createElement('div');
+  el.className = 'notif';
+  el.innerHTML = `
+    <div class="notif-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+    <div class="notif-txt">
+      <div class="notif-name">${username}</div>
+      <div class="notif-likes">+${likesAgregados.toLocaleString('es')} likes enviados</div>
+    </div>`;
+  cont.appendChild(el);
+  setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 4700);
+  while (cont.children.length > 4) cont.removeChild(cont.firstChild);
+}
+async function pollNotificaciones() {
+  try {
+    const res = await fetch('/api/notificaciones-likes');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.ok || !data.notificaciones) return;
+    data.notificaciones.forEach(n => {
+      const key = n.username + n.creado_en;
+      if (!notifVistas.has(key) && n.likes_agregados > 0) {
+        notifVistas.add(key);
+        notifQueue.push(n);
+      }
+    });
+  } catch(e) {}
+}
+function processNotifQueue() {
+  if (notifQueue.length > 0) {
+    const n = notifQueue.shift();
+    mostrarNotif(n.username, n.likes_agregados);
+  }
+}
+(async () => {
+  await pollNotificaciones();
+  notifQueue = [];
+  setInterval(pollNotificaciones, 8000);
+  setInterval(processNotifQueue, 3000);
+})();
+</script>
+</body>
+</html>
