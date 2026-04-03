@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@700&family=Inter:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
 <style>
 /* === VARIABLES & BASE === */
+* { -webkit-tap-highlight-color: transparent; }
 :root {
   --bg: #0C0C0C; /* Un fondo mínimamente más suave para contrastar sombra negra pura si la hay, aunque en la img se ve muy negro */
   --bg-card: #121212;
@@ -179,9 +180,10 @@ input[type=number] { -moz-appearance: textfield; }
 /* === RESPONSIVE MEDIA QUERIES === */
 @media screen and (max-width: 850px) {
   .hero { padding: 4rem 0 3rem; }
-  h1 { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 1rem; }
-  .stats-wrapper { flex-direction: column; gap: 30px; margin-top: 2rem; }
-  .laser-divider { width: 150px; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent); }
+  h1 { font-size: clamp(1.8rem, 6vw, 3rem); margin-bottom: 1rem; line-height: 1.15; }
+  .hero p { font-size: 0.9rem; padding: 0 10px; }
+  .stats-wrapper { flex-direction: row; gap: 40px; margin-top: 2.5rem; justify-content: center; }
+  .laser-divider { width: 1px; height: 50px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1), transparent); }
 }
 
 @media screen and (max-width: 550px) {
@@ -189,12 +191,24 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 @media screen and (max-width: 480px) {
+  .hero { padding: 2.5rem 0 2rem; }
+  h1 { font-size: 1.9rem; margin-top: 0.5rem; letter-spacing: -1px; }
+  .hero p { font-size: 0.85rem; line-height: 1.4; margin-bottom: 1.5rem; }
   nav { padding: 0.8rem 0; }
   .logo-container { font-size: 32px; }
   .btn-nav { padding: 0.5rem 1rem; font-size: 0.8rem; }
   .container { padding: 0 16px; }
   .glass-card { padding: 35px 25px; border-radius: 24px; }
   .logo-container[style*="font-size: 45px"] { font-size: 38px !important; }
+  
+  /* Mantener estadísticas en línea (Side by Side) pero achicar para que quepan */
+  .stats-wrapper { gap: 15px; align-items: flex-start; margin-top: 2rem; }
+  .laser-divider { margin-top: 15px; }
+  .neon-val { font-size: 1.9rem; }
+  .stat-label { font-size: 9px; letter-spacing: 1px; }
+  .status-text { font-size: 8px; }
+  .status-online { padding: 4px 8px; gap: 4px; margin-bottom: 5px; }
+  .dot-pulse-wrapper { transform: scale(0.8); }
 }
 </style>
 </head>
