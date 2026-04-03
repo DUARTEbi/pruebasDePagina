@@ -106,6 +106,24 @@ nav {
 /* TRACER */
 .nl-canvas { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:2; border-radius:inherit; }
 
+/* MODALES */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .2s}
+.ov.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--bdr);border-radius:17px;padding:2rem;width:100%;max-width:400px;position:relative;transform:translateY(15px);transition:transform .2s,opacity .2s;opacity:0;max-height:90vh;overflow-y:auto}
+.ov.open .modal{transform:translateY(0);opacity:1}
+.mc{position:absolute;top:.9rem;right:.9rem;background:none;border:none;color:var(--mut);font-size:1.35rem;cursor:pointer;padding:.2rem;line-height:1;transition:color .2s}
+.mc:hover{color:var(--txt)}
+.modal h2{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:.2rem}
+.modal .sub{color:var(--mut);font-size:.87rem;margin-bottom:1.4rem}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.78rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.4rem}
+.fg input{width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:.72rem 1rem;color:var(--txt);font-family:'Exo 2',sans-serif;font-size:16px;outline:none;transition:border-color .2s}
+.fg input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,255,30,.1)}
+.fg input::placeholder{color:var(--mut)}
+.btn-full{width:100%}
+.fl{font-size:.83rem;color:var(--mut);text-align:center;margin-top:.85rem}
+.fl a{color:var(--g);text-decoration:none;font-weight:700}
+
 /* NOTIFICACION FLOTANTE */
 #notif-container{position:fixed;left:18px;bottom:18px;z-index:500;display:flex;flex-direction:column-reverse;gap:.5rem;pointer-events:none;max-width:250px}
 .notif{
@@ -128,7 +146,7 @@ nav {
 <nav>
   <a class="logo" href="/">Boost<span>Speed</span><svg class="rayo-impacto" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></a>
   <div class="nav-btns">
-    <button class="btn btn-ghost" id="btn-entrar">Entrar</button>
+    <button class="btn btn-ghost" id="btn-entrar" onclick="abrirModal('login')">Entrar</button>
   </div>
 </nav>
 
@@ -137,11 +155,11 @@ nav {
   <p>Plataforma dedicada a Free Fire: Servicios premium para impulsar tu cuenta de free fire. Seguro y rápido diseñado para que seas superior a los demás.</p>
   
   <div class="hero-cta">
-    <button class="btn btn-p btn-lg">Iniciar sesión</button>
-    <button class="btn btn-ghost btn-lg">Crear cuenta</button>
+    <button class="btn btn-p btn-lg" id="btn-login-hero" onclick="abrirModal('login')">Iniciar sesión</button>
+    <button class="btn btn-ghost btn-lg" id="btn-registro-hero" onclick="abrirModal('registro')">Crear cuenta</button>
   </div>
 
-  <div class="stats-board">
+  <div class="stats-board" id="stats-board">
     <div class="stat-item">
       <span class="stat-num" id="tk-users">0</span>
       <span class="stat-lbl">Usuarios Registrados</span>
@@ -178,6 +196,36 @@ nav {
       <h3>Pases Boyaa</h3>
       <p>Compra tus pases Boyaa al precio mas bajo.</p>
     </div>
+  </div>
+</div>
+
+<footer>
+  <strong>BoostSpeed</strong> &copy; 2026 · Plataforma de likes para Free Fire · Activo 24/7
+</footer>
+
+<!-- MODALES -->
+<div class="ov" id="ov-login" onclick="cerrarModal('login',event)">
+  <div class="modal" id="modal-login">
+    <button class="mc" onclick="cerrarModal('login')">✕</button>
+    <h2>Iniciar sesión</h2>
+    <p class="sub">Bienvenido de vuelta a BoostSpeed</p>
+    <div class="fg"><label>Usuario</label><input type="text" placeholder="Tu nombre de usuario"/></div>
+    <div class="fg"><label>Contraseña</label><input type="password" placeholder="••••••••"/></div>
+    <button class="btn btn-p btn-full">Entrar →</button>
+    <div class="fl">¿No tienes cuenta? <a href="#" onclick="switchModal('login','registro');return false">Crear cuenta</a></div>
+  </div>
+</div>
+
+<div class="ov" id="ov-registro" onclick="cerrarModal('registro',event)">
+  <div class="modal" id="modal-registro">
+    <button class="mc" onclick="cerrarModal('registro')">✕</button>
+    <h2>Crear cuenta</h2>
+    <p class="sub">Empieza gratis en segundos</p>
+    <div class="fg"><label>Usuario</label><input type="text" placeholder="Elige un nombre de usuario"/></div>
+    <div class="fg"><label>Correo o teléfono</label><input type="text" placeholder="correo@ejemplo.com o +57..."/></div>
+    <div class="fg"><label>Contraseña</label><input type="password" placeholder="Mínimo 6 caracteres"/></div>
+    <button class="btn btn-p btn-full">Crear cuenta →</button>
+    <div class="fl">¿Ya tienes cuenta? <a href="#" onclick="switchModal('registro','login');return false">Iniciar sesión</a></div>
   </div>
 </div>
 
@@ -314,8 +362,45 @@ function attachTracer(target, opt={}) {
   requestAnimationFrame(run);
 }
 
+// MODALES
+const modalTracers = {};
+
+function abrirModal(n) {
+  document.getElementById('ov-' + n).classList.add('open');
+  if (!modalTracers[n]) {
+    modalTracers[n] = true;
+    attachTracer(document.getElementById('modal-' + n), { color: '0,255,30', speed: 0.4, tail: 100, weight: 1.5 });
+  }
+}
+
+function cerrarModal(n, e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('ov-' + n).classList.remove('open');
+}
+
+function switchModal(from, to) {
+  document.getElementById('ov-' + from).classList.remove('open');
+  setTimeout(() => abrirModal(to), 150);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Stats
+  fetch('/api/public-stats')
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      if (d) {
+        document.getElementById('tk-users').textContent = (d.usuarios || 0).toLocaleString('es');
+        document.getElementById('tk-likes').textContent = (d.likes || 0).toLocaleString('es');
+      }
+    })
+    .catch(() => {});
+  
+  // Tracers
   attachTracer(document.getElementById('btn-entrar'), { color: '0,255,30', speed: 0.6, tail: 60, weight: 1.5 });
+  attachTracer(document.getElementById('btn-login-hero'), { color: '0,255,30', speed: 0.6, tail: 60, weight: 1.5 });
+  attachTracer(document.getElementById('btn-registro-hero'), { color: '0,255,30', speed: 0.6, tail: 60, weight: 1.5 });
+  attachTracer(document.getElementById('stats-board'), { color: '0,255,30', speed: 0.35, tail: 120, weight: 2 });
+  
   const cardOpts = { color: '0,255,150', speed: 0.35, tail: 120, weight: 2 };
   for(let i=1; i<=4; i++) attachTracer(document.getElementById('card-'+i), cardOpts);
 });
