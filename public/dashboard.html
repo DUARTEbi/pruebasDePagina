@@ -12,7 +12,7 @@
   <title>Panel – BoostSpeed</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;500;600;700;800&family=Yellowtail&family=Orbitron:wght@700;900&family=Inter:wght@400;700;800&display=swap"
     rel="stylesheet" />
   <style>
     :root {
@@ -75,13 +75,7 @@
       padding-bottom: calc(64px + env(safe-area-inset-bottom));
     }
 
-    #meteors {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden
-    }
+
 
     .bggl {
       position: fixed;
@@ -97,135 +91,175 @@
       animation: bgp 8s ease-in-out infinite;
     }
 
-    @keyframes bgp {
 
-      0%,
-      100% {
-        opacity: .5
-      }
 
-      50% {
-        opacity: 1
-      }
-    }
 
-    .nl-canvas {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      width: 100%;
-      height: 100%;
-      z-index: 3;
-      border-radius: inherit;
-    }
 
     .tb {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      z-index: 100;
-      height: 56px;
-      min-height: 56px;
-      background: rgba(7, 7, 7, .96);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--bdr);
+      z-index: 1000;
+      height: 64px;
+      background: rgba(10, 10, 10, 0.75);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
-      padding: 0 1rem;
+      padding: 0 1.5rem;
       justify-content: space-between;
-      flex-shrink: 0;
-      overflow: hidden;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
     }
 
-    .tb-line {
+
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+    }
+
+    .logo-container {
+      font-family: 'Yellowtail', cursive;
+      font-size: 32px;
+      letter-spacing: 1px;
+      margin: 0;
+      line-height: 1;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-boost {
+      color: #ffffff;
+    }
+
+    .logo-speed {
+      color: var(--g);
+      text-shadow: 0 0 10px rgba(0, 255, 30, 0.4), 0 0 20px rgba(0, 255, 30, 0.2);
+    }
+
+    .dot-pulse-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 10px;
+      height: 10px;
+      transform: scale(0.9);
+      margin-right: 6px;
+    }
+
+    .dot-center {
+      width: 8px;
+      height: 8px;
+      background-color: var(--g);
+      border-radius: 50%;
+      z-index: 2;
+      box-shadow: 0 0 10px rgba(0, 255, 30, 0.5);
+    }
+
+    .dot-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: var(--g);
+      border-radius: 50%;
+      z-index: 1;
+      animation: neon-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes neon-pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+
+      100% {
+        transform: scale(3);
+        opacity: 0;
+      }
+    }
+
+    .rayo-impacto {
+      color: #FFEA00;
+      display: inline-block;
+      vertical-align: middle;
+      width: 22px;
+      height: 22px;
+      margin-left: 6px;
+      will-change: transform, opacity, filter;
+      transform-origin: center bottom;
+      animation: strike 3.5s infinite linear;
+    }
+
+    @keyframes strike {
+
+      0%,
+      80%,
+      85%,
+      92%,
+      100% {
+        opacity: 0.1;
+        transform: scale(0.9) rotate(0deg);
+        filter: drop-shadow(0 0 2px rgba(255, 234, 0, 0.2));
+      }
+
+      82% {
+        opacity: 1;
+        transform: scale(1.1) rotate(-5deg);
+        filter: drop-shadow(0 0 10px #FFEA00);
+      }
+
+      88% {
+        opacity: 1;
+        transform: scale(1.3) rotate(6deg);
+        filter: drop-shadow(0 0 15px #FFEA00) drop-shadow(0 0 5px #fff);
+      }
+    }
+
+    .neon-pingpong-container {
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.02);
       position: absolute;
       bottom: 0;
       left: 0;
-      height: 1px;
-      width: 40%;
-      background: linear-gradient(90deg, transparent, rgba(0, 255, 30, .9), transparent);
-      animation: tbLine 3s linear infinite;
+      overflow: hidden;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      z-index: 101;
     }
 
-    @keyframes tbLine {
+    .neon-pingpong-line {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, transparent, var(--g) 50%, transparent);
+      box-shadow: 0 0 10px rgba(0, 255, 30, 0.7), 0 0 20px rgba(0, 255, 30, 0.4);
+      animation: neon-swipe-pingpong 4s ease-in-out infinite;
+    }
+
+    @keyframes neon-swipe-pingpong {
       0% {
-        left: -40%
-      }
-
-      100% {
-        left: 100%
-      }
-    }
-
-    .logo {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--g);
-      letter-spacing: 2px;
-      display: flex;
-      align-items: center;
-      gap: .4rem;
-      text-decoration: none;
-      white-space: nowrap;
-      flex-shrink: 0;
-      animation: logoGlow 3s ease-in-out infinite;
-    }
-
-    @keyframes logoGlow {
-
-      0%,
-      100% {
-        text-shadow: 0 0 8px rgba(0, 255, 30, .3)
+        left: -100%;
       }
 
       50% {
-        text-shadow: 0 0 18px rgba(0, 255, 30, .8), 0 0 40px rgba(0, 255, 30, .3)
-      }
-    }
-
-    .logo span {
-      color: var(--txt);
-      font-weight: 500
-    }
-
-    .logo-bolt {
-      display: inline-block;
-      font-style: normal;
-      margin-left: .1rem;
-      font-size: 1.15rem;
-      transform-origin: center center;
-      animation: thunderStrike 2.6s ease-in-out infinite;
-      filter: drop-shadow(0 0 3px rgba(0, 255, 30, .4));
-    }
-
-    @keyframes thunderStrike {
-      0% {
-        opacity: .25;
-        transform: scale(.88) rotate(-4deg)
-      }
-
-      38% {
-        opacity: 1;
-        transform: scale(1.35) rotate(4deg) skewX(-8deg);
-        filter: drop-shadow(0 0 8px #ffe600) drop-shadow(0 0 18px rgba(255, 230, 0, .9));
-        color: #ffe600
-      }
-
-      54% {
-        opacity: .15;
-        transform: scale(.85) rotate(-2deg);
-        filter: none;
-        color: var(--g)
+        left: 100%;
       }
 
       100% {
-        opacity: .25;
-        transform: scale(.88) rotate(-4deg)
+        left: -100%;
       }
     }
+
+
 
     .pulse {
       width: 7px;
@@ -238,14 +272,7 @@
       animation: bl 1.6s infinite;
     }
 
-    .pulse::after {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: 50%;
-      border: 1px solid rgba(0, 255, 30, .3);
-      animation: rp 1.6s ease-out infinite;
-    }
+
 
     @keyframes bl {
 
@@ -261,45 +288,9 @@
       }
     }
 
-    @keyframes rp {
-      0% {
-        transform: scale(.4);
-        opacity: .8
-      }
 
-      100% {
-        transform: scale(2.6);
-        opacity: 0
-      }
-    }
 
-    .uchip {
-      display: flex;
-      align-items: center;
-      gap: .45rem;
-      background: var(--sur);
-      border: 1px solid var(--bdr);
-      border-radius: 100px;
-      padding: .22rem .65rem .22rem .28rem;
-      font-size: .8rem;
-      font-weight: 600;
-      flex-shrink: 0;
-    }
 
-    .uav {
-      width: 27px;
-      height: 27px;
-      border-radius: 50%;
-      background: var(--gdim);
-      border: 1px solid rgba(0, 255, 30, .28);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .78rem;
-      color: var(--g);
-      font-weight: 700;
-      font-family: 'Rajdhani', sans-serif;
-    }
 
     main {
       position: relative;
@@ -334,7 +325,7 @@
 
     .card {
       background: var(--sur);
-      border: 1px solid var(--bdr);
+      border: none;
       border-radius: 14px;
       padding: 1.2rem;
       margin-bottom: .9rem;
@@ -343,7 +334,6 @@
     }
 
     .card:hover {
-      border-color: rgba(0, 255, 30, .32);
       box-shadow: 0 6px 32px rgba(0, 255, 30, .1)
     }
 
@@ -362,64 +352,199 @@
       opacity: .75
     }
 
-    .btn-manual {
-      background: var(--g);
-      color: #000;
-      box-shadow: 0 2px 12px rgba(0, 255, 30, .25);
+    /* --- PLAN CARD CYBERPUNK --- */
+    .plan-card-cyber {
+      background-color: var(--bg2);
+      background-image: linear-gradient(145deg, #121212, #0a0a0a);
+      width: 100%;
+      padding: 25px 22px;
       position: relative;
-      overflow: hidden;
-      animation: manualPulse 2.5s ease-in-out infinite;
+      clip-path: polygon(0 0, 96% 0, 100% 30%, 100% 100%, 4% 100%, 0 70%);
+      margin-bottom: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.03);
     }
 
-    .btn-manual::before {
+    .plan-card-cyber::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .18), transparent);
-      transform: translateX(-100%);
-      animation: btnShine 2.5s ease-in-out infinite;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background-color: var(--g);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 0 70%);
+      z-index: 5;
     }
 
-    .btn-manual:hover {
-      background: var(--gm);
-      box-shadow: 0 4px 22px rgba(0, 255, 30, .45);
-      transform: translateY(-2px)
+    .plan-header-cyber {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 22px;
     }
 
-    @keyframes manualPulse {
-
-      0%,
-      100% {
-        box-shadow: 0 2px 12px rgba(0, 255, 30, .25), 0 0 0 0 rgba(0, 255, 30, .3)
-      }
-
-      50% {
-        box-shadow: 0 4px 20px rgba(0, 255, 30, .5), 0 0 0 5px rgba(0, 255, 30, 0)
-      }
-    }
-
-    .btn-auto-inicio {
-      background: transparent;
-      border: 1px solid rgba(0, 255, 30, .4);
+    .plan-icon-box {
+      background: rgba(0, 255, 30, 0.08);
+      padding: 10px;
+      border-radius: 10px;
       color: var(--g);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(0, 255, 30, 0.15);
+    }
+
+    .plan-title-cyber {
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .plan-value-cyber {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--g);
+      font-size: 1.15rem;
+      text-shadow: 0 0 10px rgba(0, 255, 30, 0.4);
+    }
+
+    .plan-subtitle-cyber {
+      color: var(--mut);
+      font-size: 0.76rem;
+      margin: 3px 0 0 0;
+    }
+
+    .action-group-cyber {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* RADAR PULSE */
+    .radar-container-plan {
+      position: relative;
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .radar-pulse-plan {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--g);
+      opacity: 0.4;
+      z-index: 0;
+      clip-path: polygon(8% 0, 100% 0, 100% 70%, 92% 100%, 0 100%, 0 30%);
+      animation: radar-wave-plan 2.6s infinite ease-out;
+    }
+
+    @keyframes radar-wave-plan {
+      0% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+
+      100% {
+        transform: scale(1.04, 1.25);
+        opacity: 0;
+      }
+    }
+
+    .btn-manual-cyber {
+      background-color: var(--g);
+      color: #000;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      font-weight: 800;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      clip-path: polygon(8% 0, 100% 0, 100% 70%, 92% 100%, 0 100%, 0 30%);
+      transition: all 0.2s cubic-bezier(.23, 1, .32, 1);
+    }
+
+    .btn-manual-cyber:active {
+      transform: scale(0.98);
+    }
+
+    .btn-auto-flash-plan {
+      background-color: transparent;
+      color: var(--g);
+      border: 1px solid rgba(0, 255, 30, 0.2);
+      width: 100%;
+      padding: 14px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      cursor: pointer;
       position: relative;
       overflow: hidden;
-      animation: autoPulse 2.8s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      clip-path: polygon(0 0, 92% 0, 100% 30%, 100% 100%, 8% 100%, 0 70%);
+      transition: all 0.2s;
     }
 
-    .btn-auto-inicio::before {
+    .btn-auto-flash-plan::after {
       content: '';
       position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(0, 255, 30, .08), transparent);
-      transform: translateX(-100%);
-      animation: btnShine 2.8s ease-in-out infinite;
+      top: 0;
+      left: -150%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transform: skewX(-30deg);
+      animation: flash-swipe-plan 5s infinite;
     }
 
-    .btn-auto-inicio:hover {
-      background: rgba(0, 255, 30, .08);
+    @keyframes flash-swipe-plan {
+      0% {
+        left: -150%;
+      }
+
+      18% {
+        left: 150%;
+      }
+
+      100% {
+        left: 150%;
+      }
+    }
+
+    .input-cyber {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--bdr);
+      border-radius: 9px;
+      padding: 12px 18px;
+      color: var(--txt);
+      font-family: 'Exo 2', sans-serif;
+      font-size: 16px;
+      outline: none;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      transition: border-color 0.3s;
+    }
+
+    .input-cyber:focus {
       border-color: var(--g);
-      transform: translateY(-2px)
+      box-shadow: 0 0 10px rgba(0, 255, 30, 0.1);
     }
 
     @keyframes autoPulse {
@@ -445,371 +570,326 @@
     }
 
     .btn-auto-likes,
-    .btn-manual,
-    .btn-auto-inicio {
+    .btn-manual-cyber,
+    .btn-auto-flash-plan {
       will-change: transform
     }
 
+    /* --- CYBERPUNK STATS --- */
+    /* --- STATS CARD CYBERPUNK PREMIUM --- */
     .stats-card {
-      background: var(--sur);
-      border: 1px solid var(--bdr);
-      border-radius: 14px;
+      background-color: var(--bg2);
+      background-image: linear-gradient(145deg, #121212, #0a0a0a);
+      width: 100%;
+      padding: 22px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
+      margin-bottom: 1.25rem;
+      clip-path: polygon(0 0, 96% 0, 100% 30%, 100% 100%, 4% 100%, 0 70%);
       position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.03);
       overflow: hidden;
-      animation: statCardGlow 4s ease-in-out infinite;
-    }
-
-    @keyframes statCardGlow {
-
-      0%,
-      100% {
-        box-shadow: 0 0 0 0 rgba(0, 255, 30, .05), 0 4px 20px rgba(0, 0, 0, .3)
-      }
-
-      50% {
-        box-shadow: 0 0 0 3px rgba(0, 255, 30, 0), 0 4px 28px rgba(0, 255, 30, .12)
-      }
     }
 
     .stats-card::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 30, .04) 50%, transparent 100%);
-      transform: translateX(-100%);
-      animation: statShine 4s ease-in-out infinite;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background-color: var(--g);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 0 70%);
+      z-index: 5;
     }
 
-    @keyframes statShine {
-
-      0%,
-      20% {
-        transform: translateX(-100%)
-      }
-
-      50%,
-      100% {
-        transform: translateX(100%)
-      }
+    .stats-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      transform: skewX(-20deg);
+      animation: flash-swipe-plan 6.5s infinite;
+      z-index: 1;
     }
 
-    .stats-card-inner {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr auto 1fr;
-      align-items: center;
-      padding: .85rem .5rem;
-    }
-
-    .stat-item {
+    .stat-group {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: .25rem;
-      padding: .1rem .5rem;
+      flex: 1;
+      text-align: center;
+      z-index: 2;
     }
 
-    .stat-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: var(--gdim);
-      border: 1px solid rgba(0, 255, 30, .18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: floatY 3.5s ease-in-out infinite;
-    }
-
-    .stat-item:nth-child(3) .stat-icon {
-      animation-delay: .6s
-    }
-
-    .stat-item:nth-child(5) .stat-icon {
-      animation-delay: 1.2s
-    }
-
-    .stat-val {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.35rem;
-      font-weight: 700;
+    .stat-icon-cyber {
       color: var(--g);
-      line-height: 1.1
+      width: 24px;
+      height: 24px;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 6px rgba(0, 255, 30, 0.4));
     }
 
-    .stat-lbl {
-      color: var(--mut);
-      font-size: .6rem;
-      text-transform: uppercase;
-      letter-spacing: .5px
+    .stat-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--g);
+      margin-bottom: 3px;
+      letter-spacing: -0.5px;
+      text-shadow: 0 0 10px rgba(0, 255, 30, 0.5), 0 0 20px rgba(0, 255, 30, 0.2);
+      animation: statNumberPulse 3s infinite ease-in-out;
     }
 
-    .stat-divider {
-      width: 1px;
-      height: 36px;
-      background: var(--bdr);
-      flex-shrink: 0
-    }
-
-    .sb {
-      display: none
-    }
-
-    @keyframes floatY {
+    @keyframes statNumberPulse {
 
       0%,
       100% {
-        transform: translateY(0)
+        opacity: 1;
+        transform: scale(1);
       }
 
       50% {
-        transform: translateY(-4px)
+        opacity: 0.85;
+        transform: scale(0.98);
       }
     }
 
-    .limitbar {
-      height: 6px;
-      background: rgba(0, 255, 30, .1);
-      border-radius: 100px;
-      overflow: hidden
-    }
-
-    .limitfill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--g), var(--gm));
-      border-radius: 100px;
-      transition: width .8s cubic-bezier(.23, 1, .32, 1)
-    }
-
-    .pbadge {
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem;
-      padding: .28rem .75rem;
-      border-radius: 100px;
-      font-size: .73rem;
+    .stat-label-cyber {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.6rem;
       font-weight: 700;
-      letter-spacing: .4px;
+      color: var(--txt);
       text-transform: uppercase;
+      letter-spacing: 1.5px;
+      opacity: 0.7;
     }
 
-    .pon {
-      background: var(--gdim);
-      border: 1px solid rgba(0, 255, 30, .28);
+    .stat-separator {
+      width: 1px;
+      height: 32px;
+      background-color: rgba(255, 255, 255, 0.06);
+      z-index: 2;
+    }
+
+    /* --- PREMIUM DNA: CYBER-CARDS --- */
+    .card-cyber {
+      background-color: var(--bg2);
+      background-image: linear-gradient(145deg, #121212, #0a0a0a);
+      width: 100%;
+      padding: 24px;
+      position: relative;
+      clip-path: polygon(0 0, 97% 0, 100% 20%, 100% 100%, 3% 100%, 0 80%);
+      margin-bottom: 1.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .card-cyber::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background-color: var(--g);
+      clip-path: polygon(0 0, 100% 0, 100% 80%, 0 80%);
+      z-index: 5;
+    }
+
+    .stat-val-cyber {
+      font-family: 'Orbitron', sans-serif;
       color: var(--g);
-      animation: planPing 2.5s ease-in-out infinite
+      font-size: 1.25rem;
+      font-weight: 900;
+      text-shadow: 0 0 10px rgba(0, 255, 30, 0.4);
     }
 
-    @keyframes planPing {
-      0% {
-        box-shadow: 0 0 0 0 rgba(0, 255, 30, .7)
-      }
+    /* RADAR & FLASH UTILITIES */
+    .radar-box {
+      position: relative;
+      display: inline-flex;
+    }
 
-      70% {
-        box-shadow: 0 0 0 8px transparent
+    .radar-anim {
+      position: absolute;
+      inset: -5px;
+      background: var(--g);
+      opacity: 0.3;
+      border-radius: inherit;
+      z-index: -1;
+      animation: radar-pulse 2.5s infinite;
+      clip-path: inherit;
+    }
+
+    @keyframes radar-pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.3;
       }
 
       100% {
-        box-shadow: 0 0 0 0 transparent
+        transform: scale(1.1, 1.4);
+        opacity: 0;
       }
     }
 
-    .poff {
-      background: rgba(255, 71, 87, .07);
-      border: 1px solid rgba(255, 71, 87, .22);
-      color: var(--red)
+    @keyframes flash-swipe {
+      0% {
+        left: -150%;
+      }
+
+      15% {
+        left: 150%;
+      }
+
+      100% {
+        left: 150%;
+      }
     }
 
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: .65rem;
-      margin-bottom: .9rem
-    }
-
-    .info-card {
-      background: var(--bg3);
-      border: 1px solid var(--bdr);
-      border-radius: 11px;
-      padding: .9rem;
-      position: relative;
-      transition: border-color .3s, transform .3s;
-    }
-
-    .info-card:hover {
-      border-color: rgba(0, 255, 30, .28);
-      transform: translateY(-2px)
-    }
-
-    .info-card:nth-child(1) {
-      animation: floatY 4s 0s ease-in-out infinite
-    }
-
-    .info-card:nth-child(2) {
-      animation: floatY 4s .8s ease-in-out infinite
-    }
-
-    .info-card:nth-child(3) {
-      animation: floatY 4s 1.6s ease-in-out infinite
-    }
-
-    .info-card:nth-child(4) {
-      animation: floatY 4s 2.4s ease-in-out infinite
-    }
-
-    .info-ico {
-      margin-bottom: .45rem
-    }
-
-    .info-title {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: .88rem;
-      font-weight: 700;
-      margin-bottom: .25rem
-    }
-
-    .info-desc {
-      color: var(--mut);
-      font-size: .73rem;
-      line-height: 1.5
-    }
-
-    .invite-card {
-      background: linear-gradient(135deg, rgba(0, 255, 30, .06), rgba(0, 255, 30, .02));
-      border: 1px solid rgba(0, 255, 30, .18);
-      border-radius: 13px;
-      padding: 1.1rem;
-      margin-bottom: .9rem;
-      text-align: center;
-    }
-
-    .invite-title {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: .3rem;
-      color: var(--g)
-    }
-
-    .invite-desc {
-      color: var(--mut);
-      font-size: .78rem;
-      line-height: 1.5;
-      margin-bottom: .75rem
-    }
-
-    .invite-btns {
-      display: flex;
-      gap: .5rem;
-      justify-content: center;
-      flex-wrap: wrap
-    }
-
+    /* GLOBAL BUTTON SYSTEM */
     .btn {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: .4rem;
-      padding: .55rem 1.1rem;
-      border-radius: 9px;
-      font-family: 'Exo 2', sans-serif;
-      font-weight: 700;
-      font-size: .85rem;
       border: none;
-      letter-spacing: .3px;
-      text-decoration: none;
-      touch-action: manipulation;
-      transition: all .22s cubic-bezier(.23, 1, .32, 1);
+      border-radius: 9px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(.23, 1, .32, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      gap: 8px;
     }
 
-    .btn:active {
-      transform: scale(.95) !important
-    }
-
-    .bp {
+    .btn.bp {
       background: var(--g);
       color: #000;
-      box-shadow: 0 2px 12px rgba(0, 255, 30, .25)
+      box-shadow: 0 0 15px rgba(0, 255, 30, 0.3);
     }
 
-    .bp:hover {
+    .btn.bp:hover {
       background: var(--gm);
-      box-shadow: 0 4px 22px rgba(0, 255, 30, .45);
-      transform: translateY(-2px)
+      box-shadow: 0 0 25px rgba(0, 255, 30, 0.5);
+      transform: translateY(-2px);
     }
 
-    .bp:disabled {
-      opacity: .4;
-      cursor: not-allowed;
-      transform: none !important;
-      box-shadow: none
-    }
-
-    .bo {
+    .btn.bo {
       background: transparent;
       border: 1px solid var(--bdr);
-      color: var(--txt)
+      color: var(--mut);
     }
 
-    .bo:hover {
-      border-color: rgba(0, 255, 30, .5);
-      color: var(--g)
+    .btn.bo:hover {
+      border-color: var(--g);
+      color: var(--g);
+      background: rgba(0, 255, 30, 0.05);
+      transform: translateY(-2px);
     }
 
-    .btg {
-      background: rgba(0, 136, 204, .12);
-      border: 1px solid rgba(0, 136, 204, .25);
-      color: #4dabff
+    .btn.bsm {
+      padding: 6px 12px;
+      font-size: 0.7rem;
     }
 
-    .btg:hover {
-      background: rgba(0, 136, 204, .22)
+    .btn.bf {
+      width: 100%;
+      padding: 14px;
     }
 
-    .bwa {
-      background: rgba(37, 211, 102, .12);
-      border: 1px solid rgba(37, 211, 102, .25);
-      color: #25D366
+    .btn-flash {
+      position: relative;
+      overflow: hidden;
     }
 
-    .bwa:hover {
-      background: rgba(37, 211, 102, .22)
+    .btn-flash::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transform: skewX(-20deg);
+      animation: flash-swipe 5s infinite;
     }
 
-    .bf {
-      width: 100%
+    /* MINI-CARDS FOR HISTORY/LISTS */
+    .mini-card-cyber {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 15px;
+      clip-path: polygon(0 0, 98% 0, 100% 25%, 100% 100%, 2% 100%, 0 75%);
+      border-left: 2px solid var(--g);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .bsm {
-      padding: .3rem .65rem;
-      font-size: .75rem;
-      border-radius: 7px
+    .mini-id-neon {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--g);
+      font-size: 0.8rem;
+      text-shadow: 0 0 5px rgba(0, 255, 30, 0.5);
     }
 
-    .bred {
-      background: rgba(255, 71, 87, .1);
-      border: 1px solid rgba(255, 71, 87, .25);
-      color: var(--red)
+    /* PROFILE STYLES */
+    .profile-header-cyber {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 10px 0 25px;
     }
 
-    .bred:hover {
-      background: rgba(255, 71, 87, .18)
+    .avatar-cyber {
+      width: 60px;
+      height: 60px;
+      background: var(--bg3);
+      border: 1px solid var(--g);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--g);
+      clip-path: polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%);
+      filter: drop-shadow(0 0 10px rgba(0, 255, 30, 0.3));
     }
 
-    @keyframes btnShine {
-
-      0%,
-      40% {
-        transform: translateX(-100%)
-      }
-
-      60%,
-      100% {
-        transform: translateX(100%)
-      }
+    .info-row-cyber {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .fg {
-      margin-bottom: .8rem
+    .info-row-cyber:last-child {
+      border-bottom: none;
+    }
+
+    .info-label-cyber {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: var(--mut);
+    }
+
+    .info-label-cyber svg {
+      color: var(--g);
+      filter: drop-shadow(0 0 5px rgba(0, 255, 30, 0.3));
+    }
+
+    .info-value-cyber {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      color: var(--txt);
     }
 
     .fg label {
@@ -1069,7 +1149,7 @@
       gap: .75rem;
       padding: .65rem .85rem;
       border-radius: 14px;
-      border: 1px solid var(--bdr);
+      border: none;
       background: var(--bg3);
       margin-bottom: .45rem;
       opacity: 0;
@@ -1089,9 +1169,175 @@
     }
 
     .top-item:hover {
-      border-color: rgba(0, 255, 30, .32);
       transform: translateX(4px) !important;
       box-shadow: 0 4px 16px rgba(0, 255, 30, .08)
+    }
+
+    /* --- TOP USUARIOS PREMIUM (CYBERPUNK SLICE) --- */
+    .leaderboard-container {
+      width: 100%;
+      margin-bottom: 1.5rem;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      border-radius: 20px;
+      padding: 1.5rem 1.2rem;
+      border: none;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .shdr-top {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-left: 5px;
+    }
+
+    .shdr-top h2 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--txt);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      font-weight: 700;
+    }
+
+    .icon-trend {
+      color: var(--g);
+      width: 18px;
+      height: 18px;
+    }
+
+    .icon-refresh-top {
+      margin-left: auto;
+      color: var(--mut);
+      cursor: pointer;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .icon-refresh-top:hover {
+      color: var(--g);
+    }
+
+    .user-row {
+      background: var(--bg2);
+      margin-bottom: 10px;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      clip-path: polygon(0 0, 97% 0, 100% 25%, 100% 100%, 3% 100%, 0 75%);
+      transition: transform 0.2s ease;
+      overflow: hidden;
+      border: none;
+    }
+
+    .user-row:hover {
+      transform: scale(1.01);
+    }
+
+    .user-row.top-1 {
+      border-left: 3px solid var(--g);
+      background: linear-gradient(90deg, var(--bg3) 0%, var(--bg2) 100%);
+    }
+
+    .user-row.top-1::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right,
+          transparent,
+          rgba(255, 255, 255, 0.12),
+          transparent);
+      transform: skewX(-30deg);
+      animation: flash-swipe 5s infinite;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    @keyframes flash-swipe {
+      0% {
+        left: -150%;
+      }
+
+      15% {
+        left: 150%;
+      }
+
+      100% {
+        left: 150%;
+      }
+    }
+
+    .rank-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      width: 45px;
+      color: var(--mut);
+      z-index: 2;
+    }
+
+    .top-1 .rank-num {
+      color: var(--g);
+      text-shadow: 0 0 10px rgba(0, 255, 30, 0.6), 0 0 20px rgba(0, 255, 30, 0.2);
+    }
+
+    .username-top {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--txt);
+      flex-grow: 1;
+      z-index: 2;
+    }
+
+    .likes-sect {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid rgba(255, 255, 255, 0.05);
+      padding-left: 18px;
+      z-index: 2;
+    }
+
+    .top-1 .likes-sect {
+      border-left-color: rgba(0, 255, 30, 0.3);
+    }
+
+    .likes-lbl {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 800;
+      color: var(--mut);
+      letter-spacing: 1.2px;
+      margin-bottom: 1px;
+      text-transform: uppercase;
+    }
+
+    .top-1 .likes-lbl {
+      color: var(--g);
+    }
+
+    .likes-val {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--txt);
+    }
+
+    .top-1 .likes-val {
+      color: var(--g);
+      text-shadow: 0 0 10px rgba(0, 255, 30, 0.4);
     }
 
     .top-av {
@@ -1099,7 +1345,7 @@
       height: 32px;
       border-radius: 50%;
       background: var(--gdim);
-      border: 1px solid var(--bdr);
+      border: none;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1841,15 +2087,14 @@
 
     .id-card {
       background: var(--sur);
-      border: 1px solid var(--bdr);
+      border: none;
       border-radius: 12px;
       overflow: hidden;
       transition: border-color .3s, box-shadow .3s;
     }
 
     .id-card:hover {
-      border-color: rgba(0, 255, 30, .28);
-      box-shadow: 0 4px 20px rgba(0, 255, 30, .07)
+      box-shadow: 0 6px 32px rgba(0, 255, 30, .15)
     }
 
     .id-card-top {
@@ -2155,18 +2400,20 @@
 
     .bnav {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background: rgba(4, 4, 4, .97);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(0, 255, 30, .1);
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 1000;
+      background: rgba(15, 15, 15, 0.8);
+      backdrop-filter: blur(25px) saturate(200%);
+      -webkit-backdrop-filter: blur(25px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
       display: flex;
       justify-content: space-between;
-      padding: .1rem .2rem calc(.1rem + env(safe-area-inset-bottom));
-      animation: sU .5s cubic-bezier(.23, 1, .32, 1);
+      padding: .5rem .4rem calc(.5rem + env(safe-area-inset-bottom));
+      animation: sU .7s cubic-bezier(.23, 1, .32, 1);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
     }
 
     @keyframes sU {
@@ -2357,12 +2604,18 @@
 </head>
 
 <body>
-  <div id="meteors"></div>
-  <div class="bggl"></div>
   <div class="tb">
-    <div class="tb-line"></div>
-    <a class="logo" href="/">
-      <div class="pulse"></div>Boost<span>Speed</span><i class="logo-bolt">⚡</i>
+    <a href="/" class="logo">
+      <div class="dot-pulse-wrapper">
+        <div class="dot-center"></div>
+        <div class="dot-ring"></div>
+      </div>
+      <div class="logo-container">
+        <span class="logo-boost">Boost</span><span class="logo-speed">Speed</span>
+        <svg class="rayo-impacto" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+      </div>
     </a>
     <nav class="pc-nav" id="pc-nav">
       <button class="pc-nav-btn active" id="pc-inicio"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -2394,48 +2647,48 @@
           <circle cx="12" cy="7" r="4" />
         </svg>Perfil</button>
     </nav>
-    <div class="uchip">
-      <div class="uav" id="nav-av">?</div><span id="nav-un">...</span>
+    <div class="neon-pingpong-container">
+      <div class="neon-pingpong-line"></div>
     </div>
   </div>
   <main>
     <!-- INICIO -->
     <div class="pane active" id="pane-inicio">
-      <div class="stats-card" style="margin-bottom:.9rem">
-        <div class="stats-card-inner">
-          <div class="stat-item">
-            <div class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-                stroke-width="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg></div>
-            <div class="stat-val" id="st-usuarios">—</div>
-            <div class="stat-lbl">Usuarios</div>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <div class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-                stroke-width="2">
-                <path
-                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z" />
-              </svg></div>
-            <div class="stat-val" id="st-likes-total">—</div>
-            <div class="stat-lbl">Likes hoy</div>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <div class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-                stroke-width="2">
-                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-              </svg></div>
-            <div class="stat-val" id="st-misLikes">—</div>
-            <div class="stat-lbl">Mis likes</div>
-          </div>
+      <div class="stats-card">
+        <div class="stat-group">
+          <svg class="stat-icon-cyber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          <div class="stat-number" id="st-usuarios">77</div>
+          <div class="stat-label-cyber">USUARIOS</div>
+        </div>
+
+        <div class="stat-separator"></div>
+
+        <div class="stat-group">
+          <svg class="stat-icon-cyber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
+          <div class="stat-number" id="st-likes-total">15.005</div>
+          <div class="stat-label-cyber">LIKES HOY</div>
+        </div>
+
+        <div class="stat-separator"></div>
+
+        <div class="stat-group">
+          <svg class="stat-icon-cyber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+            <polyline points="17 6 23 6 23 12" />
+          </svg>
+          <div class="stat-number" id="st-misLikes">45.396</div>
+          <div class="stat-label-cyber">MIS LIKES</div>
         </div>
       </div>
-      <div id="inicio-plan-card" class="card" style="margin-bottom:.85rem">
+      <div id="inicio-plan-card" class="plan-card-cyber">
         <div id="inicio-cargando">
           <div class="ldg">
             <div class="ld"></div>
@@ -2444,444 +2697,399 @@
           </div>
         </div>
         <div id="inicio-con-plan" style="display:none">
-          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem">
-            <div
-              style="width:38px;height:38px;border-radius:10px;background:var(--gdim);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:heartBeat 1.8s ease-in-out infinite">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--g)" stroke="var(--g)" stroke-width="2">
+          <div class="plan-header-cyber">
+            <div class="plan-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                 <path
-                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z" />
-              </svg></div>
-            <div>
-              <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.95rem" id="inicio-plan-nombre">
-                Plan activo</div>
-              <div style="color:var(--mut);font-size:.74rem" id="inicio-plan-sub">Listo para enviar likes</div>
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            </div>
+            <div class="plan-info">
+              <h2 class="plan-title-cyber">
+                <span id="plan-type-text">Plan Ilimitado</span>
+                <span class="plan-value-cyber" id="plan-value-display">∞</span>
+              </h2>
+              <p class="plan-subtitle-cyber" id="plan-desc-text">Sin límites · Envíos ilimitados</p>
             </div>
           </div>
-          <button class="btn bp bf btn-manual" style="margin-bottom:.5rem"><svg width="14" height="14"
-              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>Likes manualmente</button>
-          <button class="btn btn-auto-inicio bf"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>Likes automáticos</button>
+
+          <div class="action-group-cyber">
+            <div class="radar-container-plan">
+              <div class="radar-pulse-plan"></div>
+              <button class="btn-manual-cyber" id="btn-manual-action">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                Likes manualmente
+              </button>
+            </div>
+
+            <button class="btn-auto-flash-plan">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline>
+              </svg>
+              Likes automáticos
+            </button>
+          </div>
         </div>
+
         <div id="inicio-sin-plan" style="display:none">
-          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem">
-            <div
-              style="width:38px;height:38px;border-radius:10px;background:rgba(255,71,87,.07);border:1px solid rgba(255,71,87,.22);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2">
+          <div class="plan-header-cyber">
+            <div class="plan-icon-box" style="background: rgba(255,71,87,0.08); border-color: rgba(255,71,87,0.2);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2">
                 <rect x="1" y="4" width="22" height="16" rx="2" />
                 <line x1="1" y1="10" x2="23" y2="10" />
-              </svg></div>
-            <div>
-              <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.95rem">Sin plan activo</div>
-              <div style="color:var(--mut);font-size:.74rem">Activa un código para comenzar</div>
+              </svg>
+            </div>
+            <div class="plan-info">
+              <h2 class="plan-title-cyber" style="color: #fff;">Sin plan activo</h2>
+              <p class="plan-subtitle-cyber">Activa un código para comenzar</p>
             </div>
           </div>
-          <div id="msg-can-inicio" class="msg" style="margin-bottom:.65rem"></div>
-          <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.6rem">
-            <input type="text" id="cod-inp-inicio" placeholder="Código de acceso"
-              style="flex:1;background:var(--bg2);border:1px solid var(--bdr);border-radius:9px;padding:.62rem .9rem;color:var(--txt);font-family:'Exo 2',sans-serif;font-size:16px;outline:none;text-transform:uppercase"
+
+          <div id="msg-can-inicio" class="msg" style="margin-bottom:12px"></div>
+
+          <div class="action-group-cyber">
+            <input type="text" id="cod-inp-inicio" placeholder="Código de acceso" class="input-cyber"
               autocomplete="off" />
-            <button class="btn bp" style="flex-shrink:0">Activar</button>
+
+            <div class="radar-container-plan">
+              <div class="radar-pulse-plan"></div>
+              <button class="btn-manual-cyber">Activar ahora</button>
+            </div>
+
+            <button class="btn-auto-flash-plan" style="font-size:0.75rem; border-color: transparent;">
+              Ver opciones de plan
+            </button>
           </div>
-          <button class="btn bo bf" style="font-size:.8rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            </svg>Ver opciones de plan</button>
         </div>
       </div>
-      <div class="card">
-        <div class="shdr">
-          <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-              <polyline points="17 6 23 6 23 12" />
-            </svg>Top Usuarios</h3><button class="btn bo bsm"><svg width="12" height="12" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="23 4 23 10 17 10" />
-              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
-            </svg></button>
+      <div class="leaderboard-container">
+        <div class="shdr-top">
+          <h2>
+            <svg class="icon-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+              <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+            Top Usuarios
+          </h2>
+          <div class="icon-refresh-top" id="btn-refresh-top" title="Actualizar">↻</div>
         </div>
+
         <div id="top-list">
-          <div class="ldg">
-            <div class="ld"></div>
-            <div class="ld"></div>
-            <div class="ld"></div>
+          <!-- Datos dinámicos (Máximo 5 visibles) -->
+          <div class="user-row top-1">
+            <div class="rank-num">01</div>
+            <div class="username-top">Cargando...</div>
+            <div class="likes-sect">
+              <span class="likes-lbl">Likes Total</span>
+              <span class="likes-val">---</span>
+            </div>
+          </div>
+          <div class="user-row">
+            <div class="rank-num">02</div>
+            <div class="username-top">Cargando...</div>
+            <div class="likes-sect">
+              <span class="likes-lbl">Likes Total</span>
+              <span class="likes-val">---</span>
+            </div>
+          </div>
+          <div class="user-row">
+            <div class="rank-num">03</div>
+            <div class="username-top">Cargando...</div>
+            <div class="likes-sect">
+              <span class="likes-lbl">Likes Total</span>
+              <span class="likes-val">---</span>
+            </div>
+          </div>
+          <div class="user-row">
+            <div class="rank-num">04</div>
+            <div class="username-top">Cargando...</div>
+            <div class="likes-sect">
+              <span class="likes-lbl">Likes Total</span>
+              <span class="likes-val">---</span>
+            </div>
+          </div>
+          <div class="user-row">
+            <div class="rank-num">05</div>
+            <div class="username-top">Cargando...</div>
+            <div class="likes-sect">
+              <span class="likes-lbl">Likes Total</span>
+              <span class="likes-val">---</span>
+            </div>
           </div>
         </div>
       </div>
-      <div class="card">
-        <div class="ctit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-            stroke-width="2">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>¿Cómo funciona?</div>
-        <div class="info-grid">
-          <div class="info-card">
-            <div class="info-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-                stroke-width="2">
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg></div>
-            <div class="info-title">1 ID cada 24h</div>
-            <div class="info-desc">Puedes enviar likes a un mismo UID una vez cada 24 horas.</div>
+      <div class="card-cyber">
+        <h3 style="font-family:'Orbitron', sans-serif; font-size:0.9rem; color:var(--g); margin-bottom:15px; letter-spacing:1px; display:flex; align-items:center; gap:10px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          SISTEMA DE ASISTENCIA
+        </h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="card-cyber btn-flash" style="padding:15px; background:rgba(0,255,30,0.02); margin-bottom:0; border-color:var(--g); position:relative; overflow:hidden;">
+            <div class="badge-cyber" style="margin-bottom:10px; background:rgba(0,255,30,0.1); color:var(--g); border:1px solid var(--g); padding:2px 8px; font-size:0.6rem; display:inline-block; border-radius:4px; font-weight:800; letter-spacing:1px;">RECOMENDADO</div>
+            <div style="color:var(--g); margin-bottom:8px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+            <h4 style="font-family:'Orbitron', sans-serif; font-size:0.75rem; color:#fff; margin-bottom:8px; letter-spacing:1px;">Likes Diario</h4>
+            <p style="font-size:0.65rem; color:var(--mut); line-height:1.4;">Envío automatizado de 200 likes diarios a tu perfil.</p>
           </div>
-          <div class="info-card">
-            <div class="info-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-                stroke-width="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg></div>
-            <div class="info-title">Sin riesgos</div>
-            <div class="info-desc">Sistema 100% seguro. Sin riesgo de ban.</div>
+          <div class="card-cyber btn-flash" style="padding:15px; background:rgba(255,255,255,0.02); margin-bottom:0; border-color:var(--bdr);">
+             <div style="color:var(--g); margin-bottom:8px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+             <h4 style="font-family:'Orbitron', sans-serif; font-size:0.75rem; color:#fff; margin-bottom:8px; letter-spacing:1px;">Fragmentos</h4>
+             <p style="font-size:0.65rem; color:var(--mut); line-height:1.4;">Consigue fragmentos universales al mejor costo.</p>
           </div>
-          <div class="info-card">
-            <div class="info-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-                stroke-width="2">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-              </svg></div>
-            <div class="info-title">Entrega rápida</div>
-            <div class="info-desc">Los likes se reflejan en tu perfil en minutos.</div>
+          <div class="card-cyber btn-flash" style="padding:15px; background:rgba(255,255,255,0.02); margin-bottom:0; border-color:var(--bdr);">
+             <div style="color:var(--g); margin-bottom:8px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+             <h4 style="font-family:'Orbitron', sans-serif; font-size:0.75rem; color:#fff; margin-bottom:8px; letter-spacing:1px;">Carga +1500</h4>
+             <p style="font-size:0.65rem; color:var(--mut); line-height:1.4;">Impulso inmediato de likes para destacar rápido.</p>
           </div>
-          <div class="info-card">
-            <div class="info-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-                stroke-width="2">
-                <rect x="1" y="4" width="22" height="16" rx="2" />
-                <line x1="1" y1="10" x2="23" y2="10" />
-              </svg></div>
-            <div class="info-title">Plan de acceso</div>
-            <div class="info-desc">Obtén un código del administrador y canjealo desde Acceso.</div>
+          <div class="card-cyber btn-flash" style="padding:15px; background:rgba(255,255,255,0.02); margin-bottom:0; border-color:var(--bdr);">
+             <div style="color:var(--g); margin-bottom:8px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+             <h4 style="font-family:'Orbitron', sans-serif; font-size:0.75rem; color:#fff; margin-bottom:8px; letter-spacing:1px;">Pases Boyaa</h4>
+             <p style="font-size:0.65rem; color:var(--mut); line-height:1.4;">Acceso a pases exclusivos con soporte directo.</p>
           </div>
         </div>
-        <div class="invite-card">
-          <div class="invite-title">¿Quieres un plan?</div>
-          <div class="invite-desc">Contáctame para adquirir acceso a BoostSpeed.</div>
-          <div class="invite-btns">
-            <a class="btn btg bsm" href="https://t.me/DuarteStoreX" target="_blank" rel="noopener"><svg width="12"
-                height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="22" y1="2" x2="11" y2="13" />
-                <polygon points="22 2 15 22 11 13 2 9 22 2" />
-              </svg>Telegram</a>
-            <a class="btn bwa bsm" href="https://wa.me/573164377140" target="_blank" rel="noopener"><svg width="12"
-                height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path
-                  d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-              </svg>WhatsApp</a>
+      </div>
+
+      <div class="card-cyber" style="text-align:center; padding:25px; border-color:var(--g); border-style:dashed;">
+          <h2 style="font-family:'Orbitron', sans-serif; font-size:1rem; color:var(--g); margin-bottom:10px;">¿QUIERES ADQUIRIR UN PLAN?</h2>
+          <p style="color:var(--mut); font-size:0.75rem; margin-bottom:20px;">Contáctame ahora para obtener acceso exclusivo.</p>
+          <div style="display:flex; gap:10px; justify-content:center;">
+             <a href="https://t.me/DuarteStoreX" target="_blank" class="btn bo bsm" style="border-color:#54A9EB; color:#54A9EB; flex:1;">TELEGRAM</a>
+             <a href="https://wa.me/573164377140" target="_blank" class="btn bo bsm" style="border-color:#25D366; color:#25D366; flex:1;">WHATSAPP</a>
           </div>
-        </div>
       </div>
     </div>
     <!-- LIKES -->
     <div class="pane" id="pane-likes">
-      <div class="card" style="margin-bottom:.9rem">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+      <div class="card-cyber">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
           <div>
-            <div style="font-weight:700;font-size:.9rem;margin-bottom:.15rem" id="lp-nombre">Cargando...</div>
-            <div style="color:var(--mut);font-size:.74rem" id="lp-sub">—</div>
+            <div id="lp-nombre"
+              style="font-weight:800; font-size:1.1rem; color:var(--g); font-family:'Orbitron', sans-serif;">---</div>
+            <div id="lp-sub" style="color:var(--mut); font-size:0.75rem;">Cargando información del plan...</div>
           </div>
-          <div class="pbadge poff" id="lp-badge">Sin plan</div>
-        </div>
-        <div style="margin-bottom:.75rem">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.38rem"><span
-              style="font-size:.7rem;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Envíos
-              hoy</span><span style="font-family:'Rajdhani',sans-serif;font-size:.92rem;font-weight:700;color:var(--g)"
-              id="limit-val">0/0</span></div>
-          <div class="limitbar">
-            <div class="limitfill" id="limit-fill" style="width:0%"></div>
+          <div class="radar-box">
+            <div class="radar-anim" id="lp-radar"></div>
+            <div class="pbadge poff" id="lp-badge" style="position:relative; z-index:2;">Sin plan</div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+
+        <div style="margin-bottom:1.2rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">
+            <span
+              style="font-size:0.65rem; color:var(--mut); font-weight:800; text-transform:uppercase; letter-spacing:1px;">Límite
+              de Envíos</span>
+            <span id="limit-val" class="stat-val-cyber" style="font-size:1rem;">0 / 0</span>
+          </div>
+          <div class="limitbar" style="height:8px; background:rgba(255,255,255,0.05);">
+            <div class="limitfill" id="limit-fill"
+              style="width:0%; background:var(--g); box-shadow: 0 0 10px var(--g);"></div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
           <div
-            style="background:var(--bg3);border-radius:9px;padding:.6rem .75rem;display:flex;align-items:center;gap:.5rem">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2">
-              <path
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
-            <div>
-              <div
-                style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:var(--g);line-height:1"
-                id="es-likes">—</div>
-              <div
-                style="font-size:.62rem;color:var(--mut);text-transform:uppercase;letter-spacing:.3px;margin-top:.12rem"
-                id="es-likes-lbl">Disponibles</div>
+            style="background:rgba(255,255,255,0.02); border-radius:8px; padding:12px; border:1px solid rgba(255,255,255,0.05);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z" />
+              </svg>
+              <span id="es-likes-lbl"
+                style="font-size:0.6rem; color:var(--mut); text-transform:uppercase; font-weight:700;">Disponibles</span>
             </div>
+            <div id="es-likes" class="stat-val-cyber">---</div>
           </div>
           <div
-            style="background:var(--bg3);border-radius:9px;padding:.6rem .75rem;display:flex;align-items:center;gap:.5rem">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2">
-              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-            </svg>
-            <div>
-              <div
-                style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:var(--g);line-height:1"
-                id="es-enviados">—</div>
-              <div
-                style="font-size:.62rem;color:var(--mut);text-transform:uppercase;letter-spacing:.3px;margin-top:.12rem">
-                Total enviados</div>
+            style="background:rgba(255,255,255,0.02); border-radius:8px; padding:12px; border:1px solid rgba(255,255,255,0.05);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              </svg>
+              <span
+                style="font-size:0.6rem; color:var(--mut); text-transform:uppercase; font-weight:700;">Enviados</span>
             </div>
+            <div id="es-enviados" class="stat-val-cyber">---</div>
           </div>
         </div>
       </div>
-      <div class="card">
-        <div class="ctit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-            stroke-width="2">
-            <path
-              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z" />
-          </svg>Enviar Likes</div>
+
+      <div class="card-cyber">
+        <h3
+          style="font-family:'Orbitron', sans-serif; font-size:0.9rem; color:var(--g); margin-bottom:15px; display:flex; align-items:center; gap:10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+          </svg>
+          Módulo de Envío
+        </h3>
         <div class="msg" id="msg-likes"></div>
-        <div class="fg"><label>UID de Free Fire</label>
-          <div class="uiw"><input type="text" id="ff-uid" placeholder="Ej: 273968086" inputmode="numeric"
-              autocomplete="one-time-code" name="ff_uid_field" /><button class="usb" id="btn-send">
-              <div class="spin" id="spin-send"></div><svg id="ico-send" viewBox="0 0 24 24" fill="none" stroke="#000"
+        <div class="fg">
+          <label
+            style="font-family:'Inter', sans-serif; font-size:0.7rem; color:var(--mut); text-transform:uppercase; font-weight:700; margin-bottom:8px; display:block;">ID
+            del Jugador</label>
+          <div class="uiw" style="display:flex; gap:10px;">
+            <input type="text" id="ff-uid" placeholder="Ej: 273968086"
+              style="flex:1; background:var(--bg3); border:1px solid var(--bdr); border-radius:8px; padding:12px; color:#fff; font-family:'Orbitron', sans-serif;">
+            <button class="btn bp btn-flash" id="btn-send"
+              style="width:60px; height:45px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <div class="spin" id="spin-send"></div>
+              <svg id="ico-send" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000"
                 stroke-width="2.5">
-                <line x1="22" y1="2" x2="11" y2="13" />
-                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                <polyline points="22 2 11 13 22 2 15 22 11 13 2 9 22 2" />
               </svg>
-            </button></div>
-        </div>
-        <div class="rbox" id="rbox">
-          <div class="rplayer">
-            <div class="rav" id="r-av">?</div>
-            <div>
-              <div class="rname" id="r-nombre">—</div>
-              <div class="rsub">UID <span id="r-uid">—</span> · Nivel <span id="r-nivel">—</span> · <span
-                  id="r-region">—</span></div>
-            </div>
-            <div class="rsent">
-              <div class="rnum" id="r-agregados">+0</div>
-              <div class="rlbl">likes enviados</div>
-            </div>
-          </div>
-          <div class="rcols">
-            <div class="rc">
-              <div class="rcl">Antes</div>
-              <div class="rcv" id="r-antes">—</div>
-            </div>
-            <div class="rc">
-              <div class="rcl">Después</div>
-              <div class="rcv green" id="r-despues">—</div>
-            </div>
-            <div class="rc">
-              <div class="rcl" id="r-tiempo-lbl">Tiempo</div>
-              <div class="rcv" id="r-tiempo">—</div>
-            </div>
+            </button>
           </div>
         </div>
-        <div class="auto-btn-wrapper" id="auto-btn-likes-wrap" style="display:none">
-          <button class="btn-auto-likes">
-            <div class="auto-btn-left">
-              <div class="auto-btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-                  stroke-width="2.5">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                </svg></div>
-              <div>
-                <div class="auto-btn-title">Likes automáticos</div>
-                <div class="auto-btn-sub">Sistema para enviarte likes automáticamente</div>
+
+        <div class="rbox card-cyber" id="rbox"
+          style="margin-top:20px; padding:15px; display:none; border:1px solid rgba(0,255,30,0.2);">
+          <div class="rplayer" style="display:flex; align-items:center; gap:15px;">
+            <div id="r-av" class="avatar-cyber" style="width:45px; height:45px; font-size:1rem;">?</div>
+            <div style="flex:1;">
+              <div id="r-nombre" style="font-weight:800; font-size:0.9rem; color:#fff;">---</div>
+              <div style="color:var(--mut); font-size:0.7rem;">UID: <span id="r-uid" style="color:var(--g);">---</span>
               </div>
             </div>
-            <div class="auto-btn-right"><span class="auto-badge">NUEVO</span><svg class="auto-arrow" width="18"
-                height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9 18 15 12 9 6" />
-              </svg></div>
+            <div style="text-align:right;">
+              <div id="r-agregados" class="stat-val-cyber" style="font-size:1.1rem; color:var(--g);">+0</div>
+              <div style="font-size:0.55rem; color:var(--mut); text-transform:uppercase;">Enviados</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="auto-btn-likes-wrap" class="btn-flash" style="margin-top:15px; display:none;">
+          <button class="btn-auto-flash-plan"
+            style="width:100%; padding:15px; background:rgba(0,255,30,0.05); border:1px solid var(--g); color:var(--g); font-family:'Orbitron', sans-serif; font-weight:800; display:flex; justify-content:space-between; align-items:center;">
+            <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                style="vertical-align:middle; margin-right:8px;">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg> MODO AUTOMÁTICO</span>
+            <span
+              style="font-size:0.6rem; background:var(--g); color:#000; padding:2px 8px; border-radius:4px;">NUEVO</span>
           </button>
         </div>
       </div>
-      <div class="invite-card">
-        <div class="invite-title">¿Quieres un plan?</div>
-        <div class="invite-desc">Contáctame para adquirir acceso a BoostSpeed.</div>
-        <div class="invite-btns"><a class="btn btg bsm" href="https://t.me/DuarteStoreX" target="_blank"
-            rel="noopener"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2">
-              <line x1="22" y1="2" x2="11" y2="13" />
-              <polygon points="22 2 15 22 11 13 2 9 22 2" />
-            </svg>Telegram</a><a class="btn bwa bsm" href="https://wa.me/573164377140" target="_blank"
-            rel="noopener"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2">
-              <path
-                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-            </svg>WhatsApp</a></div>
+      <div class="card-cyber invite-card" style="text-align:center; padding:20px; border-color:var(--g); background:rgba(0,255,30,0.02);">
+          <h2 style="font-family:'Orbitron', sans-serif; font-size:0.9rem; color:var(--g); margin-bottom:8px;">¿QUIERES UN PLAN?</h2>
+          <p style="color:var(--mut); font-size:0.7rem; margin-bottom:15px;">Contáctame ahora para adquirir acceso exclusivo.</p>
+          <div style="display:flex; gap:10px; justify-content:center;">
+             <a href="https://t.me/DuarteStoreX" target="_blank" class="btn bo bsm" style="border-color:#54A9EB; color:#54A9EB; flex:1;">TELEGRAM</a>
+             <a href="https://wa.me/573164377140" target="_blank" class="btn bo bsm" style="border-color:#25D366; color:#25D366; flex:1;">WHATSAPP</a>
+          </div>
       </div>
     </div>
     <!-- AUTO -->
     <div class="pane" id="pane-auto">
-      <div
-        style="background:var(--bg3);border:1px solid var(--bdr);border-radius:13px;padding:.85rem 1rem;margin-bottom:.9rem;position:relative;overflow:hidden;">
-        <div
-          style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:.5">
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem 1rem;">
-          <div style="display:flex;align-items:center;gap:.5rem"><svg width="13" height="13" viewBox="0 0 24 24"
-              fill="none" stroke="var(--g)" stroke-width="2">
-              <rect x="2" y="7" width="20" height="14" rx="2" />
-              <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-            </svg><span style="font-size:.7rem;color:var(--mut)">Plan</span><span
-              style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.88rem;color:var(--g);margin-left:auto"
-              id="auto-plan-tipo">—</span></div>
-          <div style="display:flex;align-items:center;gap:.5rem"><svg width="13" height="13" viewBox="0 0 24 24"
-              fill="none" stroke="var(--g)" stroke-width="2">
-              <path
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z" />
-            </svg><span style="font-size:.7rem;color:var(--mut)">Envíos/día</span><span
-              style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.88rem;color:var(--g);margin-left:auto"
-              id="auto-envios-dia">—</span></div>
-          <div style="display:flex;align-items:center;gap:.5rem"><svg width="13" height="13" viewBox="0 0 24 24"
-              fill="none" stroke="var(--g)" stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg><span style="font-size:.7rem;color:var(--mut)">Días restantes</span><span
-              style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.88rem;color:var(--g);margin-left:auto"
-              id="auto-dias-rest">—</span></div>
-          <div style="display:flex;align-items:center;gap:.5rem"><svg width="13" height="13" viewBox="0 0 24 24"
-              fill="none" stroke="var(--g)" stroke-width="2">
-              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-            </svg><span style="font-size:.7rem;color:var(--mut)">Total enviados</span><span
-              style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.88rem;color:var(--g);margin-left:auto"
-              id="auto-total-enviados">—</span></div>
-        </div>
-      </div>
-      <div class="auto-status-banner" id="auto-status-banner" style="display:none">
-        <div class="auto-status-dot">
-          <div class="auto-status-inner-dot"></div>
-        </div>
-        <div style="flex:1">
-          <div class="auto-status-title">Envío Automático Activo</div>
-          <div class="auto-status-sub">Sistema para enviar likes a tu ID o IDs automáticamente. Ya no tendrás que
-            enviarte manualmente si lo deseas.</div>
-        </div>
-        <span class="auto-status-tag">EN VIVO</span>
-      </div>
-      <div id="auto-sin-plan"
-        style="display:none;background:rgba(255,71,87,.05);border:1px solid rgba(255,71,87,.2);border-radius:13px;padding:1rem;margin-bottom:.9rem;text-align:center">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.5"
-          style="margin:0 auto .5rem;display:block;opacity:.6">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-        </svg>
-        <p style="color:var(--mut);font-size:.82rem">Necesitas un <strong style="color:var(--txt)">plan activo</strong>
-          para usar el modo automático.</p>
-        <button class="btn bo bsm" style="margin-top:.65rem">Ver planes</button>
-      </div>
-      <div class="add-id-section">
-        <div class="add-id-header">
-          <div class="add-id-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-              stroke-width="2">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>IDs Registrados</div>
-          <div style="display:flex;align-items:center;gap:.5rem">
-            <button id="btn-refresh-ids" title="Actualizar"
-              style="background:transparent;border:1px solid var(--bdr);border-radius:7px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--mut);cursor:pointer;transition:all .2s;flex-shrink:0;"><svg
-                id="ico-refresh" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2.5">
-                <polyline points="23 4 23 10 17 10" />
-                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
-              </svg></button>
-            <div class="id-slot-counter"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+      <div class="card-cyber"
+        style="background:rgba(0,255,30,0.03); border:1px solid rgba(0,255,30,0.15); padding:15px;">
+        <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px;">
+          <div class="info-row-cyber" style="border:none; padding:5px 0;">
+            <span class="info-label-cyber"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10" />
-              </svg><span class="id-slot-used" id="auto-slots-used">0</span><span class="id-slot-total"
-                id="auto-slots-total">/ ∞ slots</span></div>
-            <button id="btn-toggle-add-form"
-              style="background:var(--g);color:#000;border:none;border-radius:7px;padding:.3rem .7rem;font-family:'Exo 2',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.3rem;transition:all .2s;white-space:nowrap;"><svg
-                width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg><span id="add-form-btn-lbl">Agregar ID</span></button>
-          </div>
-        </div>
-        <div id="auto-add-form"
-          style="background:var(--bg2);border:1px solid rgba(0,255,30,.18);border-radius:11px;padding:.9rem;margin-bottom:.6rem;display:none;animation:fadeIn .25s ease">
-          <div class="msg" id="msg-auto-add"></div>
-          <div style="margin-bottom:.65rem">
-            <label
-              style="display:block;font-size:.68rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.3rem">UID
-              de Free Fire</label>
-            <input type="text" id="auto-uid-input" placeholder="Ej: 273968086" inputmode="numeric" autocomplete="off"
-              style="width:100%;background:var(--bg3);border:1px solid var(--bdr);border-radius:9px;padding:.62rem .9rem;color:var(--txt);font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.5px;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s;" />
-          </div>
-          <div
-            style="background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:.75rem;margin-bottom:.65rem">
-            <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.65rem"><svg width="12" height="12"
-                viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2">
                 <rect x="2" y="7" width="20" height="14" rx="2" />
                 <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-              </svg><span
-                style="font-size:.72rem;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.5px">Configurar
-                envío</span></div>
-            <div style="display:flex;gap:.4rem;margin-bottom:.7rem">
-              <button id="auto-toggle-likes"
-                style="flex:1;padding:.38rem .5rem;border-radius:8px;border:1px solid rgba(0,255,30,.35);background:rgba(0,255,30,.1);color:var(--g);font-family:'Exo 2',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s">❤️
-                Por Likes</button>
-              <button id="auto-toggle-dias"
-                style="flex:1;padding:.38rem .5rem;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--mut);font-family:'Exo 2',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s">📅
-                Por Días</button>
-            </div>
-            <div id="auto-panel-likes">
-              <label
-                style="display:block;font-size:.68rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.3rem">¿Cuántos
-                likes totales para este ID?</label>
-              <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.55rem"><button
-                  class="preset-btn preset-active" id="al-500">500</button><button class="preset-btn"
-                  id="al-1000">1,000</button><button class="preset-btn" id="al-2000">2,000</button><button
-                  class="preset-btn" id="al-3000">3,000</button></div>
-              <div style="position:relative"><input type="number" id="auto-likes-input" value="500" min="100"
-                  style="width:100%;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:.5rem .9rem;padding-right:4rem;color:var(--g);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;outline:none;transition:border-color .2s;" /><span
-                  style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);color:var(--mut);font-size:.72rem;font-weight:700;pointer-events:none">likes</span>
-              </div>
-              <p style="color:var(--mut);font-size:.7rem;margin-top:.45rem;line-height:1.5"><svg width="10" height="10"
-                  viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" style="vertical-align:middle">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg> El sistema enviará los likes permitidos por día hasta completar la meta.</p>
-            </div>
-            <div id="auto-panel-dias" style="display:none">
-              <label
-                style="display:block;font-size:.68rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.3rem">¿Cuántos
-                días de envío automático?</label>
-              <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.55rem"><button class="preset-btn"
-                  id="ad-7">7d</button><button class="preset-btn" id="ad-15">15d</button><button
-                  class="preset-btn preset-active" id="ad-30">30d</button></div>
-              <div style="position:relative"><input type="number" id="auto-dias-input" value="30" min="1" max="365"
-                  style="width:100%;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:.5rem .9rem;padding-right:4.5rem;color:var(--g);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;outline:none;transition:border-color .2s;" /><span
-                  style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);color:var(--mut);font-size:.72rem;font-weight:700;pointer-events:none">días</span>
-              </div>
-              <p style="color:var(--mut);font-size:.7rem;margin-top:.45rem;line-height:1.5"><svg width="10" height="10"
-                  viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" style="vertical-align:middle">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg> El sistema enviará likes a este ID cada 24h durante los días configurados.</p>
-            </div>
+              </svg> Plan</span>
+            <span id="auto-plan-tipo" class="info-value-cyber" style="color:var(--g);">---</span>
           </div>
-          <div
-            style="display:flex;align-items:center;gap:.55rem;background:rgba(0,255,30,.05);border:1px solid rgba(0,255,30,.15);border-radius:9px;padding:.6rem .8rem;margin-bottom:.65rem">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-            <span style="font-size:.75rem;color:var(--mut);flex:1">Resumen: <strong style="color:var(--txt)"
-                id="auto-resumen-txt">500 likes para este ID</strong></span>
-            <span style="font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;color:var(--g)"
-              id="auto-resumen-costo">−500 likes de tu plan</span>
+          <div class="info-row-cyber" style="border:none; padding:5px 0;">
+            <span class="info-label-cyber"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z" />
+              </svg> Días</span>
+            <span id="auto-dias-rest" class="info-value-cyber" style="color:var(--g);">---</span>
           </div>
-          <button id="auto-add-btn"
-            style="width:100%;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.68rem 1rem;border-radius:9px;background:var(--g);color:#000;border:none;font-family:'Exo 2',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .22s cubic-bezier(.23,1,.32,1);"><svg
-              width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>Confirmar y agregar ID</button>
+          <div class="info-row-cyber" style="border:none; padding:5px 0;">
+            <span class="info-label-cyber"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+              </svg> Envíos</span>
+            <span id="auto-envios-dia" class="info-value-cyber" style="color:var(--g);">---</span>
+          </div>
+          <div class="info-row-cyber" style="border:none; padding:5px 0;">
+            <span class="info-label-cyber"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              </svg> Total</span>
+            <span id="auto-total-enviados" class="info-value-cyber" style="color:var(--g);">---</span>
+          </div>
         </div>
-        <p id="auto-slots-msg"
-          style="color:var(--mut);font-size:.7rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem"><svg
-            width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>El sistema enviará likes automáticamente cada 24h a los IDs registrados.</p>
-        <div class="id-cards-list" id="auto-id-list">
+      </div>
+
+      <div class="card-cyber radar-box" id="auto-status-banner"
+        style="display:none; padding:15px; border-color:var(--g);">
+        <div class="radar-anim"></div>
+        <div style="display:flex; align-items:center; gap:15px; position:relative; z-index:2;">
+          <div style="width:10px; height:10px; background:var(--g); border-radius:50%; box-shadow:0 0 10px var(--g);">
+          </div>
+          <div>
+            <div style="font-family:'Orbitron', sans-serif; font-size:0.8rem; color:var(--g); font-weight:800;">
+              AUTO-ENVÍO ACTIVO</div>
+            <div style="font-size:0.65rem; color:var(--mut);">Sistema automatizado operando en segundo plano.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="auto-sin-plan" class="card-cyber"
+        style="display:none; text-align:center; padding:30px 20px; border-color:rgba(255,71,87,0.3);">
+        <div class="avatar-cyber" style="margin:0 auto 15px; border-color:var(--red); color:var(--red);"><svg width="24"
+            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg></div>
+        <p style="color:var(--mut); font-size:0.8rem; margin-bottom:15px;">Necesitas un <strong style="color:#fff;">Plan
+            Premium</strong> para activar el sistema automático.</p>
+        <button class="btn bo bsm" style="border-color:var(--red); color:var(--red);">Ver opciones</button>
+      </div>
+
+      <div class="card-cyber">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h3
+            style="font-family:'Orbitron', sans-serif; font-size:0.85rem; color:var(--g); display:flex; align-items:center; gap:8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+            </svg>
+            IDs REGISTRADOS
+          </h3>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="font-family:'Orbitron', sans-serif; font-size:0.65rem; color:var(--mut);"><span
+                id="auto-slots-used" style="color:var(--g);">0</span> / <span id="auto-slots-total">∞</span></div>
+            <button id="btn-toggle-add-form" class="btn bo bsm" style="padding:4px 12px; border-color:var(--g); color:var(--g); background:rgba(0,255,30,0.05); font-family:'Orbitron', sans-serif; font-weight:800; font-size:0.8rem;">+</button>
+          </div>
+        </div>
+
+        <div id="auto-add-form"
+          style="display:none; margin-bottom:20px; padding:15px; background:rgba(255,255,255,0.02); border:1px dashed rgba(255,255,255,0.1); border-radius:8px;">
+          <div class="msg" id="msg-auto-add"></div>
+          <div class="fg">
+            <label
+              style="font-size:0.65rem; color:var(--mut); text-transform:uppercase; margin-bottom:5px; display:block;">UID
+              de Free Fire</label>
+            <input type="text" id="auto-uid-input" placeholder="Ej: 273968086"
+              style="width:100%; background:var(--bg3); border:1px solid var(--bdr); border-radius:6px; padding:10px; color:#fff; margin-bottom:12px;">
+          </div>
+          <div style="display:flex; gap:8px; margin-bottom:15px;">
+            <button id="auto-toggle-likes" class="btn bo bsm" style="flex:1; border-color:var(--g); color:var(--g); background:rgba(0,255,30,0.05);">❤️ LIKES</button>
+            <button id="auto-toggle-dias" class="btn bo bsm" style="flex:1; border-color:var(--bdr); color:var(--mut); background:transparent;">📅 DÍAS</button>
+          </div>
+          <div id="auto-panel-likes">
+            <input type="number" id="auto-likes-input" value="500"
+              style="width:100%; background:var(--bg3); border:1px solid var(--bdr); border-radius:6px; padding:12px; color:var(--g); font-family:'Orbitron', sans-serif; font-size:1.1rem; text-align:center;">
+          </div>
+          <div id="auto-panel-dias" style="display:none;">
+            <input type="number" id="auto-dias-input" value="30"
+              style="width:100%; background:var(--bg3); border:1px solid var(--bdr); border-radius:6px; padding:12px; color:var(--g); font-family:'Orbitron', sans-serif; font-size:1.1rem; text-align:center;">
+          </div>
+          <div style="margin:15px 0; font-size:0.7rem; color:var(--mut); font-family:'Orbitron', sans-serif; text-align:center; letter-spacing:1px;">
+            COSTE: <span id="auto-resumen-costo" style="color:var(--g);">---</span>
+          </div>
+          <button id="auto-add-btn" class="btn bp bf btn-flash" style="width:100%; padding:15px; font-weight:900; background:var(--g); color:#000; font-family:'Orbitron', sans-serif; letter-spacing:1px; border:none; box-shadow:0 0 20px var(--g);">AGREGAR ID</button>
+        </div>
+
+        <div id="auto-id-list" style="display:grid; gap:10px;">
           <div class="ldg">
             <div class="ld"></div>
             <div class="ld"></div>
@@ -2889,19 +3097,12 @@
           </div>
         </div>
       </div>
-      <div class="auto-log">
-        <div class="auto-log-header">
-          <div class="auto-log-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)"
-              stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>Últimos envíos automáticos</div>
-          <div class="log-live-chip">
-            <div class="status-dot-anim" style="width:5px;height:5px;background:var(--g)"></div>Auto
-          </div>
-        </div>
-        <div id="auto-log-list"
-          style="max-height:220px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,255,30,.2) transparent;">
+
+      <div class="card-cyber">
+        <h3
+          style="font-family:'Orbitron', sans-serif; font-size:0.8rem; color:var(--mut); margin-bottom:15px; letter-spacing:1px;">
+          REGISTRO DE ACTIVIDAD</h3>
+        <div id="auto-log-list" style="max-height:180px; overflow-y:auto; padding-right:5px;">
           <div class="ldg">
             <div class="ld"></div>
             <div class="ld"></div>
@@ -2912,13 +3113,15 @@
     </div>
     <!-- HISTORIAL -->
     <div class="pane" id="pane-hist">
-      <div class="card">
-        <div class="shdr">
-          <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>Historial de envíos</h3>
-        </div>
+      <div class="card-cyber">
+        <h3
+          style="font-family:'Orbitron', sans-serif; font-size:0.9rem; color:var(--g); margin-bottom:20px; display:flex; align-items:center; gap:10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          HISTORIAL DE ENVÍOS
+        </h3>
         <div id="historial-list">
           <div class="ldg">
             <div class="ld"></div>
@@ -2992,66 +3195,111 @@
     </div>
     <!-- PERFIL -->
     <div class="pane" id="pane-perfil">
-      <div class="card">
-        <div class="phdr">
-          <div class="pav" id="p-av">?</div>
+      <div class="card-cyber">
+        <div class="profile-header-cyber" style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+          <div class="avatar-cyber" id="p-av" style="width:60px; height:60px; font-size:1.5rem;">?</div>
           <div>
-            <div class="pname" id="p-name">—</div>
-            <div style="color:var(--mut);font-size:.8rem;margin-top:.1rem" id="p-contact">—</div>
-            <div class="uidrow"><code id="p-uid">BS-000000</code><button class="cpbtn"><svg width="13" height="13"
-                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg></button></div>
+            <div id="p-name"
+              style="font-family:'Orbitron', sans-serif; font-size:1.1rem; font-weight:900; color:var(--txt);">---</div>
+            <div id="p-contact" style="font-size:0.75rem; color:var(--mut);">---</div>
+            <div
+              style="margin-top:8px; display:inline-flex; align-items:center; background:rgba(0,255,30,0.05); border:1px solid rgba(0,255,30,0.15); border-radius:4px; padding:3px 8px;">
+              <code id="p-uid"
+                style="font-family:'Orbitron', sans-serif; font-size:0.7rem; color:var(--g);">BS-000000</code>
+            </div>
           </div>
         </div>
-        <div class="ir"><span class="ik"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
+
+        <div class="info-row-cyber"
+          style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--bdr);">
+          <span class="info-label-cyber"
+            style="font-size:0.7rem; color:var(--mut); display:flex; align-items:center; gap:8px;"><svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="7" width="20" height="14" rx="2" />
               <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-            </svg> Plan</span><span class="iv" id="p-plan">—</span></div>
-        <div class="ir"><span class="ik"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
+            </svg> TIPO DE PLAN</span>
+          <span id="p-plan" class="info-value-cyber"
+            style="color:var(--g); font-size:0.8rem; font-family:'Orbitron', sans-serif;">---</span>
+        </div>
+        <div class="info-row-cyber"
+          style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--bdr);">
+          <span class="info-label-cyber"
+            style="font-size:0.7rem; color:var(--mut); display:flex; align-items:center; gap:8px;"><svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z" />
-            </svg> Info plan</span><span class="iv" id="p-plan-info">—</span></div>
-        <div class="ir"><span class="ik"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg> Envíos/día</span><span class="iv" id="p-dia">0</span></div>
-        <div class="ir"><span class="ik"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z" />
+            </svg> INFO PLAN</span>
+          <span id="p-plan-info" class="info-value-cyber" style="font-size:0.8rem;">---</span>
+        </div>
+        <div class="info-row-cyber"
+          style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--bdr);">
+          <span class="info-label-cyber"
+            style="font-size:0.7rem; color:var(--mut); display:flex; align-items:center; gap:8px;"><svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+            </svg> ENVÍOS POR DÍA</span>
+          <span id="p-dia" class="info-value-cyber" style="font-size:0.8rem;">0</span>
+        </div>
+        <div class="info-row-cyber"
+          style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--bdr);">
+          <span class="info-label-cyber"
+            style="font-size:0.7rem; color:var(--mut); display:flex; align-items:center; gap:8px;"><svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="4" width="18" height="18" rx="2" />
               <line x1="16" y1="2" x2="16" y2="6" />
               <line x1="8" y1="2" x2="8" y2="6" />
               <line x1="3" y1="10" x2="21" y2="10" />
-            </svg> Vence</span><span class="iv" id="p-vence">—</span></div>
-        <div class="ir"><span class="ik"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
+            </svg> VENCIMIENTO</span>
+          <span id="p-vence" class="info-value-cyber" style="color:var(--red); font-size:0.8rem;">---</span>
+        </div>
+        <div class="info-row-cyber" style="display:flex; justify-content:space-between; padding:10px 0;">
+          <span class="info-label-cyber"
+            style="font-size:0.7rem; color:var(--mut); display:flex; align-items:center; gap:8px;"><svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
-            </svg> Miembro desde</span><span class="iv" id="p-desde">—</span></div>
+            </svg> MIEMBRO DESDE</span>
+          <span id="p-desde" class="info-value-cyber" style="font-size:0.8rem;">---</span>
+        </div>
       </div>
-      <div class="card">
-        <div class="ctit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2">
+
+      <div class="card-cyber">
+        <h3
+          style="font-family:'Orbitron', sans-serif; font-size:0.85rem; color:var(--mut); margin-bottom:20px; display:flex; align-items:center; gap:10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <rect x="3" y="11" width="18" height="11" rx="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>Cambiar contraseña</div>
+          </svg>
+          SEGURIDAD DE LA CUENTA
+        </h3>
         <div class="msg" id="msg-pass"></div>
-        <div class="fg"><label>Contraseña actual</label><input type="password" id="p-old" placeholder="••••••••"
-            autocomplete="current-password" /></div>
-        <div class="fg"><label>Nueva contraseña</label><input type="password" id="p-new"
-            placeholder="Mínimo 6 caracteres" autocomplete="new-password" /></div>
-        <button class="btn bp">Guardar cambios</button>
+        <div class="fg">
+          <label
+            style="font-size:0.65rem; color:var(--mut); text-transform:uppercase; margin-bottom:8px; display:block;">Contraseña
+            actual</label>
+          <input type="password" id="p-old" placeholder="••••••••"
+            style="width:100%; background:var(--bg3); border:1px solid var(--bdr); border-radius:6px; padding:10px; color:#fff; margin-bottom:15px;">
+        </div>
+        <div class="fg">
+          <label
+            style="font-size:0.65rem; color:var(--mut); text-transform:uppercase; margin-bottom:8px; display:block;">Nueva
+            contraseña</label>
+          <input type="password" id="p-new" placeholder="Mínimo 6 caracteres"
+            style="width:100%; background:var(--bg3); border:1px solid var(--bdr); border-radius:6px; padding:10px; color:#fff; margin-bottom:20px;">
+        </div>
+        <button class="btn bp bf btn-flash" style="width:100%; padding:15px; font-weight:900; background:var(--g); color:#000; font-family:'Orbitron', sans-serif; letter-spacing:1px; border:none;">ACTUALIZAR CREDENCIALES</button>
       </div>
-      <button class="btn bred bf" style="margin-bottom:1rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
+
+      <button class="btn bo bf btn-flash" style="width:100%; margin-top:20px; padding:15px; border-color:var(--red); color:var(--red); background:rgba(255,71,87,0.05); font-family:'Orbitron', sans-serif; font-weight:800; letter-spacing:1px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          style="vertical-align:middle; margin-right:8px;">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
           <polyline points="16 17 21 12 16 7" />
           <line x1="21" y1="12" x2="9" y2="12" />
-        </svg>Cerrar sesión</button>
+        </svg>
+        CERRAR SESIÓN DEL SISTEMA
+      </button>
     </div>
   </main>
   <nav class="bnav">
@@ -3099,69 +3347,11 @@
 
   <!-- ═══ SCRIPTS VISUALES ÚNICAMENTE ═══ -->
   <script>
-    /* ─── NEON LINES (visual only) ─── */
-    let _neonCanvases = [], _neonStart = null, _neonRAF = null, _ct = 'inicio';
-    function initNeonLines() {
-      _neonCanvases.forEach(c => c.remove()); _neonCanvases = [];
-      document.querySelectorAll('.card,.invite-card').forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.bottom < -100 || rect.top > window.innerHeight + 100) return;
-        const canvas = document.createElement('canvas');
-        canvas.className = 'nl-canvas'; el.style.position = 'relative'; el.appendChild(canvas); _neonCanvases.push(canvas);
-      });
-      if (!_neonRAF) _neonRAF = requestAnimationFrame(neonFrame);
-    }
-    function neonFrame(ts) {
-      _neonRAF = requestAnimationFrame(neonFrame); if (document.hidden) return;
-      if (!_neonStart) _neonStart = ts;
-      const elapsed = (ts - _neonStart) / 1000, speed = 5, segs = 25;
-      for (let ci = 0; ci < _neonCanvases.length; ci++) {
-        const canvas = _neonCanvases[ci], par = canvas.parentElement; if (!par) continue;
-        const w = par.offsetWidth, h = par.offsetHeight; if (!w || !h) continue;
-        if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
-        const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true }); ctx.clearRect(0, 0, w, h);
-        const P = 2 * (w + h), lineLen = P * .22, progress = (elapsed / speed) % 1, head = progress * P, tail = head - lineLen;
-        ctx.lineCap = 'round'; ctx.lineWidth = 1.5;
-        for (let s = 0; s < segs; s++) {
-          const t0 = tail + (s / segs) * lineLen, t1 = tail + ((s + 1) / segs) * lineLen;
-          const p0 = ((t0 % P) + P) % P, p1 = ((t1 % P) + P) % P;
-          if (getEdge(w, h, p0) !== getEdge(w, h, p1)) continue;
-          const [x0, y0] = getPoint(w, h, p0), [x1, y1] = getPoint(w, h, p1);
-          ctx.strokeStyle = `rgba(0,255,30,${(s / segs) * .8})`; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
-        }
-      }
-    }
-    function getEdge(w, h, p) { if (p < w) return 0; p -= w; if (p < h) return 1; p -= h; if (p < w) return 2; return 3; }
-    function getPoint(w, h, p) { if (p < w) return [p, 0]; p -= w; if (p < h) return [w, p]; p -= h; if (p < w) return [w - p, h]; p -= w; return [0, h - p]; }
 
-    /* ─── METEOROS (visual only) ─── */
-    (function () {
-      const c = document.getElementById('meteors');
-      const ANGLE = 25, VH = innerHeight || 900, VW = innerWidth || 800;
-      const total = VH + 200, moveY = total, moveX = -Math.tan(ANGLE * Math.PI / 180) * total;
-      const isMob = VW < 768; let paused = false;
-      document.addEventListener('visibilitychange', () => { paused = document.hidden; });
-      function spawnMeteor() {
-        if (paused) { setTimeout(spawnMeteor, 2000); return; }
-        const m = document.createElement('div');
-        const len = 60 + Math.random() * 50, startX = Math.random() * (VW + 100);
-        m.style.cssText = `left:${startX}px;top:${-len - 20}px;width:2px;height:${len}px;transform:rotate(-${ANGLE}deg);background:linear-gradient(to bottom,transparent,rgba(0,255,30,.6) 60%,rgba(0,255,30,.95) 82%,#fff);border-radius:0 0 2px 2px;position:absolute;opacity:0;will-change:transform,opacity`;
-        c.appendChild(m);
-        const dur = 2800 + Math.random() * 1200, t0 = performance.now();
-        function af(now) {
-          if (paused) { requestAnimationFrame(af); return; }
-          const t = Math.min((now - t0) / dur, 1);
-          let op = t < .12 ? t / .12 * .85 : t < .7 ? .85 - (t - .12) / .58 * .55 : Math.max(0, .3 - (t - .7) / .3 * .3);
-          m.style.opacity = op; m.style.transform = `rotate(-${ANGLE}deg) translate(${moveX * t}px,${moveY * t}px)`;
-          if (t < 1) requestAnimationFrame(af);
-          else { m.remove(); setTimeout(spawnMeteor, 2000 + Math.random() * 5000); }
-        }
-        requestAnimationFrame(af);
-      }
-      spawnMeteor(); if (!isMob) { setTimeout(spawnMeteor, 1200); setTimeout(spawnMeteor, 3000); }
-    })();
+
 
     /* ─── TAB VISUAL (sin lógica de datos) ─── */
+    let _ct = 'inicio';
     function tab(t) {
       if (t === _ct) return; _ct = t;
       document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
@@ -3171,7 +3361,6 @@
       const mob = document.getElementById('bn-' + t); if (mob) mob.classList.add('active');
       document.querySelectorAll('.pc-nav-btn').forEach(b => b.classList.remove('active'));
       const pc = document.getElementById('pc-' + t); if (pc) pc.classList.add('active');
-      requestAnimationFrame(initNeonLines);
     }
 
     /* ─── TOGGLE VISUAL DEL FORMULARIO DE AUTO ─── */
@@ -3216,7 +3405,6 @@
       document.getElementById('auto-toggle-dias').onclick = () => setAutoTipo('dias');
       ['500', '1000', '2000', '3000'].forEach(v => { const b = document.getElementById('al-' + v); if (b) b.onclick = () => setAutoLikes(parseInt(v.replace(',', ''))); });
       ['7', '15', '30'].forEach(v => { const b = document.getElementById('ad-' + v); if (b) b.onclick = () => setAutoDias(parseInt(v)); });
-      initNeonLines();
     });
   </script>
 </body>
