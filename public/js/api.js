@@ -1,4 +1,6 @@
-// api.js — helper HTTP para BoostSpeed
+/* ═══════════════════════════════════════════════════════════════════
+   api.js — Helper HTTP para BoostSpeed
+═══════════════════════════════════════════════════════════════════ */
 const API = {
   _headers(token) {
     const h = { 'Content-Type': 'application/json' };
