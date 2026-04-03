@@ -143,10 +143,10 @@ nav { position: sticky; top: 0; background: rgba(12, 12, 12, 0.85); backdrop-fil
 footer { text-align: center; padding: 2rem 0; border-top: 1px solid var(--border); font-size: 0.85rem;}
 
 /* === MODALS === */
-.ov { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+.ov { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; padding: 20px; box-sizing: border-box; }
 .ov.active { display: flex; opacity: 1; }
 
-.glass-card { width: 360px; background: rgba(15, 15, 15, 0.5); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border-radius: 32px; border: none; padding: 45px 35px; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8); position: relative; transform: scale(0.95); transition: transform 0.3s ease; }
+.glass-card { width: 100%; max-width: 380px; background: rgba(15, 15, 15, 0.5); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border-radius: 32px; border: none; padding: 40px 30px; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8); position: relative; transform: scale(0.95); transition: transform 0.3s ease; }
 .ov.active .glass-card { transform: scale(1); }
 
 .input-field { width: 100%; background: rgba(255, 255, 255, 0.03); border: none; padding: 18px; border-radius: 16px; color: white; font-size: 15px; margin-bottom: 12px; outline: none; transition: 0.3s ease; font-family: var(--font); box-sizing: border-box; }
@@ -175,6 +175,27 @@ input[type=number] { -moz-appearance: textfield; }
 .notif-txt { display: flex; flex-direction: column; }
 .notif-name { font-size: 0.85rem; color: var(--text-main); font-weight: 500; }
 .notif-likes { font-size: 0.75rem; color: var(--accent); }
+
+/* === RESPONSIVE MEDIA QUERIES === */
+@media screen and (max-width: 850px) {
+  .hero { padding: 4rem 0 3rem; }
+  h1 { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 1rem; }
+  .stats-wrapper { flex-direction: column; gap: 30px; margin-top: 2rem; }
+  .laser-divider { width: 150px; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent); }
+}
+
+@media screen and (max-width: 550px) {
+  .step-card { flex-direction: column; text-align: center; padding: 25px 20px; gap: 15px; align-items: center; }
+}
+
+@media screen and (max-width: 480px) {
+  nav { padding: 0.8rem 0; }
+  .logo-container { font-size: 32px; }
+  .btn-nav { padding: 0.5rem 1rem; font-size: 0.8rem; }
+  .container { padding: 0 16px; }
+  .glass-card { padding: 35px 25px; border-radius: 24px; }
+  .logo-container[style*="font-size: 45px"] { font-size: 38px !important; }
+}
 </style>
 </head>
 <body>
