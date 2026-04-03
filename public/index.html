@@ -9,7 +9,7 @@
 /* === VARIABLES & BASE === */
 * { -webkit-tap-highlight-color: transparent; }
 :root {
-  --bg: #0C0C0C; /* Un fondo mínimamente más suave para contrastar sombra negra pura si la hay, aunque en la img se ve muy negro */
+  --bg: #0C0C0C;
   --bg-card: #121212;
   --border: #222222;
   --border-neon: rgba(0, 255, 30, 0.2);
@@ -69,16 +69,13 @@ p { color: var(--text-mut); font-size: 0.85rem; }
 .btn-nav { background: transparent; color: var(--text-main); border: 1px solid var(--border); padding: 0.5rem 1.2rem; font-size: 0.85rem;}
 .btn-nav:hover { border-color: var(--accent); color: var(--accent); }
 
-/* Solid Neon Button (Iniciar sesión) */
 .btn-primary { background: var(--accent); color: #000; box-shadow: 0 4px 15px rgba(0,255,30,0.15); border: 1px solid var(--accent); }
 .btn-primary:hover { box-shadow: 0 0 25px rgba(0,255,30,0.4); transform: translateY(-2px); background: #00e61a; }
 
-/* Outline Neon Button (Crear cuenta) */
 .btn-outline { background: var(--bg-card); color: var(--text-main); border: 1px solid transparent; }
 .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); box-shadow: 0 0 15px rgba(0,255,30,0.1); }
 .btn-full { width: 100%; }
 
-/* Efecto Flash/Barrido de Luz */
 .btn::before, .submit-btn::before {
     content: '';
     position: absolute;
@@ -102,7 +99,6 @@ p { color: var(--text-mut); font-size: 0.85rem; }
 /* === NAVBAR === */
 nav { position: sticky; top: 0; background: rgba(12, 12, 12, 0.85); backdrop-filter: blur(10px); padding: 1rem 0; z-index: 100; }
 
-/* === CONTENEDOR DE LA LÍNEA === */
 .neon-pingpong-container { width: 100%; height: 2px; background: rgba(255, 255, 255, 0.02); position: absolute; bottom: 0; left: 0; overflow: hidden; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); z-index: 101; }
 .neon-pingpong-line { position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(to right, transparent, var(--accent) 50%, transparent); box-shadow: 0 0 10px rgba(0, 255, 30, 0.7), 0 0 20px rgba(0, 255, 30, 0.4); animation: neon-swipe-pingpong 4s ease-in-out infinite; }
 @keyframes neon-swipe-pingpong {
@@ -114,7 +110,7 @@ nav { position: sticky; top: 0; background: rgba(12, 12, 12, 0.85); backdrop-fil
 .logo { display: flex; align-items: center; gap: 4px; text-decoration: none; }
 .logo-container {
     font-family: 'Yellowtail', cursive;
-    font-size: 38px; /* Ajustado del original de 65px para escalar en la UI */
+    font-size: 38px;
     letter-spacing: 1px;
     margin: 0;
     line-height: 1;
@@ -128,7 +124,6 @@ nav { position: sticky; top: 0; background: rgba(12, 12, 12, 0.85); backdrop-fil
 .hero { padding: 6rem 0 4rem; max-width: 850px; margin: 0 auto; }
 .hero p { max-width: 650px; margin: 0 auto 2.5rem; line-height: 1.6; }
 
-/* === NÚMEROS: AGRESIVOS Y NÍTIDOS === */
 .stats-wrapper { display: flex; align-items: center; justify-content: center; gap: 80px; margin-top: 3rem; }
 .stat-group { text-align: center; display: flex; flex-direction: column; align-items: center; opacity: 0; transform: translateY(10px); animation: appear 0.6s ease-out forwards; }
 .neon-val { font-family: 'Archivo Narrow', sans-serif; font-size: clamp(2.5rem, 5vw, 48px); font-weight: 700; color: var(--accent); margin: 0; line-height: 0.9; letter-spacing: -1px; text-shadow: 0 0 10px rgba(0, 255, 30, 0.5); }
@@ -174,10 +169,10 @@ footer { text-align: center; padding: 2rem 0; border-top: 1px solid var(--border
 
 /* === MODALS === */
 .ov { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; padding: 20px; box-sizing: border-box; }
-.ov.active { display: flex; opacity: 1; }
+.ov.open { display: flex; opacity: 1; }
 
-.glass-card { width: 100%; max-width: 380px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 32px; padding: 40px 30px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5); position: relative; transform: scale(0.95); transition: transform 0.3s ease; }
-.ov.active .glass-card { transform: scale(1); }
+.glass-card { width: 100%; max-width: 380px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 32px; padding: 40px 30px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5); position: relative; transform: scale(0.95); transition: transform 0.3s ease; max-height: 90vh; overflow-y: auto; }
+.ov.open .glass-card { transform: scale(1); }
 
 .input-field { width: 100%; background: rgba(255, 255, 255, 0.03); border: none; padding: 16px; border-radius: 16px; color: white; font-size: 14px; margin-bottom: 12px; outline: none; transition: 0.3s ease; font-family: var(--font); box-sizing: border-box; }
 .input-field:focus { background: rgba(255, 255, 255, 0.08); }
@@ -188,31 +183,44 @@ input[type=number] { -moz-appearance: textfield; }
 
 .submit-btn { position: relative; overflow: hidden; width: 100%; background: var(--accent); color: black; border: none; padding: 16px; border-radius: 16px; font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 5px; transition: 0.3s ease; display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-family: var(--font); }
 .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(0, 255, 30, 0.25); }
+.submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
 .btn-close { position: absolute; top: 20px; right: 25px; background: transparent; border: none; color: rgba(255,255,255,0.4); font-size: 1.2rem; cursor: pointer; transition: 0.3s; }
 .btn-close:hover { color: white; }
 
+/* === MENSAJES === */
 .msg { padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
 .msg.ok { display: block; background: rgba(0,255,30,0.05); border: 1px solid var(--accent); color: var(--accent); }
 .msg.err { display: block; background: rgba(255,51,51,0.05); border: 1px solid var(--err); color: var(--err); }
-.spin { display: none; width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.2); border-top-color: currentColor; border-radius: 50%; animation: sp 0.6s linear infinite; }
+
+/* === SPINNER === */
+.spin { display: none; width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.2); border-top-color: currentColor; border-radius: 50%; animation: sp 0.6s linear infinite; flex-shrink: 0; }
 @keyframes sp { to { transform: rotate(360deg); } }
 
-/* === NOTIFICATIONS === */
-#notif-container { position: fixed; bottom: 20px; left: 20px; z-index: 900; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-.notif { display: flex; align-items: center; gap: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; min-width: 250px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); animation: fadeUp 0.3s ease; }
-.notif-ico { color: var(--accent); font-size: 1.2rem; }
-.notif-txt { display: flex; flex-direction: column; }
-.notif-name { font-size: 0.85rem; color: var(--text-main); font-weight: 500; }
-.notif-likes { font-size: 0.75rem; color: var(--accent); }
+/* === PASOS RECUPERAR === */
+.sdots { display: flex; gap: 6px; justify-content: center; margin-bottom: 20px; }
+.sdot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.08); transition: background 0.3s, box-shadow 0.3s; }
+.sdot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
 
-/* === RESPONSIVE MEDIA QUERIES === */
+/* === LINKS SOPORTE === */
+.sup-link { display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; font-size: 13px; transition: all 0.25s; }
+.sup-link:hover { border-color: rgba(0,255,30,0.25); color: var(--accent); transform: translateX(3px); }
+.sup-arrow { color: var(--accent); }
+
+/* === NOTIFICATIONS === */
+#notif-container { position: fixed; bottom: 20px; left: 20px; z-index: 900; display: flex; flex-direction: column-reverse; gap: 10px; pointer-events: none; max-width: 260px; }
+.notif { display: flex; align-items: center; gap: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 10px rgba(0,255,30,0.06); animation: fadeUp 0.3s ease; }
+.notif-ico { color: var(--accent); font-size: 1.1rem; flex-shrink: 0; }
+.notif-txt { display: flex; flex-direction: column; min-width: 0; }
+.notif-name { font-size: 0.82rem; color: var(--text-main); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notif-likes { font-size: 0.73rem; color: var(--accent); font-weight: 700; }
+
+/* === RESPONSIVE === */
 @media screen and (max-width: 850px) {
   .hero { padding: 4rem 0 3rem; }
   h1 { font-size: clamp(1.6rem, 5.5vw, 2.6rem); margin-bottom: 1rem; line-height: 1.15; }
   .hero p { font-size: 0.85rem; padding: 0 10px; }
   .stats-wrapper { flex-direction: row; gap: 40px; margin-top: 2.5rem; justify-content: center; }
-  .laser-divider { width: 1px; height: 50px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1), transparent); }
 }
 
 @media screen and (max-width: 550px) {
@@ -228,9 +236,6 @@ input[type=number] { -moz-appearance: textfield; }
   .btn-nav { padding: 0.4rem 1rem; font-size: 0.75rem; }
   .container { padding: 0 16px; }
   .glass-card { padding: 35px 25px; border-radius: 24px; }
-  .logo-container[style*="font-size: 38px"] { font-size: 34px !important; }
-  
-  /* Mantener estadísticas en línea (Side by Side) pero achicar para que quepan */
   .stats-wrapper { gap: 15px; align-items: flex-start; margin-top: 2rem; }
   .laser-divider { margin-top: 15px; height: 40px; }
   .neon-val { font-size: 1.7rem; }
@@ -243,50 +248,60 @@ input[type=number] { -moz-appearance: textfield; }
 </head>
 <body>
 
+<!-- ── NAVBAR ── -->
 <nav>
   <div class="container flex items-center justify-between">
     <a href="#" class="logo">
       <div class="dot-pulse-wrapper" style="margin-right: 6px;"><div class="dot-center"></div><div class="dot-ring"></div></div>
       <div class="logo-container">
-        <span class="logo-boost">Boost</span><span class="logo-speed">Speed</span> 
+        <span class="logo-boost">Boost</span><span class="logo-speed">Speed</span>
         <svg class="rayo-impacto" style="width:24px;height:24px;margin-left:6px;" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       </div>
     </a>
-    <button class="btn btn-nav" onclick="app.openModal('ov-login')">Entrar</button>
+    <button class="btn btn-nav" onclick="abrirModal('login')">Entrar</button>
   </div>
   <div class="neon-pingpong-container">
-      <div class="neon-pingpong-line"></div>
+    <div class="neon-pingpong-line"></div>
   </div>
 </nav>
 
 <main>
-  <!-- HERO -->
+  <!-- ── HERO ── -->
   <header class="sec hero text-center">
     <div class="container">
       <h1 class="anim-fade delay-1">Aumenta tus <span class="text-accent text-glow">Likes de Free Fire</span></h1>
-      <p class="anim-fade delay-2">Plataforma dedicada a Free Fire: Servicios premium para impulsar tu cuenta de free fire. Seguro y rápido diseñado para que seas superior a los demás.</p>
+      <p class="anim-fade delay-2">Plataforma dedicada a Free Fire: Servicios premium para impulsar tu cuenta. Seguro y rápido, diseñado para que seas superior a los demás.</p>
     
-    <div class="hero-cta mt-4 anim-fade delay-2">
-      <button class="btn btn-primary" onclick="app.openModal('ov-login')">Iniciar sesión</button>
-      <button class="btn btn-outline" onclick="app.openModal('ov-registro')">Crear cuenta</button>
-    </div>
+      <div class="hero-cta mt-4 anim-fade delay-2">
+        <button class="btn btn-primary" onclick="abrirModal('login')">Iniciar sesión</button>
+        <button class="btn btn-outline" onclick="abrirModal('registro')">Crear cuenta</button>
+      </div>
 
-    <div class="stats-wrapper anim-fade delay-3">
-        <div class="stat-group" style="animation-delay: 0.1s;">
-            <div class="status-online"><div class="dot-pulse-wrapper"><div class="dot-center"></div><div class="dot-ring"></div></div><span class="status-text">Sistema Online</span></div>
-            <div class="neon-val" id="num-users">0</div>
-            <div class="stat-label">USUARIOS REGISTRADOS</div>
+      <div class="stats-wrapper anim-fade delay-3">
+        <div class="stat-group" style="animation-delay:0.1s;">
+          <div class="status-online">
+            <div class="dot-pulse-wrapper"><div class="dot-center"></div><div class="dot-ring"></div></div>
+            <span class="status-text">Sistema Online</span>
+          </div>
+          <!-- ID tk-users: requerido por la lógica de /api/public-stats -->
+          <div class="neon-val" id="tk-users">0</div>
+          <div class="stat-label">USUARIOS REGISTRADOS</div>
         </div>
         <div class="laser-divider"></div>
-        <div class="stat-group" style="animation-delay: 0.3s;">
-            <div class="status-online"><div class="dot-pulse-wrapper"><div class="dot-center"></div><div class="dot-ring"></div></div><span class="status-text">Sistema Online</span></div>
-            <div class="neon-val" id="num-likes">0</div>
-            <div class="stat-label">LIKES ENVIADOS</div>
+        <div class="stat-group" style="animation-delay:0.3s;">
+          <div class="status-online">
+            <div class="dot-pulse-wrapper"><div class="dot-center"></div><div class="dot-ring"></div></div>
+            <span class="status-text">Sistema Online</span>
+          </div>
+          <!-- ID tk-likes: requerido por la lógica de /api/public-stats -->
+          <div class="neon-val" id="tk-likes">0</div>
+          <div class="stat-label">LIKES ENVIADOS</div>
         </div>
+      </div>
     </div>
-  </section>
+  </header>
 
-  <!-- SERVICIOS -->
+  <!-- ── SERVICIOS ── -->
   <section class="sec">
     <div class="container">
       <h2 class="text-center">¿Qué tiene <span class="text-accent">BoostSpeed</span>?</h2>
@@ -294,7 +309,7 @@ input[type=number] { -moz-appearance: textfield; }
         <div class="card">
           <div class="c-icon">✦</div>
           <h3>Sistema de Likes</h3>
-          <p>Envío automatizado de 200-220 likes cada 24h a tu ID. Seguro, constante y sin riesgos.</p>
+          <p>Envío automatizado de 200–220 likes cada 24h a tu ID. Seguro, constante y sin riesgos.</p>
         </div>
         <div class="card">
           <div class="c-icon">❖</div>
@@ -315,31 +330,31 @@ input[type=number] { -moz-appearance: textfield; }
     </div>
   </section>
 
-  <!-- COMO FUNCIONA -->
+  <!-- ── CÓMO FUNCIONA ── -->
   <section class="sec">
     <div class="container">
       <h2 class="text-center">Cómo funciona</h2>
       <div class="steps-container">
         <div class="step-card anim-fade delay-1">
-            <div class="step-number">1</div>
-            <div class="step-content">
-                <h3>Registro</h3>
-                <p>Crea tu cuenta de forma segura y obtén acceso al panel principal.</p>
-            </div>
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Registro</h3>
+            <p>Crea tu cuenta de forma segura y obtén acceso al panel principal.</p>
+          </div>
         </div>
         <div class="step-card anim-fade delay-2">
-            <div class="step-number">2</div>
-            <div class="step-content">
-                <h3>Compra</h3>
-                <p>Selecciona el servicio e ingresa el ID de Free Fire de destino.</p>
-            </div>
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Canjea tu código</h3>
+            <p>Ingresa el código del administrador para activar tu plan al instante.</p>
+          </div>
         </div>
         <div class="step-card anim-fade delay-3">
-            <div class="step-number">3</div>
-            <div class="step-content">
-                <h3>Recepción</h3>
-                <p>Observa el progreso del envío instantáneo y automatizado a tu cuenta.</p>
-            </div>
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Recepción</h3>
+            <p>Observa el progreso del envío instantáneo y automatizado a tu cuenta.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -348,152 +363,395 @@ input[type=number] { -moz-appearance: textfield; }
 
 <footer>
   <div class="container">
-    <p>&copy; 2026 BoostSpeed ⚡ Todos los derechos reservados.</p>
+    <p>&copy; 2026 <strong style="color:var(--accent)">BoostSpeed</strong> ⚡ · Plataforma de likes para Free Fire · Activo 24/7</p>
   </div>
 </footer>
 
-<!-- === MODALS === -->
-
-<!-- LOGIN MODAL -->
-<div class="ov" id="ov-login" onclick="app.closeOutside(event, 'ov-login')">
+<!-- ════════════════════════════════════
+     MODAL LOGIN  (IDs requeridos por api.js)
+     ════════════════════════════════════ -->
+<div class="ov" id="ov-login">
   <div class="glass-card">
-    <button class="btn-close" onclick="app.closeModal('ov-login')">✕</button>
-    <div class="logo-container" style="margin-bottom: 20px; font-size: 38px;">
-        <span class="logo-boost">Boost</span><span class="logo-speed">Speed</span>
-        <svg class="rayo-impacto" viewBox="0 0 24 24" fill="currentColor" style="width:30px; height:30px;"><path d="M13 10V3L4 14H11V21L20 10H13Z"/></svg>
+    <button class="btn-close" onclick="cerrarModal('login')">✕</button>
+    <div class="logo-container" style="margin-bottom:20px;font-size:34px;">
+      <span class="logo-boost">Boost</span><span class="logo-speed">Speed</span>
+      <svg class="rayo-impacto" viewBox="0 0 24 24" fill="currentColor" style="width:26px;height:26px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
     </div>
     <div id="msg-login" class="msg"></div>
-    <input type="text" id="l-user" class="input-field" placeholder="Usuario">
-    <input type="password" id="l-pass" class="input-field" placeholder="Contraseña">
-    <button id="btn-login" class="submit-btn"><div class="spin" id="spin-login"></div><span id="txt-login">Ingresar</span></button>
-    <div style="text-align: center; margin-top: 25px;">
-        <a href="#" onclick="app.switchModal('ov-login', 'ov-recuperar')" style="color: rgba(255, 255, 255, 0.4); font-size: 13px; text-decoration: none;">Olvidaste tu contraseña?</a>
-        <br><br>
-        <a href="#" onclick="app.switchModal('ov-login', 'ov-registro')" style="color: rgba(255, 255, 255, 0.4); font-size: 13px; text-decoration: none;">No tengo cuenta</a>
+    <input type="text"     id="l-user" class="input-field" placeholder="Usuario" autocomplete="username">
+    <input type="password" id="l-pass" class="input-field" placeholder="Contraseña" autocomplete="current-password"
+           onkeydown="if(event.key==='Enter')login()">
+    <button id="btn-login" class="submit-btn" onclick="login()">
+      <div class="spin" id="spin-login"></div>
+      <span id="txt-login">Ingresar</span>
+    </button>
+    <div style="text-align:center;margin-top:22px;display:flex;flex-direction:column;gap:10px;">
+      <a href="#" onclick="cerrarModal('login');abrirModal('recuperar');return false"
+         style="color:rgba(255,255,255,0.35);font-size:13px;">¿Olvidaste tu contraseña?</a>
+      <a href="#" onclick="cerrarModal('login');abrirModal('registro');return false"
+         style="color:rgba(255,255,255,0.35);font-size:13px;">No tengo cuenta</a>
     </div>
   </div>
 </div>
 
-<!-- REGISTRO MODAL -->
-<div class="ov" id="ov-registro" onclick="app.closeOutside(event, 'ov-registro')">
+<!-- ════════════════════════════════════
+     MODAL REGISTRO (IDs requeridos por api.js)
+     ════════════════════════════════════ -->
+<div class="ov" id="ov-registro">
   <div class="glass-card">
-    <button class="btn-close" onclick="app.closeModal('ov-registro')">✕</button>
-    <div class="logo text-center" style="margin-bottom: 25px; font-size: 1.4rem; justify-content: center;">Crear Cuenta</div>
+    <button class="btn-close" onclick="cerrarModal('registro')">✕</button>
+    <div style="font-size:1.3rem;font-weight:700;margin-bottom:22px;text-align:center;">Crear Cuenta</div>
     <div id="msg-registro" class="msg"></div>
-    <input type="text" id="r-user" class="input-field" placeholder="Nuevo Usuario">
-    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-        <input type="text" id="r-prefix" class="input-field" value="+57" placeholder="+XX" style="width: 85px; text-align: center; padding: 18px 10px; margin-bottom:0;">
-        <input type="number" id="r-contact" class="input-field" placeholder="Número de WhatsApp" style="margin-bottom:0;">
+    <input type="text" id="r-user" class="input-field" placeholder="Nuevo usuario" autocomplete="username">
+    <!-- r-contact: correo o teléfono (el JS concatena prefijo+número) -->
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <input type="text"   id="r-prefix"  class="input-field" value="+57" placeholder="+XX"
+             style="width:85px;text-align:center;padding:16px 10px;margin-bottom:0;">
+      <input type="number" id="r-contact" class="input-field" placeholder="WhatsApp / Teléfono"
+             style="margin-bottom:0;">
     </div>
-    <input type="password" id="r-pass" class="input-field" placeholder="Contraseña">
-    <button id="btn-registro" class="submit-btn"><div class="spin" id="spin-registro"></div><span id="txt-registro">Registrarse</span></button>
-    <div style="text-align: center; margin-top: 25px;">
-      <a href="#" onclick="app.switchModal('ov-registro', 'ov-login')" style="color: rgba(255, 255, 255, 0.4); font-size: 13px; text-decoration: none;">Ya tengo cuenta</a>
+    <input type="password" id="r-pass" class="input-field" placeholder="Contraseña (mín. 6 caracteres)"
+           autocomplete="new-password" onkeydown="if(event.key==='Enter')registro()">
+    <button id="btn-registro" class="submit-btn" onclick="registro()">
+      <div class="spin" id="spin-registro"></div>
+      <span id="txt-registro">Registrarse</span>
+    </button>
+    <div style="text-align:center;margin-top:20px;">
+      <a href="#" onclick="cerrarModal('registro');abrirModal('login');return false"
+         style="color:rgba(255,255,255,0.35);font-size:13px;">Ya tengo cuenta</a>
     </div>
   </div>
 </div>
 
-<!-- RECUPERAR MODAL -->
-<div class="ov" id="ov-recuperar" onclick="app.closeOutside(event, 'ov-recuperar')">
+<!-- ════════════════════════════════════
+     MODAL RECUPERAR — 3 pasos
+     IDs requeridos por api.js
+     ════════════════════════════════════ -->
+<div class="ov" id="ov-recuperar">
   <div class="glass-card">
-    <button class="btn-close" onclick="app.closeModal('ov-recuperar')">✕</button>
-    <div class="logo text-center" style="margin-bottom: 25px; font-size: 1.4rem; justify-content: center;">Recuperar</div>
-    
-    <!-- STEP 1 -->
+    <button class="btn-close" onclick="cerrarModal('recuperar')">✕</button>
+    <div style="font-size:1.3rem;font-weight:700;margin-bottom:20px;text-align:center;">Recuperar acceso</div>
+
+    <!-- PASO 1 -->
     <div id="rec-step1">
+      <div class="sdots">
+        <div class="sdot active"></div><div class="sdot"></div><div class="sdot"></div>
+      </div>
       <div id="msg-recuperar" class="msg"></div>
-      <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-          <input type="text" id="rec-prefix" class="input-field" value="+57" placeholder="+XX" style="width: 85px; text-align: center; padding: 18px 10px; margin-bottom:0;">
-          <input type="number" id="rec-contact" class="input-field" placeholder="Número o ID" style="margin-bottom:0;">
+      <p style="font-size:13px;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:14px;">
+        Ingresa tu correo o teléfono registrado
+      </p>
+      <!-- rec-contact: el JS espera un string, se concatena prefijo+número -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <input type="text"   id="rec-prefix"  class="input-field" value="+57" placeholder="+XX"
+               style="width:85px;text-align:center;padding:16px 10px;margin-bottom:0;">
+        <input type="number" id="rec-contact" class="input-field" placeholder="Número o correo"
+               style="margin-bottom:0;">
       </div>
-      <button class="submit-btn" onclick="app.nextStep(1, 2)">Siguiente ➜</button>
+      <button class="submit-btn" onclick="recuperarP1()">Verificar cuenta →</button>
+      <div style="text-align:center;margin-top:16px;">
+        <a href="#" onclick="cerrarModal('recuperar');abrirModal('login');return false"
+           style="color:rgba(255,255,255,0.3);font-size:13px;">← Volver a iniciar sesión</a>
+      </div>
     </div>
 
-    <!-- STEP 2 -->
-    <div id="rec-step2" style="display: none;">
+    <!-- PASO 2 -->
+    <div id="rec-step2" style="display:none;">
+      <div class="sdots">
+        <div class="sdot"></div><div class="sdot active"></div><div class="sdot"></div>
+      </div>
       <div id="msg-recuperar2" class="msg"></div>
-      
-      <div style="display:flex; gap:6px; justify-content:center; margin-bottom:20px;">
-          <div style="width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow: 0 0 8px var(--accent);"></div>
-          <div style="width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.03);"></div>
-          <div style="width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.03);"></div>
+      <p style="font-size:13px;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:6px;">
+        Cuenta encontrada: <strong id="rec-found-name" style="color:var(--accent)">—</strong>
+      </p>
+      <p style="font-size:12px;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:16px;">
+        Contacta al admin para obtener tu código
+      </p>
+      <a class="sup-link" href="https://t.me/DuarteStoreX" target="_blank" rel="noopener">
+        Telegram · @DuarteStoreX <span class="sup-arrow">➜</span>
+      </a>
+      <a class="sup-link" href="https://wa.me/573164377140" target="_blank" rel="noopener">
+        WhatsApp · +57 316 437 7140 <span class="sup-arrow">➜</span>
+      </a>
+      <input type="text" id="rec-codigo" class="input-field"
+             placeholder="Código del administrador" style="margin-top:10px;text-transform:uppercase;">
+      <button class="submit-btn" onclick="recuperarP2()">Verificar código →</button>
+      <div style="text-align:center;margin-top:14px;">
+        <a href="#" onclick="recReset();return false"
+           style="color:rgba(255,255,255,0.3);font-size:13px;">← Volver</a>
       </div>
-      
-      <p style="font-size:13px; color:rgba(255,255,255,0.4); text-align:center; margin-bottom: 15px;">Obtén el código con el Admin</p>
-      
-      <a href="https://t.me/DuarteStoreX" target="_blank" class="input-field" style="display:flex; justify-content:space-between; text-decoration:none; align-items:center;">Telegram <span style="color:var(--accent)">➜</span></a>
-      <a href="https://wa.me/573164377140" target="_blank" class="input-field" style="display:flex; justify-content:space-between; text-decoration:none; align-items:center;">WhatsApp <span style="color:var(--accent)">➜</span></a>
-      
-      <input type="text" id="rec-codigo" class="input-field" placeholder="Código del Admin">
-      <button class="submit-btn" onclick="app.nextStep(2, 3)">Verificar Código</button>
     </div>
 
-    <!-- STEP 3 -->
-    <div id="rec-step3" style="display: none;">
+    <!-- PASO 3 -->
+    <div id="rec-step3" style="display:none;">
+      <div class="sdots">
+        <div class="sdot"></div><div class="sdot"></div><div class="sdot active"></div>
+      </div>
       <div id="msg-recuperar3" class="msg"></div>
-      <input type="password" id="rec-new" class="input-field" placeholder="Nueva contraseña">
+      <p style="font-size:13px;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:14px;">
+        Elige tu nueva contraseña
+      </p>
+      <input type="password" id="rec-new"     class="input-field" placeholder="Nueva contraseña">
       <input type="password" id="rec-confirm" class="input-field" placeholder="Confirmar contraseña">
-      <button class="submit-btn" onclick="app.closeModal('ov-recuperar')">Finalizar</button>
+      <button class="submit-btn" onclick="recuperarP3()">Guardar nueva contraseña →</button>
     </div>
   </div>
 </div>
 
+<!-- Contenedor notificaciones flotantes -->
 <div id="notif-container"></div>
 
-<!-- === JS LOGIC === -->
+<!-- ════════════════════════════════════
+     API HELPER (tu archivo existente)
+     ════════════════════════════════════ -->
+<script src="/js/api.js"></script>
+
+<!-- ════════════════════════════════════
+     LÓGICA FUNCIONAL COMPLETA
+     ════════════════════════════════════ -->
 <script>
-const app = {
-  // Modal Logic
-  openModal: (id) => {
-    const el = document.getElementById(id);
-    if(el) { el.style.display = 'flex'; setTimeout(() => el.classList.add('active'), 10); }
-  },
-  closeModal: (id) => {
-    const el = document.getElementById(id);
-    if(el) { el.classList.remove('active'); setTimeout(() => el.style.display = 'none', 300); }
-  },
-  closeOutside: (e, id) => {
-    if(e.target.id === id) app.closeModal(id);
-  },
-  switchModal: (from, to) => {
-    app.closeModal(from);
-    setTimeout(() => app.openModal(to), 300);
-  },
-  nextStep: (from, to) => {
-    document.getElementById(`rec-step${from}`).style.display = 'none';
-    document.getElementById(`rec-step${to}`).style.display = 'block';
-  }
-};
+/* ── Redirigir si ya tiene sesión ── */
+if (localStorage.getItem('bs_token')) location.href = '/dashboard.html';
 
-// Función de conteo rápido y fluido proporcionada
-function countTo(id, end) {
-    const obj = document.getElementById(id);
-    if (!obj) return;
-    let start = 0;
-    const duration = 1500; // 1.5 segundos
-    const startTime = performance.now();
+let recUserId = null;
 
-    function update(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Ease out quadratic para que frene elegante al final
-        const currentNum = Math.floor(progress * (2 - progress) * end);
-        
-        obj.innerText = currentNum.toLocaleString('de-DE');
-
-        if (progress < 1) {
-            requestAnimationFrame(update);
-        } else {
-            obj.innerText = end.toLocaleString('de-DE');
-        }
-    }
-    requestAnimationFrame(update);
+/* ════════════════════════════════════
+   MODALES — sistema unificado
+   El diseño nuevo usaba app.openModal('ov-login')
+   Aquí normalizamos todo a abrirModal('login')
+   ════════════════════════════════════ */
+function abrirModal(n) {
+  const el = document.getElementById('ov-' + n);
+  if (!el) return;
+  el.style.display = 'flex';
+  // Forzar reflow antes de agregar clase para que la transición funcione
+  void el.offsetWidth;
+  el.classList.add('open');
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    countTo('num-users', 10250);
-    countTo('num-likes', 1508200);
+function cerrarModal(n) {
+  const el = document.getElementById('ov-' + n);
+  if (!el) return;
+  el.classList.remove('open');
+  setTimeout(() => { el.style.display = 'none'; }, 300);
+  // Limpiar inputs
+  el.querySelectorAll('input').forEach(i => i.value = '');
+  // Limpiar mensajes
+  ['msg-' + n, 'msg-' + n + '2', 'msg-' + n + '3'].forEach(id => {
+    const m = document.getElementById(id);
+    if (m) { m.style.display = 'none'; m.className = 'msg'; }
+  });
+  if (n === 'recuperar') recReset();
+}
+
+// Cerrar al hacer click fuera del glass-card
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.ov').forEach(o => {
+    o.addEventListener('click', e => {
+      if (e.target === o) {
+        // extraer nombre del modal del id (ov-login → login)
+        const n = o.id.replace('ov-', '');
+        cerrarModal(n);
+      }
+    });
+  });
+});
+
+/* ════ SPINNER / BOTÓN ════ */
+function cargando(id, estado) {
+  const spin = document.getElementById('spin-' + id);
+  const txt  = document.getElementById('txt-'  + id);
+  const btn  = document.getElementById('btn-'  + id);
+  if (spin) spin.style.display = estado ? 'block' : 'none';
+  if (txt)  txt.style.display  = estado ? 'none'  : 'inline';
+  if (btn)  btn.disabled = estado;
+}
+
+/* ════ MENSAJES ════ */
+function mostrarMsg(id, texto, tipo) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = texto;
+  el.className = 'msg ' + tipo;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 5500);
+}
+
+/* ════════════════════════════════════
+   LOGIN
+   ════════════════════════════════════ */
+async function login() {
+  const user = document.getElementById('l-user').value.trim();
+  const pass = document.getElementById('l-pass').value;
+  if (!user || !pass) return mostrarMsg('msg-login', 'Completa todos los campos', 'err');
+  cargando('login', true);
+  const res = await API.post('/api/login', { username: user, password: pass });
+  cargando('login', false);
+  if (!res.ok) return mostrarMsg('msg-login', res.error, 'err');
+  localStorage.setItem('bs_token', res.token);
+  localStorage.setItem('bs_user', JSON.stringify(res.user));
+  location.href = '/dashboard.html';
+}
+
+/* ════════════════════════════════════
+   REGISTRO
+   El contacto se arma como prefijo + número
+   ════════════════════════════════════ */
+async function registro() {
+  const user    = document.getElementById('r-user').value.trim();
+  const prefix  = document.getElementById('r-prefix').value.trim();
+  const num     = document.getElementById('r-contact').value.trim();
+  const contact = prefix + num;          // ej: +573001234567
+  const pass    = document.getElementById('r-pass').value;
+
+  if (!user || !num || !pass)
+    return mostrarMsg('msg-registro', 'Completa todos los campos', 'err');
+  if (pass.length < 6)
+    return mostrarMsg('msg-registro', 'La contraseña debe tener mínimo 6 caracteres', 'err');
+
+  cargando('registro', true);
+  const res = await API.post('/api/registro', { username: user, contact, password: pass });
+  cargando('registro', false);
+  if (!res.ok) return mostrarMsg('msg-registro', res.error, 'err');
+  localStorage.setItem('bs_token', res.token);
+  localStorage.setItem('bs_user', JSON.stringify(res.user));
+  location.href = '/dashboard.html';
+}
+
+/* ════════════════════════════════════
+   RECUPERAR — PASO 1
+   ════════════════════════════════════ */
+function recReset() {
+  document.getElementById('rec-step1').style.display = 'block';
+  document.getElementById('rec-step2').style.display = 'none';
+  document.getElementById('rec-step3').style.display = 'none';
+  recUserId = null;
+}
+
+async function recuperarP1() {
+  const prefix  = document.getElementById('rec-prefix').value.trim();
+  const num     = document.getElementById('rec-contact').value.trim();
+  const contact = prefix + num;
+  if (!num) return mostrarMsg('msg-recuperar', 'Ingresa tu número o correo', 'err');
+  const res = await API.post('/api/recuperar-check', { contact });
+  if (!res.ok) return mostrarMsg('msg-recuperar', res.error, 'err');
+  recUserId = res.userId;
+  document.getElementById('rec-found-name').textContent = res.username;
+  document.getElementById('rec-step1').style.display = 'none';
+  document.getElementById('rec-step2').style.display = 'block';
+}
+
+/* ════════════════════════════════════
+   RECUPERAR — PASO 2
+   ════════════════════════════════════ */
+async function recuperarP2() {
+  const codigo = document.getElementById('rec-codigo').value.trim().toUpperCase();
+  if (!codigo) return mostrarMsg('msg-recuperar2', 'Ingresa el código de recuperación', 'err');
+  const res = await API.post('/api/recuperar-verificar', { userId: recUserId, codigo });
+  if (!res.ok) return mostrarMsg('msg-recuperar2', res.error, 'err');
+  document.getElementById('rec-step2').style.display = 'none';
+  document.getElementById('rec-step3').style.display = 'block';
+}
+
+/* ════════════════════════════════════
+   RECUPERAR — PASO 3
+   ════════════════════════════════════ */
+async function recuperarP3() {
+  const nueva    = document.getElementById('rec-new').value;
+  const confirma = document.getElementById('rec-confirm').value;
+  if (!nueva || nueva.length < 6)
+    return mostrarMsg('msg-recuperar3', 'Mínimo 6 caracteres', 'err');
+  if (nueva !== confirma)
+    return mostrarMsg('msg-recuperar3', 'Las contraseñas no coinciden', 'err');
+  const res = await API.post('/api/recuperar-cambiar', { userId: recUserId, password_nueva: nueva });
+  if (!res.ok) return mostrarMsg('msg-recuperar3', res.error, 'err');
+  mostrarMsg('msg-recuperar3', '✓ Contraseña actualizada. Iniciando sesión…', 'ok');
+  setTimeout(() => { cerrarModal('recuperar'); abrirModal('login'); }, 2200);
+}
+
+/* ════════════════════════════════════
+   ESTADÍSTICAS desde /api/public-stats
+   ════════════════════════════════════ */
+function animCount(el, target) {
+  if (!el || !target) return;
+  const duration = 1500;
+  const startTime = performance.now();
+  function update(now) {
+    const p = Math.min((now - startTime) / duration, 1);
+    const ease = p * (2 - p); // ease-out cuadrático
+    el.textContent = Math.floor(ease * target).toLocaleString('es');
+    if (p < 1) requestAnimationFrame(update);
+    else el.textContent = target.toLocaleString('es');
+  }
+  requestAnimationFrame(update);
+}
+
+async function cargarStats() {
+  try {
+    const res = await fetch('/api/public-stats');
+    if (!res.ok) return;
+    const d = await res.json();
+    animCount(document.getElementById('tk-users'), d.usuarios || 0);
+    animCount(document.getElementById('tk-likes'),  d.likes    || 0);
+  } catch(e) {}
+}
+
+/* ════════════════════════════════════
+   NOTIFICACIONES FLOTANTES
+   ════════════════════════════════════ */
+let notifVistas = new Set();
+let notifQueue  = [];
+
+function mostrarNotif(username, likesAgregados) {
+  const cont = document.getElementById('notif-container');
+  const el   = document.createElement('div');
+  el.className = 'notif';
+  el.innerHTML = `
+    <div class="notif-ico">❤️</div>
+    <div class="notif-txt">
+      <div class="notif-name">${username}</div>
+      <div class="notif-likes">+${Number(likesAgregados).toLocaleString('es')} likes enviados</div>
+    </div>`;
+  cont.appendChild(el);
+  setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 4700);
+  while (cont.children.length > 4) cont.removeChild(cont.firstChild);
+}
+
+async function pollNotificaciones() {
+  try {
+    const res = await fetch('/api/notificaciones-likes');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.ok || !data.notificaciones) return;
+    data.notificaciones.forEach(n => {
+      const key = n.username + n.creado_en;
+      if (!notifVistas.has(key) && n.likes_agregados > 0) {
+        notifVistas.add(key);
+        notifQueue.push(n);
+      }
+    });
+  } catch(e) {}
+}
+
+function processNotifQueue() {
+  if (notifQueue.length > 0) {
+    const n = notifQueue.shift();
+    mostrarNotif(n.username, n.likes_agregados);
+  }
+}
+
+/* ════════════════════════════════════
+   INIT
+   ════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', async () => {
+  // Cargar stats reales del servidor
+  cargarStats();
+
+  // Notificaciones: primera carga silenciosa, luego polling
+  await pollNotificaciones();
+  notifQueue = []; // descartar las que había al cargar
+  setInterval(pollNotificaciones,  8000);
+  setInterval(processNotifQueue,   3000);
 });
 </script>
 </body>
