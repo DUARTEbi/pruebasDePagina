@@ -65,7 +65,7 @@ p { color: var(--text-mut); font-size: 0.85rem; }
 .mt-4 { margin-top: 2rem; }
 
 /* === BUTTONS === */
-.btn { border: none; border-radius: 8px; padding: 0.85rem 1.6rem; cursor: pointer; transition: all 0.3s ease; font-weight: 600; font-family: var(--font); display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.95rem; }
+.btn { position: relative; overflow: hidden; border: none; border-radius: 8px; padding: 0.85rem 1.6rem; cursor: pointer; transition: all 0.3s ease; font-weight: 600; font-family: var(--font); display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.95rem; }
 .btn-nav { background: transparent; color: var(--text-main); border: 1px solid var(--border); padding: 0.5rem 1.2rem; font-size: 0.85rem;}
 .btn-nav:hover { border-color: var(--accent); color: var(--accent); }
 
@@ -78,10 +78,39 @@ p { color: var(--text-mut); font-size: 0.85rem; }
 .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); box-shadow: 0 0 15px rgba(0,255,30,0.1); }
 .btn-full { width: 100%; }
 
+/* Efecto Flash/Barrido de Luz */
+.btn::before, .submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: skewX(-30deg);
+    animation: flash-swipe 3.5s infinite;
+    pointer-events: none;
+}
+@keyframes flash-swipe {
+    0% { left: -150%; }
+    20% { left: 150%; }
+    100% { left: 150%; }
+}
+
 .hero-cta { display: flex; flex-direction: column; gap: 0.9rem; width: 100%; max-width: 340px; margin: 0 auto; }
 
 /* === NAVBAR === */
-nav { position: sticky; top: 0; background: rgba(12, 12, 12, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 1rem 0; z-index: 100; }
+nav { position: sticky; top: 0; background: rgba(12, 12, 12, 0.85); backdrop-filter: blur(10px); padding: 1rem 0; z-index: 100; }
+
+/* === CONTENEDOR DE LA LÍNEA === */
+.neon-pingpong-container { width: 100%; height: 2px; background: rgba(255, 255, 255, 0.02); position: absolute; bottom: 0; left: 0; overflow: hidden; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); z-index: 101; }
+.neon-pingpong-line { position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(to right, transparent, var(--accent) 50%, transparent); box-shadow: 0 0 10px rgba(0, 255, 30, 0.7), 0 0 20px rgba(0, 255, 30, 0.4); animation: neon-swipe-pingpong 4s ease-in-out infinite; }
+@keyframes neon-swipe-pingpong {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: -100%; }
+}
+
 .logo { display: flex; align-items: center; gap: 4px; text-decoration: none; }
 .logo-container {
     font-family: 'Yellowtail', cursive;
@@ -157,7 +186,7 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; }
 
-.submit-btn { width: 100%; background: var(--accent); color: black; border: none; padding: 16px; border-radius: 16px; font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 5px; transition: 0.3s ease; display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-family: var(--font); }
+.submit-btn { position: relative; overflow: hidden; width: 100%; background: var(--accent); color: black; border: none; padding: 16px; border-radius: 16px; font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 5px; transition: 0.3s ease; display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-family: var(--font); }
 .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(0, 255, 30, 0.25); }
 
 .btn-close { position: absolute; top: 20px; right: 25px; background: transparent; border: none; color: rgba(255,255,255,0.4); font-size: 1.2rem; cursor: pointer; transition: 0.3s; }
@@ -224,6 +253,9 @@ input[type=number] { -moz-appearance: textfield; }
       </div>
     </a>
     <button class="btn btn-nav" onclick="app.openModal('ov-login')">Entrar</button>
+  </div>
+  <div class="neon-pingpong-container">
+      <div class="neon-pingpong-line"></div>
   </div>
 </nav>
 
