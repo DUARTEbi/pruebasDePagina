@@ -14,6 +14,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;500;600;700;800&family=Yellowtail&family=Orbitron:wght@700;900&family=Inter:wght@400;700;800&display=swap"
     rel="stylesheet" />
+  <script src="api.js"></script>
   <style>
     :root {
       --g: #00FF1E;
@@ -364,17 +365,7 @@
       border: 1px solid rgba(255, 255, 255, 0.03);
     }
 
-    .plan-card-cyber::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 3px;
-      background-color: var(--g);
-      clip-path: polygon(0 0, 100% 0, 100% 70%, 0 70%);
-      z-index: 5;
-    }
+
 
     .plan-header-cyber {
       display: flex;
@@ -593,17 +584,7 @@
       overflow: hidden;
     }
 
-    .stats-card::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 3px;
-      background-color: var(--g);
-      clip-path: polygon(0 0, 100% 0, 100% 70%, 0 70%);
-      z-index: 5;
-    }
+
 
     .stats-card::after {
       content: '';
@@ -689,17 +670,7 @@
       border: 1px solid rgba(255, 255, 255, 0.03);
     }
 
-    .card-cyber::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 3px;
-      background-color: var(--g);
-      clip-path: polygon(0 0, 100% 0, 100% 80%, 0 80%);
-      z-index: 5;
-    }
+
 
     .stat-val-cyber {
       font-family: 'Orbitron', sans-serif;
@@ -825,7 +796,7 @@
       background: rgba(255, 255, 255, 0.02);
       padding: 15px;
       clip-path: polygon(0 0, 98% 0, 100% 25%, 100% 100%, 2% 100%, 0 75%);
-      border-left: 2px solid var(--g);
+      border-left: none;
       margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
@@ -1241,7 +1212,7 @@
     }
 
     .user-row.top-1 {
-      border-left: 3px solid var(--g);
+      border-left: none;
       background: linear-gradient(90deg, var(--bg3) 0%, var(--bg2) 100%);
     }
 
@@ -2604,6 +2575,7 @@
 </head>
 
 <body>
+  <div id="meteors"></div>
   <div class="tb">
     <a href="/" class="logo">
       <div class="dot-pulse-wrapper">
@@ -2618,6 +2590,10 @@
       </div>
     </a>
     <nav class="pc-nav" id="pc-nav">
+      <div id="nav-profile-summary" style="display:flex; align-items:center; gap:10px; margin-right:20px; padding-right:20px; border-right:1px solid rgba(255,255,255,0.1);">
+        <div id="nav-av" style="width:32px; height:32px; background:var(--gdim); border:1px solid var(--g); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--g); font-family:'Orbitron',sans-serif; font-size:0.8rem; font-weight:900;">?</div>
+        <div id="nav-un" style="font-family:'Orbitron',sans-serif; font-size:0.75rem; font-weight:800; color:#fff; text-transform:uppercase; letter-spacing:0.5px;">Cargando...</div>
+      </div>
       <button class="pc-nav-btn active" id="pc-inicio"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -2639,8 +2615,8 @@
         </svg>Historial</button>
       <button class="pc-nav-btn" id="pc-acceso"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>Acceso</button>
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>Tienda</button>
       <button class="pc-nav-btn" id="pc-perfil"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -2706,10 +2682,10 @@
             </div>
             <div class="plan-info">
               <h2 class="plan-title-cyber">
-                <span id="plan-type-text">Plan Ilimitado</span>
+                <span id="inicio-plan-nombre">Plan Ilimitado</span>
                 <span class="plan-value-cyber" id="plan-value-display">∞</span>
               </h2>
-              <p class="plan-subtitle-cyber" id="plan-desc-text">Sin límites · Envíos ilimitados</p>
+              <p class="plan-subtitle-cyber" id="inicio-plan-sub">Sin límites · Envíos ilimitados</p>
             </div>
           </div>
 
@@ -2957,6 +2933,30 @@
               <div style="font-size:0.55rem; color:var(--mut); text-transform:uppercase;">Enviados</div>
             </div>
           </div>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.05);">
+            <div style="text-align:center; padding:8px; background:rgba(255,255,255,0.02); border-radius:6px;">
+              <div style="font-size:0.55rem; color:var(--mut); text-transform:uppercase; margin-bottom:2px;">Nivel</div>
+              <div id="r-nivel" style="font-family:'Orbitron',sans-serif; font-size:0.8rem; color:#fff;">—</div>
+            </div>
+            <div style="text-align:center; padding:8px; background:rgba(255,255,255,0.02); border-radius:6px;">
+              <div style="font-size:0.55rem; color:var(--mut); text-transform:uppercase; margin-bottom:2px;">Región</div>
+              <div id="r-region" style="font-family:'Orbitron',sans-serif; font-size:0.8rem; color:#fff;">—</div>
+            </div>
+            <div style="text-align:center; padding:8px; background:rgba(255,255,255,0.02); border-radius:6px;">
+              <div style="font-size:0.55rem; color:var(--mut); text-transform:uppercase; margin-bottom:2px;">Antes</div>
+              <div id="r-antes" style="font-family:'Orbitron',sans-serif; font-size:0.8rem; color:#fff;">—</div>
+            </div>
+            <div style="text-align:center; padding:8px; background:rgba(255,255,255,0.02); border-radius:6px;">
+              <div style="font-size:0.55rem; color:var(--mut); text-transform:uppercase; margin-bottom:2px;">Después</div>
+              <div id="r-despues" style="font-family:'Orbitron',sans-serif; font-size:0.8rem; color:var(--g);">—</div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; text-align:center; padding:8px; background:rgba(0,255,30,0.05); border-radius:6px; border:1px solid rgba(0,255,30,0.1);">
+            <div id="r-tiempo-lbl" style="font-size:0.55rem; color:var(--g); text-transform:uppercase; margin-bottom:2px;">Tiempo</div>
+            <div id="r-tiempo" style="font-family:'Orbitron',sans-serif; font-size:0.85rem; color:#fff;">—</div>
+          </div>
         </div>
 
         <div id="auto-btn-likes-wrap" class="btn-flash" style="margin-top:15px; display:none;">
@@ -3138,7 +3138,7 @@
             stroke-width="2">
             <rect x="1" y="4" width="22" height="16" rx="2" />
             <line x1="1" y1="10" x2="23" y2="10" />
-          </svg>Canjear código de acceso</div>
+          </svg>CANJEAR CÓDIGO</div>
         <p style="color:var(--mut);font-size:.8rem;line-height:1.55;margin-bottom:.9rem">Ingresa el código que te
           compartió el administrador para activar tu plan.</p>
         <div class="msg" id="msg-can"></div>
@@ -3191,6 +3191,34 @@
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </a>
+
+        <!-- STORE PRODUCTS -->
+        <div class="card-cyber" style="margin-top:20px;">
+          <h3 style="font-family:'Orbitron', sans-serif; font-size:0.95rem; color:var(--g); margin-bottom:10px; display:flex; align-items:center; gap:10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            Fragmentos Universales
+          </h3>
+          <p style="color:var(--mut); font-size:0.75rem; margin-bottom:20px;">Consigue fragmentos universales al mejor costo del mercado.</p>
+          <a href="https://wa.me/573164377140" target="_blank" class="btn bp bf btn-flash" style="width:100%; font-weight:900; background:var(--g); color:#000; font-family:'Orbitron', sans-serif; height:45px;">COMPRAR</a>
+        </div>
+
+        <div class="card-cyber">
+          <h3 style="font-family:'Orbitron', sans-serif; font-size:0.95rem; color:var(--g); margin-bottom:10px; display:flex; align-items:center; gap:10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Pases Boyaa
+          </h3>
+          <p style="color:var(--mut); font-size:0.75rem; margin-bottom:20px;">Acceso a pases exclusivos con soporte directo y rápido.</p>
+          <a href="https://wa.me/573164377140" target="_blank" class="btn bp bf btn-flash" style="width:100%; font-weight:900; background:var(--g); color:#000; font-family:'Orbitron', sans-serif; height:45px;">COMPRAR</a>
+        </div>
+
+        <div class="card-cyber" style="margin-bottom:100px;">
+          <h3 style="font-family:'Orbitron', sans-serif; font-size:0.95rem; color:var(--g); margin-bottom:10px; display:flex; align-items:center; gap:10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            +1500 Likes Instantáneos
+          </h3>
+          <p style="color:var(--mut); font-size:0.75rem; margin-bottom:20px;">Impulso inmediato de likes para destacar tu perfil rápidamente.</p>
+          <a href="https://wa.me/573164377140" target="_blank" class="btn bp bf btn-flash" style="width:100%; font-weight:900; background:var(--g); color:#000; font-family:'Orbitron', sans-serif; height:45px;">COMPRAR</a>
+        </div>
       </div>
     </div>
     <!-- PERFIL -->
@@ -3291,14 +3319,14 @@
         <button class="btn bp bf btn-flash" style="width:100%; padding:15px; font-weight:900; background:var(--g); color:#000; font-family:'Orbitron', sans-serif; letter-spacing:1px; border:none;">ACTUALIZAR CREDENCIALES</button>
       </div>
 
-      <button class="btn bo bf btn-flash" style="width:100%; margin-top:20px; padding:15px; border-color:var(--red); color:var(--red); background:rgba(255,71,87,0.05); font-family:'Orbitron', sans-serif; font-weight:800; letter-spacing:1px;">
+      <button class="btn bo bf btn-flash" style="width:100%; margin-top:20px; margin-bottom: 80px; padding:15px; border-color:var(--red); color:var(--red); background:rgba(255,71,87,0.05); font-family:'Orbitron', sans-serif; font-weight:800; letter-spacing:1px;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
           style="vertical-align:middle; margin-right:8px;">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
           <polyline points="16 17 21 12 16 7" />
           <line x1="21" y1="12" x2="9" y2="12" />
         </svg>
-        CERRAR SESIÓN DEL SISTEMA
+        Cerrar Sesion
       </button>
     </div>
   </main>
@@ -3333,8 +3361,8 @@
     <button class="bn" id="bn-acceso">
       <div class="bnI"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
           stroke-width="2">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg></div>Acceso
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg></div>Tienda
     </button>
     <button class="bn" id="bn-perfil">
       <div class="bnI"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -3344,68 +3372,201 @@
         </svg></div>Perfil
     </button>
   </nav>
-
-  <!-- ═══ SCRIPTS VISUALES ÚNICAMENTE ═══ -->
   <script>
+    /* ═══════════════════════════════════════════════════════════════════
+       panel.js — Lógica completa del dashboard BoostSpeed
+       Requiere: api.js cargado antes que este script
+    ═══════════════════════════════════════════════════════════════════ */
 
+    let userData = null, _autoRefreshTimer = null, _ct = 'inicio', _addFormOpen = false, _autoTipo = 'likes', _autoIds = [];
+    let _neonCanvases = [], _neonStart = null, _neonRAF = null;
 
-
-    /* ─── TAB VISUAL (sin lógica de datos) ─── */
-    let _ct = 'inicio';
-    function tab(t) {
-      if (t === _ct) return; _ct = t;
-      document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-      const next = document.getElementById('pane-' + t);
-      if (next) { window.scrollTo({ top: 0, behavior: 'instant' }); next.style.animation = 'none'; next.offsetHeight; next.style.animation = ''; next.classList.add('active'); }
-      document.querySelectorAll('.bn').forEach(b => b.classList.remove('active'));
-      const mob = document.getElementById('bn-' + t); if (mob) mob.classList.add('active');
-      document.querySelectorAll('.pc-nav-btn').forEach(b => b.classList.remove('active'));
-      const pc = document.getElementById('pc-' + t); if (pc) pc.classList.add('active');
-    }
-
-    /* ─── TOGGLE VISUAL DEL FORMULARIO DE AUTO ─── */
-    let _addFormOpen = false;
-    function toggleAddForm() {
-      _addFormOpen = !_addFormOpen;
-      const form = document.getElementById('auto-add-form');
-      const lbl = document.getElementById('add-form-btn-lbl');
-      const btn = document.getElementById('btn-toggle-add-form');
-      if (_addFormOpen) { form.style.display = 'block'; if (lbl) lbl.textContent = 'Cerrar'; if (btn) { btn.style.background = 'var(--bg3)'; btn.style.color = 'var(--mut)'; btn.style.border = '1px solid var(--bdr)'; } }
-      else { form.style.display = 'none'; if (lbl) lbl.textContent = 'Agregar ID'; if (btn) { btn.style.background = 'var(--g)'; btn.style.color = '#000'; btn.style.border = 'none'; } }
-    }
-
-    /* ─── TOGGLE VISUAL LIKES/DÍAS ─── */
-    function setAutoTipo(t) {
-      const tl = document.getElementById('auto-toggle-likes'); const td = document.getElementById('auto-toggle-dias');
-      const pl = document.getElementById('auto-panel-likes'); const pd = document.getElementById('auto-panel-dias');
-      const on = 'flex:1;padding:.38rem .5rem;border-radius:8px;border:1px solid rgba(0,255,30,.35);background:rgba(0,255,30,.1);color:var(--g);font-family:\'Exo 2\',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s';
-      const off = 'flex:1;padding:.38rem .5rem;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--mut);font-family:\'Exo 2\',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s';
-      if (t === 'likes') { tl.style.cssText = on; td.style.cssText = off; pl.style.display = 'block'; pd.style.display = 'none'; }
-      else { td.style.cssText = on; tl.style.cssText = off; pd.style.display = 'block'; pl.style.display = 'none'; }
-    }
-
-    /* ─── PRESET BUTTONS VISUAL ─── */
-    function setAutoLikes(n) {
-      document.getElementById('auto-likes-input').value = n;
-      ['500', '1000', '2000', '3000'].forEach(v => { const b = document.getElementById('al-' + v); if (b) b.classList.toggle('preset-active', parseInt(v) === n); });
-    }
-    function setAutoDias(n) {
-      document.getElementById('auto-dias-input').value = n;
-      ['7', '15', '30'].forEach(v => { const b = document.getElementById('ad-' + v); if (b) b.classList.toggle('preset-active', parseInt(v) === n); });
-    }
-
-    /* ─── WIRING DE BOTONES DE NAVEGACIÓN ─── */
-    document.addEventListener('DOMContentLoaded', () => {
-      ['inicio', 'likes', 'auto', 'hist', 'acceso', 'perfil'].forEach(t => {
-        const mob = document.getElementById('bn-' + t); if (mob) mob.onclick = () => tab(t);
-        const pc = document.getElementById('pc-' + t); if (pc) pc.onclick = () => tab(t);
+    function initNeonLines() {
+      _neonCanvases.forEach(c => c.remove()); _neonCanvases = [];
+      const selectores = _ct === 'auto' ? '.add-id-section,.auto-log' : _ct === 'hist' ? '.card' : '.card,.plan-banner,.limitbar-wrap,.invite-card';
+      document.querySelectorAll(selectores).forEach(el => {
+        const rect = el.getBoundingClientRect(); if (rect.bottom < -100 || rect.top > window.innerHeight + 100) return;
+        const canvas = document.createElement('canvas'); canvas.className = 'nl-canvas'; el.style.position = 'relative'; el.appendChild(canvas); _neonCanvases.push(canvas);
       });
+      if (!_neonRAF) _neonRAF = requestAnimationFrame(neonFrame);
+    }
+    function neonFrame(ts) {
+      _neonRAF = requestAnimationFrame(neonFrame); if (document.hidden) return; if (!_neonStart) _neonStart = ts;
+      const elapsed = (ts - _neonStart) / 1000, speed = 5, segs = _ct === 'auto' ? 15 : 25;
+      for (let ci = 0; ci < _neonCanvases.length; ci++) {
+        const canvas = _neonCanvases[ci], par = canvas.parentElement; if (!par) continue;
+        const w = par.offsetWidth, h = par.offsetHeight; if (!w || !h) continue;
+        if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+        const ctx = canvas.getContext('2d', { alpha: true }); ctx.clearRect(0, 0, w, h);
+        const P = 2 * (w + h), lineLen = P * .22, progress = (elapsed / speed) % 1, head = progress * P, tail = head - lineLen;
+        ctx.lineCap = 'round'; ctx.lineWidth = 1.5;
+        for (let s = 0; s < segs; s++) {
+          const t0 = tail + (s / segs) * lineLen, t1 = tail + ((s + 1) / segs) * lineLen;
+          const p0 = ((t0 % P) + P) % P, p1 = ((t1 % P) + P) % P; if (getEdge(w, h, p0) !== getEdge(w, h, p1)) continue;
+          const [x0, y0] = getPoint(w, h, p0), [x1, y1] = getPoint(w, h, p1);
+          ctx.strokeStyle = `rgba(0,255,30,${(s / segs) * .8})`; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+        }
+      }
+    }
+    function getEdge(w, h, p) { if (p < w) return 0; p -= w; if (p < h) return 1; p -= h; if (p < w) return 2; return 3; }
+    function getPoint(w, h, p) { if (p < w) return [p, 0]; p -= w; if (p < h) return [w, p]; p -= h; if (p < w) return [w - p, h]; p -= w; return [0, h - p]; }
+
+    (function () {
+      const c = document.getElementById('meteors'); if (!c) return;
+      const ANGLE = 25, VH = window.innerHeight, VW = window.innerWidth;
+      const total = VH + 200, moveY = total, moveX = -Math.tan(ANGLE * Math.PI / 180) * total;
+      function spawnMeteor() {
+        if (document.hidden) { setTimeout(spawnMeteor, 2000); return; }
+        const m = document.createElement('div'); const len = 60 + Math.random() * 50, startX = Math.random() * (VW + 100);
+        m.style.cssText = `left:${startX}px;top:${-len - 20}px;width:2px;height:${len}px;transform:rotate(-${ANGLE}deg);background:linear-gradient(to bottom,transparent,rgba(0,255,30,.6),#fff);position:absolute;z-index:0;pointer-events:none;`;
+        c.appendChild(m); const dur = 2800 + Math.random() * 1200, t0 = performance.now();
+        function af(now) {
+          const t = Math.min((now - t0) / dur, 1); m.style.opacity = t < .12 ? t / .12 : 1 - t;
+          m.style.transform = `rotate(-${ANGLE}deg) translate(${moveX * t}px,${moveY * t}px)`;
+          if (t < 1) requestAnimationFrame(af); else { m.remove(); setTimeout(spawnMeteor, 2000 + Math.random() * 5000); }
+        }
+        requestAnimationFrame(af);
+      }
+      spawnMeteor(); if (VW >= 768) { setTimeout(spawnMeteor, 1200); setTimeout(spawnMeteor, 3000); }
+    })();
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!localStorage.getItem('bs_token')) { location.href = '/'; return; }
+      initNeonLines();
+      const savedTab = sessionStorage.getItem('bs_tab');
+      if (savedTab && savedTab !== 'inicio') {
+        _ct = savedTab;
+        document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+        const pane = document.getElementById('pane-' + savedTab); if (pane) pane.classList.add('active');
+        document.querySelectorAll('.bn').forEach(b => b.classList.remove('active'));
+        const mob = document.getElementById('bn-' + savedTab); if (mob) mob.classList.add('active');
+      }
+      await cargarPerfil(); cargarTop(); cargarPublicStats();
+      if (_ct === 'auto') { pintarAutoStats(userData); cargarAutoIDs(); arrancarAutoRefresh(); }
+      if (_ct === 'hist') cargarHistFull();
+      setInterval(() => { if (_ct === 'inicio') cargarTop(); }, 30000);
+      setInterval(actualizarCountdowns, 60000);
       document.getElementById('btn-toggle-add-form').onclick = toggleAddForm;
       document.getElementById('auto-toggle-likes').onclick = () => setAutoTipo('likes');
       document.getElementById('auto-toggle-dias').onclick = () => setAutoTipo('dias');
-      ['500', '1000', '2000', '3000'].forEach(v => { const b = document.getElementById('al-' + v); if (b) b.onclick = () => setAutoLikes(parseInt(v.replace(',', ''))); });
-      ['7', '15', '30'].forEach(v => { const b = document.getElementById('ad-' + v); if (b) b.onclick = () => setAutoDias(parseInt(v)); });
+      ['inicio','likes','auto','hist','acceso','perfil'].forEach(t => {
+        const m = document.getElementById('bn-'+t);
+        if(m) m.onclick = () => tab(t);
+      });
     });
+
+    async function cargarPerfil() { if (typeof API === 'undefined') return; const res = await API.get('/api/perfil'); if (!res.ok) { salir(); return; } userData = res.user; pintarUI(res.user, res.historial); }
+    async function cargarPublicStats() { try { if (typeof API === 'undefined') return; const res = await API.get('/api/public-stats'); if (res.ok) { animCount('st-usuarios', res.usuarios); animCount('st-likes-total', res.likes_hoy || res.likes); } } catch(e){} }
+    async function cargarTop() {
+      const list = document.getElementById('top-list'); if (!list || typeof API === 'undefined') return;
+      try {
+        const res = await API.get('/api/top-usuarios'); if (!res.ok || !res.top) return;
+        list.innerHTML = res.top.slice(0, 5).map((u, i) => `
+          <div class="top-item">
+            <div class="top-av">${u.username.slice(0, 2).toUpperCase()}</div>
+            <div class="top-name">${u.username}</div>
+            <div style="text-align:right"><div class="top-lks">${u.total_likes.toLocaleString()}</div><div class="top-ll">likes</div></div>
+          </div>`).join('');
+      } catch (e) {}
+    }
+    async function cargarHistFull() { if (typeof API === 'undefined') return; const res = await API.get('/api/perfil'); if (res.ok) pintarHistorial(res.historial); }
+
+    function pintarUI(u, hist) {
+      const ini = u.username.slice(0, 2).toUpperCase();
+      const nAv = document.getElementById('nav-av'), nUn = document.getElementById('nav-un');
+      if (nAv) nAv.textContent = ini; if (nUn) nUn.textContent = u.username;
+      animCount('st-misLikes', u.total_likes_enviados || 0);
+      const b = document.getElementById('lp-badge'), n = document.getElementById('lp-nombre'), s = document.getElementById('lp-sub');
+      if (u.plan_activo) {
+        if (b) { b.className = 'pbadge pon'; b.textContent = u.ilimitado ? '🚀 Ilimitado' : 'Activo'; }
+        if (n) n.textContent = u.plan_nombre; if (s) s.textContent = u.ilimitado ? 'Sin límites' : `${u.likes_disponibles.toLocaleString()} likes restantes`;
+      }
+      if (u.plan_activo) {
+        const icp = document.getElementById('inicio-con-plan'), isp = document.getElementById('inicio-sin-plan');
+        if (icp) icp.style.display='block'; if (isp) isp.style.display='none';
+        const ipn = document.getElementById('inicio-plan-nombre'), ips = document.getElementById('inicio-plan-sub');
+        if (ipn) ipn.textContent = u.plan_nombre;
+        if (ips) ips.textContent = u.ilimitado ? 'Sin límites' : `${u.likes_disponibles.toLocaleString()} likes disponibles`;
+      }
+      const lv = document.getElementById('limit-val'), lf = document.getElementById('limit-fill');
+      if (lv) lv.textContent = u.ilimitado ? `${u.envios_hoy}/∞` : `${u.envios_hoy}/${u.envios_por_dia}`;
+      if (lf) lf.style.width = u.ilimitado ? '15%' : (Math.min(u.envios_hoy/u.envios_por_dia,1)*100)+'%';
+      const pa = document.getElementById('p-av'), pn = document.getElementById('p-name'), pu = document.getElementById('p-uid'), pp = document.getElementById('p-plan');
+      if (pa) pa.textContent = ini; if (pn) pn.textContent = u.username;
+      if (pu) pu.textContent = u.uid; if (pp) pp.textContent = u.plan_activo ? u.plan_nombre : 'Sin plan';
+      pintarHistorial(hist);
+    }
+
+    function pintarHistorial(hist) {
+      const list = document.getElementById('historial-list'); if (!list) return;
+      if (!hist || !hist.length) { list.innerHTML = '<div class="empty"><p>Sin envíos aún</p></div>'; return; }
+      list.innerHTML = hist.map(h => `
+        <div class="hist-item">
+          <div class="hist-top">
+            <div class="hname">${h.player_name || '—'}</div>
+            <div class="hbadge">+${h.likes_agregados}</div>
+          </div>
+          <div class="huid">${h.ff_uid} · ${new Date(h.fecha).toLocaleString()}</div>
+        </div>`).join('');
+    }
+
+    async function cargarAutoIDs() {
+      const list = document.getElementById('auto-id-list'); if (!list || typeof API === 'undefined') return;
+      try {
+        const res = await API.get('/api/auto/ids'); if (!res.ok) return; _autoIds = res.ids || [];
+        list.innerHTML = _autoIds.map(id => `
+          <div class="id-card">
+            <div class="id-card-info"><div class="id-card-uid">${id.ff_uid}</div><div class="id-card-name">${id.player_name || '—'}</div></div>
+            <button onclick="eliminarAutoID(${id.id})">Eliminar</button>
+          </div>`).join('');
+      } catch (e) {}
+    }
+
+    async function enviarLikes() {
+      if (typeof API === 'undefined') return;
+      const uid = document.getElementById('ff-uid').value.trim(); if (!uid) return;
+      const res = await API.post('/api/enviar-likes', { ff_uid: uid });
+      if (!res.ok) { mostrarMsg('msg-likes', res.error, 'err'); return; }
+      const d = res.data;
+      document.getElementById('r-av').textContent = d.jugador.slice(0,2).toUpperCase();
+      document.getElementById('r-nombre').textContent = d.jugador;
+      document.getElementById('r-uid').textContent = d.uid;
+      document.getElementById('r-nivel').textContent = d.nivel;
+      document.getElementById('r-region').textContent = d.region;
+      document.getElementById('r-agregados').textContent = '+'+d.likes_agregados;
+      document.getElementById('r-antes').textContent = d.likes_antes;
+      document.getElementById('r-despues').textContent = d.likes_despues;
+      document.getElementById('r-tiempo').textContent = d.tiempo;
+      document.getElementById('rbox').style.display = 'block';
+      mostrarMsg('msg-likes', 'Likes enviados con éxito', 'ok');
+      cargarPerfil();
+    }
+
+    async function canjear() {
+      if (typeof API === 'undefined') return;
+      const cod = document.getElementById('cod-inp').value.trim(); if (!cod) return;
+      const res = await API.post('/api/canjear', { codigo: cod });
+      if (!res.ok) { mostrarMsg('msg-can', res.error, 'err'); return; }
+      mostrarMsg('msg-can', 'Código canjeado!', 'ok'); cargarPerfil();
+    }
+
+    function tab(t) {
+      if (t === _ct) return; _ct = t; sessionStorage.setItem('bs_tab', t);
+      document.querySelectorAll('.pane').forEach(p => p.classList.toggle('active', p.id === 'pane-' + t));
+      document.querySelectorAll('.bn').forEach(b => b.classList.toggle('active', b.id === 'bn-' + t));
+      initNeonLines();
+    }
+
+    function toggleAddForm() { _addFormOpen = !_addFormOpen; const form = document.getElementById('auto-add-form'); if (form) form.style.display = _addFormOpen ? 'block' : 'none'; }
+    function setAutoTipo(t) { _autoTipo = t; const pl = document.getElementById('auto-panel-likes'), pd = document.getElementById('auto-panel-dias'); if (pl) pl.style.display = t==='likes'?'block':'none'; if (pd) pd.style.display = t==='dias'?'block':'none'; }
+    function salir() { localStorage.clear(); location.href = '/'; }
+    function animCount(id, target) { 
+      const el = document.getElementById(id); if (!el) return;
+      let c = 0; const step = target / 50;
+      const int = setInterval(() => { c += step; el.textContent = Math.floor(c).toLocaleString(); if (c >= target) { el.textContent = target.toLocaleString(); clearInterval(int); } }, 20);
+    }
+    function mostrarMsg(id, txt, tipo) { const el = document.getElementById(id); if (el) { el.textContent = txt; el.className = 'msg ' + tipo; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 5000); } }
+    function actualizarResumen() {} function actualizarCountdowns() {} function arrancarAutoRefresh() {}
   </script>
 </body>
 
