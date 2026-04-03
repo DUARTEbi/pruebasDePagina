@@ -6,107 +6,46 @@
 <meta name="theme-color" content="#111111"/>
 <title>BoostSpeed – Likes de Free Fire</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Exo+2:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --g: #00FF1E; --gm: #00e61a;
-  --bg: #111111; --bg2: #161616; --sur: #1a1a1a;
-  --bdr: rgba(0, 255, 30, 0.15); --txt: #eef2ee; --mut: #8a8a8a; --red: #ff4757;
-}
+:root{--g:#00FF1E;--gm:#00e61a;--bg:#111;--bg2:#161616;--sur:#1a1a1a;--bdr:rgba(0,255,30,.15);--txt:#eef2ee;--mut:#8a8a8a}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
-
-.bg-glow {
-  position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);
-  width:600px;height:600px;border-radius:50%;
-  background:radial-gradient(circle,rgba(0,255,30,.04) 0%,transparent 65%);
-  pointer-events:none;z-index:0;
-}
-
-nav {
-  position:sticky;top:0;z-index:200;
-  background:rgba(17,17,17,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--bdr);padding:0 1.5rem;
-  display:flex;align-items:center;justify-content:space-between;
-  height:62px;
-}
-.logo { font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:800;color:var(--g);text-decoration:none;letter-spacing:0.5px;}
-.logo span { color:var(--txt);font-weight:600; }
-
+.bg-glow{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,30,.04)0%,transparent 65%);pointer-events:none;z-index:0}
+nav{position:sticky;top:0;z-index:200;background:rgba(17,17,17,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--bdr);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:800;color:var(--g);text-decoration:none;letter-spacing:.5px}
+.logo span{color:var(--txt);font-weight:600}
 .rayo-impacto{color:#ffea00;display:inline-block;vertical-align:middle;width:.85em;height:.85em;margin-left:6px;will-change:transform,opacity,filter;transform-origin:center bottom;animation:strike 3.5s infinite linear}
 @keyframes strike{0%,80%,85%,92%,100%{opacity:.1;transform:scale(.9)rotate(0deg);filter:drop-shadow(0 0 2px rgba(255,234,0,.2))}82%{opacity:1;transform:scale(1.1)rotate(-5deg);filter:drop-shadow(0 0 10px #ffea00)}88%{opacity:1;transform:scale(1.3)rotate(6deg);filter:drop-shadow(0 0 15px #ffea00)drop-shadow(0 0 5px #fff)}}
-
-.btn {
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:0.6rem 1.4rem;border-radius:9px;font-family:'Exo 2',sans-serif;
-  font-weight:700;font-size:0.9rem;border:none;color:#000;
-  transition:transform 0.2s,box-shadow 0.2s;position:relative;cursor:pointer;
-}
-.btn-ghost { background:transparent; border:1px solid var(--bdr); color:var(--txt); }
-.btn-ghost:hover { border-color:var(--g); color:var(--g); }
-.btn-p { background:var(--g); box-shadow:0 4px 15px rgba(0,255,30,.15); }
-.btn-p:hover { background:var(--gm); transform:translateY(-2px); box-shadow:0 8px 25px rgba(0,255,30,.25); }
-.btn-p:active, .btn-ghost:active { transform:scale(.97); }
-.btn-lg { padding:0.8rem 2rem; font-size:1rem; width:100%; max-width:320px; }
-
-/* HERO */
-.hero {
-  position:relative; z-index:1; padding:2rem 1.5rem; 
-  display:flex; flex-direction:column; align-items:center; text-align:center;
-}
-.hero h1 { 
-  font-family:'Rajdhani',sans-serif; font-size:clamp(2.2rem,8vw,3.8rem); font-weight:800;
-  line-height:1.1; margin-bottom:0.6rem; max-width:820px;
-}
-.hero h1 em {
-  font-style:normal; color:var(--g);
-  filter:drop-shadow(0 0 10px rgba(0,255,30,0.3));
-}
-.hero p { color:var(--mut); font-size:0.95rem; max-width:550px; line-height:1.5; margin-bottom:1.5rem; }
-
-.hero-cta { display:flex; flex-direction:column; gap:0.6rem; align-items:center; margin-bottom:1.5rem; width:100%; }
-
-.stats-board {
-  display:flex; align-items:center; justify-content:center; gap:2rem;
-  background:var(--sur); border:1px solid var(--bdr); border-radius:12px;
-  padding:0.9rem 2rem; width:max-content; max-width:100%; box-shadow:0 8px 25px rgba(0,0,0,0.3);
-}
-.stat-item { display:flex; flex-direction:column; align-items:center; }
-.stat-num { font-family:'Rajdhani',sans-serif; font-size:1.6rem; font-weight:800; color:var(--g); line-height:1; }
-.stat-lbl { font-size:0.65rem; text-transform:uppercase; color:var(--mut); margin-top:4px; font-weight:600; letter-spacing:0.5px;}
-.stat-sep { width:1px; height:35px; background:linear-gradient(to bottom,transparent,var(--bdr),transparent); }
-
-@media(max-width:400px){
-  .stats-board { align-items:center; gap:1.2rem; padding: 1rem 1.5rem; width:100%; }
-}
-
-/* SECCION CARDS */
-.sec { position:relative; z-index:1; padding:2.5rem 1.5rem; }
-.sec-title { text-align:center; margin-bottom:2rem; }
-.sec-title h2 { font-family:'Rajdhani',sans-serif; font-size:clamp(1.75rem,4vw,2.5rem); font-weight:700; }
-.sec-title h2 span { color:var(--g); }
-
-.grid {
-  display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1.2rem;
-  max-width:1000px; margin:0 auto;
-}
-.card {
-  background:var(--sur); border:1px solid var(--bdr); border-radius:13px;
-  padding:1.5rem; position:relative; overflow:hidden;
-}
-.c-ico {
-  width:42px; height:42px; border-radius:10px; background:rgba(0,255,30,0.06);
-  border:1px solid rgba(0,255,30,0.15); display:flex; align-items:center; justify-content:center;
-  margin-bottom:1rem;
-}
-.c-ico svg { width:22px; height:22px; stroke:var(--g); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-.card h3 { font-family:'Rajdhani',sans-serif; font-size:1.15rem; font-weight:700; margin-bottom:0.4rem; color: #fff;}
-.card p { color:var(--mut); font-size:0.85rem; line-height:1.5; }
-
-/* TRACER */
-.nl-canvas { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:2; border-radius:inherit; }
-
-/* MODALES */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:.6rem 1.4rem;border-radius:9px;font-family:'Exo 2',sans-serif;font-weight:700;font-size:.9rem;border:none;color:#000;transition:transform .2s,box-shadow .2s;position:relative;cursor:pointer}
+.btn-ghost{background:transparent;border:1px solid var(--bdr);color:var(--txt)}
+.btn-ghost:hover{border-color:var(--g);color:var(--g)}
+.btn-p{background:var(--g);box-shadow:0 4px 15px rgba(0,255,30,.15)}
+.btn-p:hover{background:var(--gm);transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,255,30,.25)}
+.btn-p:active,.btn-ghost:active{transform:scale(.97)}
+.btn-lg{padding:.85rem 2rem;font-size:1rem;width:100%;max-width:320px}
+.hero{position:relative;z-index:1;padding:2.5rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(2.2rem,8vw,3.8rem);font-weight:800;line-height:1.1;margin-bottom:.6rem;max-width:820px}
+.hero h1 em{font-style:normal;color:var(--g);filter:drop-shadow(0 0 10px rgba(0,255,30,.3))}
+.hero p{color:var(--mut);font-size:.95rem;max-width:550px;line-height:1.5;margin-bottom:1.5rem}
+.hero-cta{display:flex;flex-direction:column;gap:.6rem;align-items:center;margin-bottom:1.5rem;width:100%}
+.stats-board{display:flex;align-items:center;justify-content:center;gap:2rem;background:var(--sur);border:1px solid var(--bdr);border-radius:12px;padding:.9rem 2rem;width:max-content;max-width:100%;box-shadow:0 8px 25px rgba(0,0,0,.3);position:relative}
+.stat-item{display:flex;flex-direction:column;align-items:center}
+.stat-num{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:800;color:var(--g);line-height:1}
+.stat-lbl{font-size:.65rem;text-transform:uppercase;color:var(--mut);margin-top:4px;font-weight:600;letter-spacing:.5px}
+.stat-sep{width:1px;height:35px;background:linear-gradient(to bottom,transparent,var(--bdr),transparent)}
+@media(max-width:400px){.stats-board{gap:1.2rem;padding:1rem 1.5rem}.stat-num{font-size:1.3rem}}
+.sec{position:relative;z-index:1;padding:2.5rem 1.5rem}
+.sec-title{text-align:center;margin-bottom:2rem}
+.sec-title h2{font-family:'Rajdhani',sans-serif;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700}
+.sec-title h2 span{color:var(--g)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;max-width:1000px;margin:0 auto}
+.card{background:var(--sur);border:1px solid var(--bdr);border-radius:13px;padding:1.5rem;position:relative;overflow:hidden}
+.c-ico{width:42px;height:42px;border-radius:10px;background:rgba(0,255,30,.06);border:1px solid rgba(0,255,30,.15);display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.c-ico svg{width:22px;height:22px;stroke:var(--g);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card h3{font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:.4rem;color:#fff}
+.card p{color:var(--mut);font-size:.85rem;line-height:1.5}
+.nl-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;border-radius:inherit}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .2s}
 .ov.open{opacity:1;pointer-events:all}
 .modal{background:var(--bg2);border:1px solid var(--bdr);border-radius:17px;padding:2rem;width:100%;max-width:400px;position:relative;transform:translateY(15px);transition:transform .2s,opacity .2s;opacity:0;max-height:90vh;overflow-y:auto}
@@ -123,16 +62,11 @@ nav {
 .btn-full{width:100%}
 .fl{font-size:.83rem;color:var(--mut);text-align:center;margin-top:.85rem}
 .fl a{color:var(--g);text-decoration:none;font-weight:700}
-
-/* NOTIFICACION FLOTANTE */
+footer{position:relative;z-index:1;border-top:1px solid var(--bdr);padding:1.5rem;text-align:center;color:var(--mut);font-size:.8rem}
+footer strong{color:var(--g)}
 #notif-container{position:fixed;left:18px;bottom:18px;z-index:500;display:flex;flex-direction:column-reverse;gap:.5rem;pointer-events:none;max-width:250px}
-.notif{
-  background:rgba(17,17,17,.95);border:1px solid rgba(0,255,30,.3);border-radius:10px;
-  padding:.6rem .85rem;display:flex;align-items:center;gap:.55rem;
-  backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 12px rgba(0,255,30,.1);
-  animation:notifRise 4.5s forwards;
-}
-@keyframes notifRise{ 0%{transform:translateY(20px);opacity:0} 10%,80%{transform:translateY(0);opacity:1} 100%{transform:translateY(-20px);opacity:0} }
+.notif{background:rgba(17,17,17,.95);border:1px solid rgba(0,255,30,.3);border-radius:10px;padding:.6rem .85rem;display:flex;align-items:center;gap:.55rem;backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 12px rgba(0,255,30,.1);animation:notifRise 4.5s forwards}
+@keyframes notifRise{0%{transform:translateY(20px);opacity:0}10%,80%{transform:translateY(0);opacity:1}100%{transform:translateY(-20px);opacity:0}}
 .notif-ico{width:28px;height:28px;border-radius:7px;background:rgba(0,255,30,.12);border:1px solid rgba(0,255,30,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .notif-txt{flex:1;min-width:0}
 .notif-name{font-family:'Rajdhani',sans-serif;font-size:.9rem;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;}
@@ -153,7 +87,7 @@ nav {
 <section class="hero">
   <h1>Aumenta tus <em>Likes de Free Fire</em></h1>
   <p>Plataforma dedicada a Free Fire: Servicios premium para impulsar tu cuenta de free fire. Seguro y rápido diseñado para que seas superior a los demás.</p>
-  
+
   <div class="hero-cta">
     <button class="btn btn-p btn-lg" id="btn-login-hero" onclick="abrirModal('login')">Iniciar sesión</button>
     <button class="btn btn-ghost btn-lg" id="btn-registro-hero" onclick="abrirModal('registro')">Crear cuenta</button>
@@ -174,10 +108,10 @@ nav {
 
 <div class="sec">
   <div class="sec-title"><h2>¿Qué tiene <span>BoostSpeed</span>?</h2></div>
-  
+
   <div class="grid">
     <div class="card" id="card-1">
-      <div class="c-ico"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1 7.8 7.8a5.5 5.5 0 000-7.8z"/></svg></div>
+      <div class="c-ico"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
       <h3>Sistema de Likes</h3>
       <p>Envío automatizado de 200-220 likes cada 24h a tu ID. Seguro, constante y sin riesgos.</p>
     </div>
@@ -203,15 +137,14 @@ nav {
   <strong>BoostSpeed</strong> &copy; 2026 · Plataforma de likes para Free Fire · Activo 24/7
 </footer>
 
-<!-- MODALES -->
 <div class="ov" id="ov-login" onclick="cerrarModal('login',event)">
   <div class="modal" id="modal-login">
     <button class="mc" onclick="cerrarModal('login')">✕</button>
     <h2>Iniciar sesión</h2>
     <p class="sub">Bienvenido de vuelta a BoostSpeed</p>
-    <div class="fg"><label>Usuario</label><input type="text" placeholder="Tu nombre de usuario"/></div>
-    <div class="fg"><label>Contraseña</label><input type="password" placeholder="••••••••"/></div>
-    <button class="btn btn-p btn-full">Entrar →</button>
+    <div class="fg"><label>Usuario</label><input type="text" id="l-user" placeholder="Tu nombre de usuario" autocomplete="username"/></div>
+    <div class="fg"><label>Contraseña</label><input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"/></div>
+    <button class="btn btn-p btn-full" onclick="login()">Entrar →</button>
     <div class="fl">¿No tienes cuenta? <a href="#" onclick="switchModal('login','registro');return false">Crear cuenta</a></div>
   </div>
 </div>
@@ -221,145 +154,105 @@ nav {
     <button class="mc" onclick="cerrarModal('registro')">✕</button>
     <h2>Crear cuenta</h2>
     <p class="sub">Empieza gratis en segundos</p>
-    <div class="fg"><label>Usuario</label><input type="text" placeholder="Elige un nombre de usuario"/></div>
-    <div class="fg"><label>Correo o teléfono</label><input type="text" placeholder="correo@ejemplo.com o +57..."/></div>
-    <div class="fg"><label>Contraseña</label><input type="password" placeholder="Mínimo 6 caracteres"/></div>
-    <button class="btn btn-p btn-full">Crear cuenta →</button>
+    <div class="fg"><label>Usuario</label><input type="text" id="r-user" placeholder="Elige un nombre de usuario" autocomplete="username"/></div>
+    <div class="fg"><label>Correo o teléfono</label><input type="text" id="r-contact" placeholder="correo@ejemplo.com o +57..."/></div>
+    <div class="fg"><label>Contraseña</label><input type="password" id="r-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password" onkeydown="if(event.key==='Enter')registro()"/></div>
+    <button class="btn btn-p btn-full" onclick="registro()">Crear cuenta →</button>
     <div class="fl">¿Ya tienes cuenta? <a href="#" onclick="switchModal('registro','login');return false">Iniciar sesión</a></div>
   </div>
 </div>
 
 <script>
-// BORDER TRACER - CORREGIDO
-function attachTracer(target, opt={}) {
-  if(!target) return;
-  
-  // Evitar duplicados
-  if(target.dataset.hasTracer) return;
-  target.dataset.hasTracer = '1';
-  
-  const cvs = document.createElement('canvas');
-  cvs.className = 'nl-canvas';
-  if(getComputedStyle(target).position === 'static') target.style.position = 'relative';
-  target.appendChild(cvs);
+// NEON TRACER - Funcionando correctamente
+function attachTracer(target, opts) {
+  opts = opts || {};
+  const speed = opts.speed || 0.5;
+  const tailLen = opts.tail || 80;
+  const lineWidth = opts.width || 2;
 
-  const ctx = cvs.getContext('2d');
-  let path, total, w, h, pos=0, then=performance.now();
-  let isReady = false;
+  if (target.dataset.hasTracer) return;
+  target.dataset.hasTracer = '1';
+
+  const canvas = document.createElement('canvas');
+  canvas.className = 'nl-canvas';
+  if (getComputedStyle(target).position === 'static') target.style.position = 'relative';
+  target.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0, R = 0, P = 0, pos = 0;
 
   function resize() {
     const rect = target.getBoundingClientRect();
-    w = Math.max(1, Math.round(rect.width));
-    h = Math.max(1, Math.round(rect.height));
-    
-    if(w === 0 || h === 0) return;
-    
-    cvs.width = w;
-    cvs.height = h;
-    
-    const bs = getComputedStyle(target);
-    const r = Math.max(0, Math.min(parseFloat(bs.borderRadius) || 0, w/2, h/2));
-    const q = 0.5 * Math.PI * r;
-    
-    // Perímetro total
-    total = 2 * (w + h) - 8 * r + 2 * Math.PI * r;
-    
-    // Definir segmentos del path
-    path = [
-      {len: w - 2*r, type:'L', x0: r, y0: 0, dx: 1, dy: 0}, // top
-      {len: q, type:'A', cx: w-r, cy: r, r: r, a0: -Math.PI/2, da: Math.PI/2}, // tr
-      {len: h - 2*r, type:'L', x0: w, y0: r, dx: 0, dy: 1}, // right
-      {len: q, type:'A', cx: w-r, cy: h-r, r: r, a0: 0, da: Math.PI/2}, // br
-      {len: w - 2*r, type:'L', x0: w-r, y0: h, dx: -1, dy: 0}, // bottom
-      {len: q, type:'A', cx: r, cy: h-r, r: r, a0: Math.PI/2, da: Math.PI/2}, // bl
-      {len: h - 2*r, type:'L', x0: 0, y0: h-r, dx: 0, dy: -1}, // left
-      {len: q, type:'A', cx: r, cy: r, r: r, a0: Math.PI, da: Math.PI/2} // tl
-    ];
-    
-    isReady = true;
+    W = Math.round(rect.width);
+    H = Math.round(rect.height);
+    if (!W || !H) return;
+    canvas.width = W;
+    canvas.height = H;
+    R = parseFloat(getComputedStyle(target).borderRadius) || 0;
+    R = Math.min(R, W / 2, H / 2);
+    P = 2 * (W + H) - 8 * R + 2 * Math.PI * R;
   }
 
-  // Inicializar resize
+  new ResizeObserver(resize).observe(target);
   resize();
-  
-  // Observar cambios de tamaño
-  if('ResizeObserver' in window) {
-    new ResizeObserver(resize).observe(target);
-  }
-  window.addEventListener('resize', resize, {passive: true});
 
   function getPoint(t) {
-    // Normalizar t al rango [0, total]
-    t = ((t % total) + total) % total;
-    
-    for(let seg of path) {
-      if(t <= seg.len + 0.001) {
-        if(seg.type === 'L') {
-          return {
-            x: seg.x0 + seg.dx * t,
-            y: seg.y0 + seg.dy * t
-          };
-        } else {
-          const angle = seg.a0 + (t / seg.len) * seg.da;
-          return {
-            x: seg.cx + seg.r * Math.cos(angle),
-            y: seg.cy + seg.r * Math.sin(angle)
-          };
-        }
-      }
-      t -= seg.len;
+    t = ((t % P) + P) % P;
+    const q = 0.5 * Math.PI * R;
+    if (t < W - 2 * R) return { x: R + t, y: 0 };
+    t -= W - 2 * R;
+    if (t < q) {
+      const a = -Math.PI / 2 + (t / q) * (Math.PI / 2);
+      return { x: W - R + R * Math.cos(a), y: R + R * Math.sin(a) };
     }
-    return {x: 0, y: 0};
+    t -= q;
+    if (t < H - 2 * R) return { x: W, y: R + t };
+    t -= H - 2 * R;
+    if (t < q) {
+      const a = (t / q) * (Math.PI / 2);
+      return { x: W - R + R * Math.cos(a), y: H - R + R * Math.sin(a) };
+    }
+    t -= q;
+    if (t < W - 2 * R) return { x: W - R - t, y: H };
+    t -= W - 2 * R;
+    if (t < q) {
+      const a = Math.PI / 2 + (t / q) * (Math.PI / 2);
+      return { x: R + R * Math.cos(a), y: H - R + R * Math.sin(a) };
+    }
+    t -= q;
+    if (t < H - 2 * R) return { x: 0, y: H - R - t };
+    t -= H - 2 * R;
+    const a = Math.PI + (t / q) * (Math.PI / 2);
+    return { x: R + R * Math.cos(a), y: R + R * Math.sin(a) };
   }
 
-  function run(now) {
-    requestAnimationFrame(run);
-    
-    if(!isReady || !w || !h || !total) {
-      resize();
-      return;
-    }
-    
-    const dt = Math.min((now - then) / 1000, 0.05);
-    then = now;
-    
-    ctx.clearRect(0, 0, w, h);
-    
-    // Velocidad en píxeles por segundo
-    const speed = (opt.speed || 0.5) * total;
-    pos = (pos + speed * dt) % total;
-    
-    // Longitud de la cola (en píxeles)
-    const tailLen = opt.tail || 80;
-    
-    // Dibujar la cola con gradiente
-    const segments = 40;
+  let lastTime = performance.now();
+
+  function draw(now) {
+    requestAnimationFrame(draw);
+    if (!W || !P) return;
+    const dt = Math.min((now - lastTime) / 1000, 0.05);
+    lastTime = now;
+    ctx.clearRect(0, 0, W, H);
+    pos = (pos + speed * dt) % P;
+    const segs = 30;
     ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    
-    for(let i = 0; i < segments; i++) {
-      const t1 = pos - (i / segments) * tailLen;
-      const t2 = pos - ((i + 1) / segments) * tailLen;
-      
-      // No dibujar si cruza el inicio
-      if(t2 < 0 && t1 > 0) continue;
-      
+    for (let i = 0; i < segs; i++) {
+      const t1 = pos - (i / segs) * tailLen;
+      const t2 = pos - ((i + 1) / segs) * tailLen;
+      if (t2 < 0 && t1 > 0) continue;
       const p1 = getPoint(t1);
       const p2 = getPoint(t2);
-      
-      const alpha = 1 - (i / segments);
-      const color = opt.color || '0,255,30';
-      ctx.strokeStyle = `rgba(${color}, ${alpha * 0.9})`;
-      ctx.lineWidth = (opt.weight || 2) * (0.5 + 0.5 * alpha);
-      
+      const alpha = 1 - (i / segs);
+      ctx.strokeStyle = `rgba(0, 255, 30, ${alpha * 0.9})`;
+      ctx.lineWidth = lineWidth * (0.5 + 0.5 * alpha);
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
       ctx.stroke();
     }
   }
-  
-  requestAnimationFrame(run);
+  requestAnimationFrame(draw);
 }
 
 // MODALES
@@ -369,7 +262,7 @@ function abrirModal(n) {
   document.getElementById('ov-' + n).classList.add('open');
   if (!modalTracers[n]) {
     modalTracers[n] = true;
-    attachTracer(document.getElementById('modal-' + n), { color: '0,255,30', speed: 0.4, tail: 100, weight: 1.5 });
+    attachTracer(document.getElementById('modal-' + n), { speed: 0.4, tail: 100, width: 1.5 });
   }
 }
 
@@ -383,29 +276,49 @@ function switchModal(from, to) {
   setTimeout(() => abrirModal(to), 150);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Stats
-  fetch('/api/public-stats')
-    .then(r => r.ok ? r.json() : null)
-    .then(d => {
-      if (d) {
-        document.getElementById('tk-users').textContent = (d.usuarios || 0).toLocaleString('es');
-        document.getElementById('tk-likes').textContent = (d.likes || 0).toLocaleString('es');
-      }
-    })
-    .catch(() => {});
-  
-  // Tracers
-  attachTracer(document.getElementById('btn-entrar'), { color: '0,255,30', speed: 0.6, tail: 60, weight: 1.5 });
-  attachTracer(document.getElementById('btn-login-hero'), { color: '0,255,30', speed: 0.6, tail: 60, weight: 1.5 });
-  attachTracer(document.getElementById('btn-registro-hero'), { color: '0,255,30', speed: 0.6, tail: 60, weight: 1.5 });
-  attachTracer(document.getElementById('stats-board'), { color: '0,255,30', speed: 0.35, tail: 120, weight: 2 });
-  
-  const cardOpts = { color: '0,255,150', speed: 0.35, tail: 120, weight: 2 };
-  for(let i=1; i<=4; i++) attachTracer(document.getElementById('card-'+i), cardOpts);
-});
+// API functions
+async function login() {
+  const user = document.getElementById('l-user').value.trim();
+  const pass = document.getElementById('l-pass').value;
+  if (!user || !pass) return alert('Completa todos los campos');
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ username: user, password: pass })
+    });
+    const data = await res.json();
+    if (!data.ok) return alert(data.error || 'Error al iniciar sesión');
+    localStorage.setItem('bs_token', data.token);
+    localStorage.setItem('bs_user', JSON.stringify(data.user));
+    location.href = '/dashboard.html';
+  } catch(e) {
+    alert('Error de conexión');
+  }
+}
 
-/* ── NOTIFICACIONES FLOTANTES ── */
+async function registro() {
+  const user = document.getElementById('r-user').value.trim();
+  const contact = document.getElementById('r-contact').value.trim();
+  const pass = document.getElementById('r-pass').value;
+  if (!user || !contact || !pass) return alert('Completa todos los campos');
+  try {
+    const res = await fetch('/api/registro', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ username: user, contact, password: pass })
+    });
+    const data = await res.json();
+    if (!data.ok) return alert(data.error || 'Error al registrarse');
+    localStorage.setItem('bs_token', data.token);
+    localStorage.setItem('bs_user', JSON.stringify(data.user));
+    location.href = '/dashboard.html';
+  } catch(e) {
+    alert('Error de conexión');
+  }
+}
+
+// NOTIFICACIONES
 let notifVistas = new Set(), notifQueue = [];
 function mostrarNotif(username, likesAgregados) {
   const cont = document.getElementById('notif-container');
@@ -445,12 +358,34 @@ function processNotifQueue() {
   }
 }
 
-(async () => {
-  await pollNotificaciones();
-  notifQueue = [];
+// INIT
+document.addEventListener('DOMContentLoaded', () => {
+  // Stats
+  fetch('/api/public-stats')
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      if (d) {
+        document.getElementById('tk-users').textContent = (d.usuarios || 0).toLocaleString('es');
+        document.getElementById('tk-likes').textContent = (d.likes || 0).toLocaleString('es');
+      }
+    })
+    .catch(() => {});
+
+  // Tracers
+  attachTracer(document.getElementById('btn-entrar'), { speed: 0.6, tail: 60, width: 1.5 });
+  attachTracer(document.getElementById('btn-login-hero'), { speed: 0.6, tail: 60, width: 1.5 });
+  attachTracer(document.getElementById('btn-registro-hero'), { speed: 0.6, tail: 60, width: 1.5 });
+  attachTracer(document.getElementById('stats-board'), { speed: 0.35, tail: 120, width: 2 });
+  attachTracer(document.getElementById('card-1'), { speed: 0.3, tail: 100, width: 2 });
+  attachTracer(document.getElementById('card-2'), { speed: 0.32, tail: 100, width: 2 });
+  attachTracer(document.getElementById('card-3'), { speed: 0.34, tail: 100, width: 2 });
+  attachTracer(document.getElementById('card-4'), { speed: 0.36, tail: 100, width: 2 });
+
+  // Notificaciones
+  pollNotificaciones();
   setInterval(pollNotificaciones, 8000);
   setInterval(processNotifQueue, 3000);
-})();
+});
 </script>
 </body>
 </html>
