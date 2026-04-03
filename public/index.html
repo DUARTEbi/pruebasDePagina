@@ -46,12 +46,12 @@ p { color: var(--text-mut); font-size: 0.85rem; }
 .delay-3 { animation-delay: 0.3s; }
 
 .rayo-impacto {
-  color: var(--accent); display: inline-block; vertical-align: middle; width: 0.9em; height: 0.9em; margin-left: 6px; will-change: transform, opacity, filter; transform-origin: center bottom; animation: strike 3.5s infinite linear;
+  color: #FFEA00; display: inline-block; vertical-align: middle; width: 0.9em; height: 0.9em; margin-left: 6px; will-change: transform, opacity, filter; transform-origin: center bottom; animation: strike 3.5s infinite linear;
 }
 @keyframes strike {
-  0%, 80%, 85%, 92%, 100% { opacity: 0.1; transform: scale(0.9) rotate(0deg); filter: drop-shadow(0 0 2px rgba(0, 255, 30, 0.2)); }
-  82% { opacity: 1; transform: scale(1.1) rotate(-5deg); filter: drop-shadow(0 0 10px var(--accent)); }
-  88% { opacity: 1; transform: scale(1.3) rotate(6deg); filter: drop-shadow(0 0 15px var(--accent)) drop-shadow(0 0 5px #fff); }
+  0%, 80%, 85%, 92%, 100% { opacity: 0.1; transform: scale(0.9) rotate(0deg); filter: drop-shadow(0 0 2px rgba(255, 234, 0, 0.2)); }
+  82% { opacity: 1; transform: scale(1.1) rotate(-5deg); filter: drop-shadow(0 0 10px #FFEA00); }
+  88% { opacity: 1; transform: scale(1.3) rotate(6deg); filter: drop-shadow(0 0 15px #FFEA00) drop-shadow(0 0 5px #fff); }
 }
 
 /* === UTILS === */
@@ -229,9 +229,10 @@ input[type=number] { -moz-appearance: textfield; }
 
 <main>
   <!-- HERO -->
-  <section class="hero text-center container">
-    <h1 class="anim-fade">Aumenta tus <span class="text-accent text-glow">Likes de Free Fire</span><svg class="rayo-impacto" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></h1>
-    <p class="anim-fade delay-1">Plataforma dedicada a Free Fire: Servicios premium para impulsar tu cuenta de free fire. Seguro y rápido diseñado para que seas superior a los demás.</p>
+  <header class="sec hero text-center">
+    <div class="container">
+      <h1 class="anim-fade delay-1">Aumenta tus <span class="text-accent text-glow">Likes de Free Fire</span></h1>
+      <p class="anim-fade delay-2">Plataforma dedicada a Free Fire: Servicios premium para impulsar tu cuenta de free fire. Seguro y rápido diseñado para que seas superior a los demás.</p>
     
     <div class="hero-cta mt-4 anim-fade delay-2">
       <button class="btn btn-primary" onclick="app.openModal('ov-login')">Iniciar sesión</button>
