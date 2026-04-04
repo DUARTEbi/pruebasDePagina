@@ -89,6 +89,10 @@ main{position:relative;z-index:1;flex:1;padding:1.4rem;max-width:1060px;margin:0
 .sb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
 .sb.warn-sb::after{background:linear-gradient(90deg,transparent,var(--warn),transparent)}
 .sb.warn-sb .sv{color:var(--warn)}
+/* ── stat box especial para IDs-hoy ── */
+.sb.blue-sb::after{background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+.sb.blue-sb .sv{color:var(--blue)}
+.sb.blue-sb:hover{border-color:rgba(77,171,255,.3)}
 .sv{font-family:'Rajdhani',sans-serif;font-size:1.7rem;font-weight:700;color:var(--g)}
 .sl{color:var(--mut);font-size:.7rem;text-transform:uppercase;letter-spacing:.5px;margin-top:.1rem}
 
@@ -148,13 +152,12 @@ tr:hover td{background:rgba(0,255,30,.02)}
 .blikes{background:rgba(255,71,87,.1);color:#ff8a93;border:1px solid rgba(255,71,87,.2)}
 .bilim{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2)}
 
-.udet{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:1rem}
-.ir{display:flex;justify-content:space-between;align-items:center;padding:.54rem 0;border-bottom:1px solid var(--bdr)}
-.ir:last-child{border-bottom:none}
-.ir .ik{color:var(--mut);font-size:.82rem}
-.ir .iv{font-weight:700;font-size:.86rem}
+/* ── Badge tipo envío (manual / auto / ambos) ── */
+.bmanual{background:rgba(77,171,255,.1);color:var(--blue);border:1px solid rgba(77,171,255,.2)}
+.bauto{background:rgba(0,255,30,.09);color:var(--g);border:1px solid rgba(0,255,30,.18)}
+.bambos{background:rgba(255,193,7,.1);color:var(--warn);border:1px solid rgba(255,193,7,.2)}
 
-/* ── Widget API key usage ── */
+/* ── Widget uso de API key ── */
 .api-stats{background:var(--bg3);border:1px solid rgba(255,193,7,.15);border-radius:11px;padding:1rem 1.2rem;margin-bottom:1.1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
 .api-ico{width:38px;height:38px;border-radius:9px;background:rgba(255,193,7,.1);border:1px solid rgba(255,193,7,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem}
 .api-info{flex:1}
@@ -165,6 +168,34 @@ tr:hover td{background:rgba(0,255,30,.02)}
 .api-bar-wrap{width:120px;height:5px;background:rgba(255,193,7,.12);border-radius:3px;overflow:hidden}
 .api-bar-fill{height:100%;border-radius:3px;background:var(--warn);transition:width .5s ease}
 .api-pct{font-size:.68rem;color:var(--mut);text-align:right}
+
+/* ── Widget likes hoy ── */
+.likes-hoy-banner{
+  background:var(--bg3);
+  border:1px solid rgba(77,171,255,.18);
+  border-radius:11px;
+  padding:1rem 1.2rem;
+  margin-bottom:1.1rem;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.lh-ico{
+  width:38px;height:38px;border-radius:9px;
+  background:rgba(77,171,255,.1);border:1px solid rgba(77,171,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:1.1rem;
+}
+.lh-info{flex:1;min-width:0}
+.lh-title{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:var(--blue);margin-bottom:.1rem}
+.lh-sub{color:var(--mut);font-size:.76rem;line-height:1.5}
+.lh-right{display:flex;flex-direction:column;align-items:flex-end;gap:.14rem}
+.lh-val{font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:700;color:var(--blue);line-height:1}
+.lh-val-sub{font-size:.68rem;color:var(--mut);text-align:right}
+.lh-pills{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.25rem}
+
+/* ── Spinner carga ── */
+.spin-wrap{display:flex;align-items:center;justify-content:center;padding:2rem;gap:.6rem;color:var(--mut);font-size:.82rem}
+.spin{width:16px;height:16px;border:2px solid var(--bdr);border-top-color:var(--g);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
 
 /* MODALES */
 .ov{
@@ -190,6 +221,12 @@ tr:hover td{background:rgba(0,255,30,.02)}
 #ov-confirm .modal h2{color:var(--g)}
 .confirm-detail{background:var(--bg3);border:1px solid var(--bdr);border-radius:9px;padding:.85rem 1rem;margin:.5rem 0 1rem;font-size:.83rem;line-height:1.7;text-align:left}
 .confirm-detail strong{color:var(--g)}
+
+.udet{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:1rem}
+.ir{display:flex;justify-content:space-between;align-items:center;padding:.54rem 0;border-bottom:1px solid var(--bdr)}
+.ir:last-child{border-bottom:none}
+.ir .ik{color:var(--mut);font-size:.82rem}
+.ir .iv{font-weight:700;font-size:.86rem}
 
 .mobn{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,7,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--bdr);padding:.38rem .38rem calc(.38rem + env(safe-area-inset-bottom));z-index:100;justify-content:space-around}
 .mb{display:flex;flex-direction:column;align-items:center;gap:.14rem;padding:.34rem .55rem;border-radius:8px;background:transparent;border:none;color:var(--mut);font-family:'Exo 2',sans-serif;font-size:.6rem;font-weight:700;cursor:pointer;transition:color .2s;text-transform:uppercase;letter-spacing:.3px;touch-action:manipulation;min-width:44px}
@@ -238,7 +275,7 @@ tr:hover td{background:rgba(0,255,30,.02)}
   <!-- DASHBOARD -->
   <div class="pane active" id="pane-dash">
 
-    <!-- ── Widget uso de API key ── -->
+    <!-- Widget uso de API key -->
     <div class="api-stats">
       <div class="api-ico">⚡</div>
       <div class="api-info">
@@ -252,12 +289,30 @@ tr:hover td{background:rgba(0,255,30,.02)}
       </div>
     </div>
 
+    <!-- ── NUEVO: Widget IDs con likes hoy ── -->
+    <div class="likes-hoy-banner" id="likes-hoy-banner">
+      <div class="lh-ico">❤️</div>
+      <div class="lh-info">
+        <div class="lh-title">IDs que recibieron likes hoy</div>
+        <div class="lh-sub" id="lh-sub-txt">Cargando…</div>
+        <div class="lh-pills" id="lh-pills"></div>
+      </div>
+      <div class="lh-right">
+        <div class="lh-val" id="lh-ids-count">—</div>
+        <div class="lh-val-sub" id="lh-val-sub">IDs únicos</div>
+      </div>
+    </div>
+    <!-- ── FIN widget ── -->
+
     <div class="sg">
       <div class="sb"><div class="sv" id="a-tu">0</div><div class="sl">Usuarios</div></div>
       <div class="sb"><div class="sv" id="a-tc">0</div><div class="sl">Códigos</div></div>
       <div class="sb"><div class="sv" id="a-uc">0</div><div class="sl">Usados</div></div>
       <div class="sb"><div class="sv" id="a-ap">0</div><div class="sl">Planes activos</div></div>
+      <!-- ── NUEVO stat box ── -->
+      <div class="sb blue-sb"><div class="sv" id="a-ids-hoy">0</div><div class="sl">IDs hoy</div></div>
     </div>
+
     <div class="card">
       <div class="ct">Usuarios recientes</div>
       <div class="tw"><table>
@@ -265,6 +320,55 @@ tr:hover td{background:rgba(0,255,30,.02)}
         <tbody id="dash-rec"></tbody>
       </table></div>
     </div>
+
+    <!-- ── NUEVA TARJETA: Detalle de likes por ID hoy ── -->
+    <div class="card" id="card-likes-hoy">
+      <div class="ct" style="justify-content:space-between">
+        <span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" style="vertical-align:-2px;margin-right:.3rem"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          IDs con likes hoy
+          <span id="lh-fecha-tag" style="font-family:'Exo 2',sans-serif;font-size:.72rem;font-weight:400;color:var(--mut);margin-left:.4rem"></span>
+        </span>
+        <div style="display:flex;gap:.4rem;align-items:center">
+          <span id="lh-total-tag" style="font-family:'Rajdhani',sans-serif;font-size:.88rem;color:var(--blue);display:none">
+            <strong id="lh-total-lk">0</strong> <span style="color:var(--mut);font-weight:400">likes totales</span>
+          </span>
+          <button class="btn bo bsm" onclick="loadLikesHoy()" title="Actualizar">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtro tipo de envío -->
+      <div id="lh-filter-wrap" style="display:none;margin-bottom:.85rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center">
+        <span style="color:var(--mut);font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px">Filtrar:</span>
+        <button class="btn bo bsm lh-filter-btn active" id="lhf-todos"   onclick="filtrarLikesHoy('todos')">Todos</button>
+        <button class="btn bo bsm lh-filter-btn"        id="lhf-auto"    onclick="filtrarLikesHoy('auto')">Solo auto</button>
+        <button class="btn bo bsm lh-filter-btn"        id="lhf-manual"  onclick="filtrarLikesHoy('manual')">Solo manual</button>
+      </div>
+
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Target ID</th>
+              <th>Enviado por</th>
+              <th>Likes hoy</th>
+              <th>Tipo</th>
+              <th>Último envío</th>
+            </tr>
+          </thead>
+          <tbody id="tb-likes-hoy">
+            <tr><td colspan="6" class="spin-wrap" style="border:none">
+              <div class="spin"></div> Cargando…
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- ── FIN tarjeta likes hoy ── -->
+
   </div>
 
   <!-- CÓDIGOS -->
@@ -546,10 +650,13 @@ tr:hover td{background:rgba(0,255,30,.02)}
   }
 })();
 
-/* ESTADO */
+/* ── ESTADO GLOBAL ── */
 let admTok = null, editUID = null, recUID = null;
 let tipoPlan = 'dias', editTipo = 'dias';
 let admUser = 'admin';
+
+/* cache interno para filtrado de likes hoy sin volver a llamar al servidor */
+let _likesHoyData = [];
 
 window.addEventListener('DOMContentLoaded', () => {
   const t = localStorage.getItem('bs_admin_token');
@@ -634,22 +741,18 @@ async function loadDash() {
   const pctEl  = document.getElementById('api-pct');
 
   if (r.keyUsage) {
-    // La API reportó directamente el campo key_usage, ej: "7/300"
     const parts = String(r.keyUsage).split('/');
     const used  = parseInt(parts[0], 10) || 0;
     const max   = parseInt(parts[1], 10) || 0;
     const pct   = max > 0 ? Math.min(100, Math.round(used / max * 100)) : 0;
-
-    valEl.textContent = r.keyUsage;          // muestra "7/300"
+    valEl.textContent = r.keyUsage;
     barEl.style.width = pct + '%';
-    // Color de la barra según porcentaje de uso
-    barEl.style.background = pct >= 90 ? 'var(--red)' : pct >= 70 ? 'var(--warn)' : 'var(--warn)';
+    barEl.style.background = pct >= 90 ? 'var(--red)' : 'var(--warn)';
     pctEl.textContent = max > 0 ? pct + '% usado' : '';
     subEl.textContent = max > 0
       ? `Quedan ${(max - used).toLocaleString('es')} llamadas · Se reinicia según el proveedor`
       : 'Usos reportados por la API key del proveedor';
   } else {
-    // keyUsage aún no disponible (servidor recién arrancó, sin envíos aún)
     const envHoy = r.enviosHoy || 0;
     valEl.textContent = envHoy > 0 ? envHoy.toLocaleString('es') : '—';
     barEl.style.width = '0%';
@@ -669,7 +772,159 @@ async function loadDash() {
           <td style="color:var(--mut);font-size:.78rem">${new Date(u.creado_en).toLocaleDateString('es')}</td>
         </tr>`).join('')
     : '<tr><td colspan="4" style="text-align:center;color:var(--mut);padding:1.8rem">Sin usuarios</td></tr>';
+
+  /* ── Cargar tabla de likes hoy ── */
+  loadLikesHoy();
 }
+
+/* ══════════════════════════════════════════════════════
+   NUEVA FUNCIÓN: cargar IDs con likes hoy
+   Endpoint esperado: GET /api/admin/likes-hoy
+   Respuesta esperada del servidor:
+   {
+     ok: true,
+     fecha: "2025-08-15",           // fecha local del servidor (YYYY-MM-DD)
+     total_ids: 12,                 // cantidad de IDs únicos que recibieron likes
+     total_likes: 3450,             // suma de todos los likes enviados hoy
+     manuales: 5,                   // IDs que solo recibieron envíos manuales
+     automaticos: 4,                // IDs que solo recibieron envíos automáticos
+     ambos: 3,                      // IDs con ambos tipos
+     registros: [
+       {
+         target_id: "123456789",    // ID de Instagram/TikTok u otra red
+         usuario: "username",       // usuario de BoostSpeed que realizó el envío
+         likes_hoy: 450,            // total de likes enviados a este ID hoy
+         tipo: "auto",              // "auto" | "manual" | "ambos"
+         ultimo_envio: "2025-08-15T14:32:00Z"  // ISO timestamp del último envío
+       }
+     ]
+   }
+   ══════════════════════════════════════════════════════ */
+async function loadLikesHoy() {
+  /* mostrar spinner en la tabla */
+  document.getElementById('tb-likes-hoy').innerHTML =
+    '<tr><td colspan="6" style="border:none"><div class="spin-wrap"><div class="spin"></div> Cargando…</div></td></tr>';
+
+  const r = await API.getAdmin('/api/admin/likes-hoy', admTok);
+
+  /* banner superior */
+  const idsCountEl = document.getElementById('lh-ids-count');
+  const subTxtEl   = document.getElementById('lh-sub-txt');
+  const pillsEl    = document.getElementById('lh-pills');
+  const statEl     = document.getElementById('a-ids-hoy');
+
+  if (!r.ok) {
+    idsCountEl.textContent = '—';
+    subTxtEl.textContent   = 'No se pudo cargar · Revisa el servidor';
+    document.getElementById('tb-likes-hoy').innerHTML =
+      '<tr><td colspan="6" style="text-align:center;color:var(--mut);padding:1.8rem">Error al cargar datos</td></tr>';
+    return;
+  }
+
+  /* cachear para filtrado local */
+  _likesHoyData = r.registros || [];
+
+  const total     = r.total_ids    || 0;
+  const totalLk   = r.total_likes  || 0;
+  const manuales  = r.manuales     || 0;
+  const autos     = r.automaticos  || 0;
+  const ambos     = r.ambos        || 0;
+  const fecha     = r.fecha        || new Date().toLocaleDateString('es');
+
+  /* stat box */
+  statEl.textContent = total;
+
+  /* banner */
+  idsCountEl.textContent = total;
+  subTxtEl.textContent = total > 0
+    ? `${totalLk.toLocaleString('es')} likes enviados · ${fecha}`
+    : `Ningún ID ha recibido likes hoy · ${fecha}`;
+
+  /* pills resumen tipo */
+  pillsEl.innerHTML = '';
+  if (total > 0) {
+    if (autos    > 0) pillsEl.innerHTML += `<span class="badge bauto">🤖 Auto: ${autos}</span>`;
+    if (manuales > 0) pillsEl.innerHTML += `<span class="badge bmanual">✋ Manual: ${manuales}</span>`;
+    if (ambos    > 0) pillsEl.innerHTML += `<span class="badge bambos">🔀 Ambos: ${ambos}</span>`;
+  }
+
+  /* encabezado tarjeta */
+  document.getElementById('lh-fecha-tag').textContent = fecha;
+  const totalTag = document.getElementById('lh-total-tag');
+  if (total > 0) {
+    document.getElementById('lh-total-lk').textContent = totalLk.toLocaleString('es');
+    totalTag.style.display = 'flex';
+  } else {
+    totalTag.style.display = 'none';
+  }
+
+  /* mostrar filtros solo si hay datos */
+  document.getElementById('lh-filter-wrap').style.display = total > 0 ? 'flex' : 'none';
+
+  /* resetear filtro activo */
+  document.querySelectorAll('.lh-filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('lhf-todos').classList.add('active');
+
+  /* renderizar tabla con todos los registros */
+  renderLikesHoyTabla(_likesHoyData);
+}
+
+/* ── Renderiza la tabla de likes hoy con el array recibido ── */
+function renderLikesHoyTabla(registros) {
+  const tbody = document.getElementById('tb-likes-hoy');
+  if (!registros || registros.length === 0) {
+    tbody.innerHTML =
+      '<tr><td colspan="6" style="text-align:center;color:var(--mut);padding:1.8rem">Sin actividad de likes hoy</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = registros.map((reg, i) => {
+    /* badge de tipo */
+    const tipoBadge = reg.tipo === 'auto'
+      ? '<span class="badge bauto">🤖 Auto</span>'
+      : reg.tipo === 'manual'
+        ? '<span class="badge bmanual">✋ Manual</span>'
+        : '<span class="badge bambos">🔀 Ambos</span>';
+
+    /* hora del último envío (solo hora local) */
+    const horaUltimo = reg.ultimo_envio
+      ? new Date(reg.ultimo_envio).toLocaleTimeString('es', { hour:'2-digit', minute:'2-digit' })
+      : '—';
+    const fechaUltimo = reg.ultimo_envio
+      ? new Date(reg.ultimo_envio).toLocaleDateString('es')
+      : '—';
+
+    return `<tr>
+      <td style="color:var(--mut);font-size:.76rem">${i + 1}</td>
+      <td>
+        <code style="color:var(--blue);font-weight:700;letter-spacing:1px;font-size:.82rem">${reg.target_id}</code>
+      </td>
+      <td style="font-size:.8rem">${reg.usuario || '—'}</td>
+      <td>
+        <span style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:var(--g)">
+          ${(reg.likes_hoy || 0).toLocaleString('es')}
+        </span>
+        <span style="color:var(--mut);font-size:.7rem;margin-left:.2rem">lk</span>
+      </td>
+      <td>${tipoBadge}</td>
+      <td style="color:var(--mut);font-size:.76rem" title="${fechaUltimo}">${horaUltimo}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── Filtrado local (sin llamada extra al servidor) ── */
+function filtrarLikesHoy(tipo) {
+  document.querySelectorAll('.lh-filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('lhf-' + tipo).classList.add('active');
+
+  const filtrado = tipo === 'todos'
+    ? _likesHoyData
+    : _likesHoyData.filter(r => r.tipo === tipo || (tipo !== 'todos' && r.tipo === 'ambos'));
+
+  renderLikesHoyTabla(filtrado);
+}
+
+/* ─────────────── Resto de funciones sin cambios ─────────────── */
 
 async function crearCod() {
   let body = { tipo: tipoPlan };
