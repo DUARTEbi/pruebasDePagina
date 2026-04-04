@@ -192,6 +192,11 @@ async function initDB() {
       CREATE INDEX IF NOT EXISTS idx_auto_ids_proximo ON auto_ids(proximo_envio) WHERE activo = true;
     `);
 
+    // ── Índice para acelerar la query de likes-hoy ─────────────
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_historial_fecha_date ON historial(fecha) WHERE likes_agregados > 0;
+    `);
+
     console.log('✅ Base de datos lista');
   } finally {
     client.release();
@@ -732,14 +737,6 @@ app.post('/api/cambiar-pass', authMiddleware, async (req, res) => {
 
 // ════════════════════════════════════════════════════════════════
 //  AUTO LIKES — COMPARTE EL CONTADOR DIARIO CON EL MANUAL
-//
-//  Horario fijo hora Colombia (UTC-5):
-//    Intento 1: 05:00 COL (10:00 UTC)
-//    Intento 2: 12:00 COL (17:00 UTC)  ← si el 1 falló (0 likes)
-//    Intento 3: 17:00 COL (22:00 UTC)  ← si el 2 falló
-//    Intento 4: 00:00 COL (05:00 UTC)  ← si el 3 falló
-//  Si un intento es exitoso → próximo envío = hora_exacta_de_exito + 24h
-//  Si todos fallan → vuelve al intento 1 del día siguiente
 // ════════════════════════════════════════════════════════════════
 
 const SLOTS_UTC = [5, 10, 17, 22];
@@ -765,15 +762,12 @@ function nextSlot(desde, skipCurrent = false) {
   ));
 }
 
-// ── CAMBIO 1: slots = envios_por_dia (sin tope artificial).
-//    Ilimitado = sin límite de slots (9999 como tope práctico).
 function calcularSlots(usuario) {
   if (usuario.ilimitado) return 9999;
   if (!usuario.plan_activo) return 0;
   return Math.max(1, usuario.envios_por_dia);
 }
 
-// ── Función central AUTO ──────────────────────────────────────
 async function procesarAutoID(autoId) {
   const today = new Date().toISOString().slice(0, 10);
 
@@ -823,8 +817,6 @@ async function procesarAutoID(autoId) {
     return;
   }
 
-  // ── CAMBIO 2: verificar límite diario compartido con el manual ──
-  // Resetear envios_hoy si el día cambió
   if (!row.ilimitado) {
     const fechaUltimo = row.fecha_ultimo_envio
       ? new Date(row.fecha_ultimo_envio).toISOString().slice(0, 10)
@@ -832,7 +824,6 @@ async function procesarAutoID(autoId) {
     const enviosHoyActual = fechaUltimo === today ? (row.envios_hoy || 0) : 0;
 
     if (enviosHoyActual >= row.envios_por_dia) {
-      // Límite diario alcanzado — esperar al siguiente slot
       const siguiente = nextSlot(new Date(), true);
       await pool.query('UPDATE auto_ids SET proximo_envio=$1 WHERE id=$2', [siguiente.toISOString(), autoId]);
       console.log(`[AUTO] ${row.ff_uid} (${row.username}) → límite diario alcanzado (${enviosHoyActual}/${row.envios_por_dia}). Próximo slot: ${siguiente.toISOString()}`);
@@ -840,7 +831,6 @@ async function procesarAutoID(autoId) {
     }
   }
 
-  // ── Llamar a la API de Free Fire ───────────────────────────
   let apiData;
   try {
     apiData = await llamarApiFF(row.ff_uid, row.region || 'BR');
@@ -877,7 +867,6 @@ async function procesarAutoID(autoId) {
     return;
   }
 
-  // ── Envío exitoso ──────────────────────────────────────────
   if (interpretado.tipo === 'ok') {
     const before = parseInt(apiData.likes_before || 0, 10);
     const after  = parseInt(apiData.likes_after  || 0, 10);
@@ -887,7 +876,6 @@ async function procesarAutoID(autoId) {
       : Math.max(parseInt(apiData.likes_added || 0, 10), parseInt(apiData.successful_likes || 0, 10));
 
     if (likesAdded > 0) {
-      // ── CAMBIO 3: el auto SÍ consume envios_hoy (contador compartido) ──
       if (!row.ilimitado && row.plan_tipo === 'likes') {
         const newDisp = Math.max((row.likes_disponibles || 0) - likesAdded, 0);
         await pool.query(
@@ -905,7 +893,6 @@ async function procesarAutoID(autoId) {
           console.log(`[AUTO] Likes agotados para ${row.username}, desactivando ID ${row.ff_uid}`);
         }
       } else {
-        // plan dias o ilimitado
         await pool.query(
           `UPDATE usuarios
            SET likes_enviados_plan=likes_enviados_plan+$1,
@@ -956,13 +943,11 @@ async function procesarAutoID(autoId) {
     return;
   }
 
-  // ── Error genérico → siguiente slot ────────────────────────
   const siguiente = nextSlot(new Date(), true);
   await pool.query('UPDATE auto_ids SET proximo_envio=$1 WHERE id=$2', [siguiente.toISOString(), autoId]);
   console.warn(`[AUTO] Respuesta inesperada para ${row.ff_uid}: ${interpretado.tipo}. Próximo slot: ${siguiente.toISOString()}`);
 }
 
-// ── GET /api/auto/ids ─────────────────────────────────────────
 app.get('/api/auto/ids', authMiddleware, async (req, res) => {
   try {
     const uRes = await pool.query('SELECT * FROM usuarios WHERE id=$1', [req.user.id]);
@@ -988,7 +973,6 @@ app.get('/api/auto/ids', authMiddleware, async (req, res) => {
   }
 });
 
-// ── POST /api/auto/ids ────────────────────────────────────────
 app.post('/api/auto/ids', authMiddleware, async (req, res) => {
   try {
     const { ff_uid, likes_meta = 0, dias_meta = 0 } = req.body;
@@ -1011,8 +995,6 @@ app.post('/api/auto/ids', authMiddleware, async (req, res) => {
     if (existe.rows.length)
       return res.status(400).json({ error: 'Ese UID ya está registrado en modo automático' });
 
-    // ── CAMBIO 4: verificar si tiene envíos disponibles HOY antes de insertar ──
-    // Si no tiene envíos disponibles hoy, igual se agrega pero con proximo_envio al siguiente slot
     const today = new Date().toISOString().slice(0, 10);
     const fechaUltimo = usuario.fecha_ultimo_envio
       ? new Date(usuario.fecha_ultimo_envio).toISOString().slice(0, 10)
@@ -1021,10 +1003,8 @@ app.post('/api/auto/ids', authMiddleware, async (req, res) => {
 
     let proximoEnvio;
     if (!usuario.ilimitado && enviosHoyActual >= usuario.envios_por_dia) {
-      // Sin envíos disponibles hoy → programar para el siguiente slot
       proximoEnvio = nextSlot(new Date(), true).toISOString();
     } else {
-      // Tiene envíos disponibles → enviar ahora
       proximoEnvio = new Date().toISOString();
     }
 
@@ -1059,7 +1039,6 @@ app.post('/api/auto/ids', authMiddleware, async (req, res) => {
   }
 });
 
-// ── DELETE /api/auto/ids/:id ──────────────────────────────────
 app.delete('/api/auto/ids/:id', authMiddleware, async (req, res) => {
   try {
     const check = await pool.query('SELECT id FROM auto_ids WHERE id=$1 AND usuario_id=$2', [req.params.id, req.user.id]);
@@ -1457,6 +1436,91 @@ app.get('/api/admin/auto/debug', adminMiddleware, async (req, res) => {
   }
 });
 
+// ════════════════════════════════════════════════════════════════
+//  NUEVO: IDs con likes hoy (manual + automático)
+// ════════════════════════════════════════════════════════════════
+
+app.get('/api/admin/likes-hoy', adminMiddleware, async (req, res) => {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+
+    // ── 1. Registros agrupados por ff_uid + usuario ────────────
+    const registrosRes = await pool.query(`
+      SELECT
+        h.ff_uid                                               AS target_id,
+        COALESCE(MAX(h.player_name), h.ff_uid)                 AS player_name,
+        u.username                                              AS usuario,
+        SUM(h.likes_agregados)                                  AS likes_hoy,
+        MAX(h.fecha)                                            AS ultimo_envio,
+        CASE
+          WHEN COUNT(*) FILTER (WHERE h.auto_envio = true)  > 0
+           AND COUNT(*) FILTER (WHERE h.auto_envio = false) > 0 THEN 'ambos'
+          WHEN COUNT(*) FILTER (WHERE h.auto_envio = true)  > 0 THEN 'auto'
+          ELSE 'manual'
+        END                                                     AS tipo
+      FROM historial h
+      JOIN usuarios u ON u.id = h.usuario_id
+      WHERE h.fecha::date = $1
+        AND h.likes_agregados > 0
+      GROUP BY h.ff_uid, u.id, u.username
+      ORDER BY likes_hoy DESC
+    `, [today]);
+
+    // ── 2. Tipo consolidado por ff_uid único ───────────────────
+    //    (un mismo ff_uid puede ser enviado por distintos usuarios
+    //     con distintos tipos; aquí lo unificamos a nivel de ID)
+    const tiposRes = await pool.query(`
+      SELECT
+        ff_uid,
+        CASE
+          WHEN COUNT(*) FILTER (WHERE auto_envio = true)  > 0
+           AND COUNT(*) FILTER (WHERE auto_envio = false) > 0 THEN 'ambos'
+          WHEN COUNT(*) FILTER (WHERE auto_envio = true)  > 0 THEN 'auto'
+          ELSE 'manual'
+        END AS tipo
+      FROM historial
+      WHERE fecha::date = $1
+        AND likes_agregados > 0
+      GROUP BY ff_uid
+    `, [today]);
+
+    const tiposMap = {};
+    tiposRes.rows.forEach(r => { tiposMap[r.ff_uid] = r.tipo; });
+
+    // ── 3. Totales globales ────────────────────────────────────
+    const total_ids    = tiposRes.rows.length;
+    const manuales     = tiposRes.rows.filter(r => r.tipo === 'manual').length;
+    const automaticos  = tiposRes.rows.filter(r => r.tipo === 'auto').length;
+    const ambos        = tiposRes.rows.filter(r => r.tipo === 'ambos').length;
+    const total_likes  = registrosRes.rows.reduce(
+      (acc, r) => acc + parseInt(r.likes_hoy, 10), 0
+    );
+
+    const registros = registrosRes.rows.map(r => ({
+      target_id:   r.target_id,
+      player_name: r.player_name,
+      usuario:     r.usuario,
+      likes_hoy:   parseInt(r.likes_hoy, 10),
+      tipo:        tiposMap[r.target_id] || r.tipo,
+      ultimo_envio: r.ultimo_envio,
+    }));
+
+    res.json({
+      ok:          true,
+      fecha:       today,
+      total_ids,
+      total_likes,
+      manuales,
+      automaticos,
+      ambos,
+      registros,
+    });
+  } catch (err) {
+    console.error('[likes-hoy]', err.message);
+    res.status(500).json({ ok: false, error: 'Error interno' });
+  }
+});
+
 // ── Fallback SPA ──────────────────────────────────────────────
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../public', 'index.html')));
 
@@ -1467,16 +1531,11 @@ initDB().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 BoostSpeed corriendo en puerto ${PORT}`);
 
-    // CAMBIO 1: Se eliminó el bloque que reseteaba proximo_envio al arrancar.
-    // Esto evitaba que cada deploy en GitHub disparara envíos masivos.
-
-    // Primer ciclo del cron a los 5 segundos de arrancar
     setTimeout(() => {
       console.log('[AUTO] Primer ciclo post-arranque...');
       ejecutarAutoLikes();
     }, 5000);
 
-    // Cron cada 2 minutos
     setInterval(ejecutarAutoLikes, 2 * 60 * 1000);
   });
 }).catch(err => {
