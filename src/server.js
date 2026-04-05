@@ -220,7 +220,6 @@ function llamarApiFF(uid, server = 'BR', useAlternateEndpoint = false) {
     if (!apiKey) return reject(new Error('FF_API_KEY no configurada en variables de entorno'));
 
     let finalEndpoint = apiBase;
-
     // Si no incluye '?' ni rutas específicas, adivinamos el endpoint
     if (!apiBase.includes('/like') && !apiBase.includes('/send_likes') && !apiBase.includes('?')) {
         finalEndpoint = useAlternateEndpoint ? apiBase + '/send_likes' : apiBase + '/like';
@@ -233,12 +232,26 @@ function llamarApiFF(uid, server = 'BR', useAlternateEndpoint = false) {
     const safeLogUrl = fullUrl.replace(new RegExp(encodeURIComponent(apiKey), 'g'), '***');
     console.log(`[API FF] Llamando: ${safeLogUrl}`);
 
-    const req = https.get(fullUrl, { timeout: 30000 }, (res) => {
+    const options = {
+      timeout: 30000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'application/json'
+      }
+    };
+
+    const req = https.get(fullUrl, options, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
         try {
-          const parsed = JSON.parse(data);
+          // Intentar limpiar posibles espacios o carácteres raros al inicio
+          const trimmedData = data.trim();
+          if (trimmedData.startsWith('<!doctype') || trimmedData.startsWith('<html')) {
+             throw new Error('HTML_RESPONSE');
+          }
+
+          const parsed = JSON.parse(trimmedData);
           parsed._httpStatus = res.statusCode;
           if (parsed.key_usage) lastKeyUsage = String(parsed.key_usage);
 
@@ -251,13 +264,14 @@ function llamarApiFF(uid, server = 'BR', useAlternateEndpoint = false) {
 
           resolve(parsed);
         } catch (e) {
-          // Si falló el parseo (HTML) y nunca iteramos, intentamos el alternativo
+          // Si falló el parseo (HTML o error de JSON) y nunca iteramos, intentamos el alternativo (si aplica la lógica de autocompletar)
           if (!useAlternateEndpoint && !apiBase.includes('/like') && !apiBase.includes('/send_likes') && !apiBase.includes('?')) {
-             console.log(`[API FF] Respuesta HTML inválida en endpoint primario, reintentando con /send_likes...`);
+             console.log(`[API FF] Reintentando con endpoint alternativo por fallo de respuesta...`);
              llamarApiFF(uid, server, true).then(resolve).catch(reject);
              return;
           }
-          reject(new Error(`Respuesta inválida de la API: ${data.slice(0, 100)}`));
+          const snippet = data.trim().slice(0, 100);
+          reject(new Error(`Respuesta inválida de la API${res.statusCode !== 200 ? ' (HTTP '+res.statusCode+')' : ''}: ${snippet}`));
         }
       });
     });
