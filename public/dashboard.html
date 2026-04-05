@@ -523,15 +523,15 @@ async function cargarAutoIDs(manual=false){
     if(!res.ok){list.innerHTML='<div class="empty"><p>Error cargando IDs</p></div>';return;}
     _autoIds=res.ids||[];const maxSlots=res.max_slots||2;const used=_autoIds.length;
     document.getElementById('auto-slots-used').textContent=used;
-    document.getElementById('auto-slots-total').textContent=maxSlots>=10?`/ ∞ IDs`:`/ ${maxSlots} IDs`;
+    document.getElementById('auto-slots-total').textContent=maxSlots>=999?`/ ∞ IDs`:`/ ${maxSlots} IDs`;
     let limitVal = document.getElementById('auto-limit-val');
     let limitFill = document.getElementById('auto-limit-fill');
-    if(limitVal) limitVal.textContent = maxSlots>=10?`${used}/∞ IDs`:`${used}/${maxSlots} IDs`;
-    if(limitFill) limitFill.style.width = maxSlots>=10?'20%':`${Math.min(100,(used/maxSlots)*100)}%`;
+    if(limitVal) limitVal.textContent = maxSlots>=999?`${used}/∞ IDs`:`${used}/${maxSlots} IDs`;
+    if(limitFill) limitFill.style.width = maxSlots>=999?'20%':`${Math.min(100,(used/maxSlots)*100)}%`;
     let likesManualDisp = document.getElementById('likes-manual-disponibles');
     if(likesManualDisp){
         let manualDisp = Math.max(0, maxSlots - used);
-        likesManualDisp.textContent = `Disponibles manualmente: ${maxSlots>=10?'∞':manualDisp}`;
+        likesManualDisp.textContent = `Disponibles manualmente: ${maxSlots>=999?'∞':manualDisp}`;
     }
     const addBtn=document.getElementById('auto-add-btn');const toggleBtn=document.getElementById('btn-toggle-add-form');const slotMsg=document.getElementById('auto-slots-msg');
     if(used>=maxSlots){
