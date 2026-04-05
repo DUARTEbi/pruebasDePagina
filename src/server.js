@@ -117,6 +117,8 @@ async function initDB() {
       ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS likes_limite_plan INTEGER DEFAULT 0;
       ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS likes_enviados_plan INTEGER DEFAULT 0;
       ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS ilimitado BOOLEAN DEFAULT false;
+      ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS google_id VARCHAR(100) UNIQUE;
+      ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS google_email VARCHAR(100);
       ALTER TABLE codigos ADD COLUMN IF NOT EXISTS tipo VARCHAR(20) DEFAULT 'dias';
       ALTER TABLE codigos ADD COLUMN IF NOT EXISTS ilimitado BOOLEAN DEFAULT false;
     `);
@@ -405,6 +407,78 @@ app.post('/api/login', rateLimit(15), async (req, res) => {
     const { password: _, ...userSafe } = user;
     res.json({ ok: true, token, user: userSafe });
   } catch (err) { res.status(500).json({ error: 'Error interno del servidor' }); }
+});
+
+app.post('/api/auth/google', async (req, res) => {
+  try {
+    const { googleId, email } = req.body;
+    if (!googleId || !email) return res.status(400).json({ error: 'Datos de Google incompletos' });
+    
+    // Buscar por google_id o por email (vinculación automática por email si no tiene google_id)
+    const r = await pool.query('SELECT * FROM usuarios WHERE google_id=$1 OR contact=$2', [googleId, email]);
+    
+    if (r.rows.length) {
+      const user = r.rows[0];
+      // Si el usuario existía por email pero no tenía google_id, lo vinculamos ahora
+      if (!user.google_id) {
+        await pool.query('UPDATE usuarios SET google_id=$1, google_email=$2 WHERE id=$3', [googleId, email, user.id]);
+        user.google_id = googleId;
+        user.google_email = email;
+      }
+      const token = jwt.sign({ id: user.id, uid: user.uid, username: user.username }, process.env.JWT_SECRET || 'bs_secret_2026', { expiresIn: '365d' });
+      const { password: _, ...userSafe } = user;
+      return res.json({ ok: true, token, user: userSafe });
+    }
+    
+    // Es un usuario nuevo
+    res.json({ ok: true, isNew: true });
+  } catch (err) { res.status(500).json({ error: 'Error interno: ' + err.message }); }
+});
+
+app.post('/api/auth/google/confirm', async (req, res) => {
+  try {
+    const { username, password, googleId, email, displayName } = req.body;
+    if (!username || !password || !googleId || !email) return res.status(400).json({ error: 'Datos incompletos' });
+    
+    // Verificar si el username ya existe
+    const existe = await pool.query('SELECT id FROM usuarios WHERE LOWER(username)=LOWER($1)', [username]);
+    if (existe.rows.length) return res.status(400).json({ error: 'Ese nombre de usuario ya está en uso' });
+    
+    const hash = await bcrypt.hash(password, 10);
+    let uid, intentos = 0;
+    do {
+      uid = genUID();
+      const chk = await pool.query('SELECT id FROM usuarios WHERE uid=$1', [uid]);
+      if (!chk.rows.length) break;
+    } while (++intentos < 20);
+    
+    const result = await pool.query(
+      `INSERT INTO usuarios (uid, username, password, contact, google_id, google_email) VALUES ($1, $2, $3, $4, $5, $6) 
+       RETURNING id, uid, username, contact, google_id, google_email, plan_activo, plan_nombre, likes_disponibles, envios_por_dia, plan_vence, creado_en`,
+      [uid, username, hash, email, googleId, email]
+    );
+    
+    const user = result.rows[0];
+    const token = jwt.sign({ id: user.id, uid: user.uid, username: user.username }, process.env.JWT_SECRET || 'bs_secret_2026', { expiresIn: '365d' });
+    res.json({ ok: true, token, user });
+  } catch (err) { res.status(500).json({ error: 'Error interno: ' + err.message }); }
+});
+
+app.post('/api/auth/google/link', authMiddleware, async (req, res) => {
+  try {
+    const { googleId, email } = req.body;
+    if (!googleId || !email) return res.status(400).json({ error: 'Datos de Google incompletos' });
+    
+    // Verificar que el googleId no esté ya en uso por otra cuenta
+    const enUso = await pool.query('SELECT id FROM usuarios WHERE google_id=$1', [googleId]);
+    if (enUso.rows.length) return res.status(400).json({ error: 'Esta cuenta de Google ya está vinculada a otro perfil' });
+    
+    await pool.query('UPDATE usuarios SET google_id=$1, google_email=$2 WHERE id=$3', [googleId, email, req.user.id]);
+    
+    const updated = await pool.query('SELECT * FROM usuarios WHERE id=$1', [req.user.id]);
+    const { password: _, ...userSafe } = updated.rows[0];
+    res.json({ ok: true, user: userSafe });
+  } catch (err) { res.status(500).json({ error: 'Error interno: ' + err.message }); }
 });
 
 app.post('/api/recuperar', async (req, res) => {

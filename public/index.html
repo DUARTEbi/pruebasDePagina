@@ -246,6 +246,13 @@ input[type=number] { -moz-appearance: textfield; }
   .status-online { padding: 4px 8px; gap: 4px; margin-bottom: 5px; }
   .dot-pulse-wrapper { transform: scale(0.8); }
 }
+
+/* === GOOGLE BTN === */
+.btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: #fff; color: #000; border: none; padding: 14px; border-radius: 16px; font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+.btn-google:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+.google-icon { width: 18px; height: 18px; }
+.divider { display: flex; align-items: center; gap: 10px; margin: 20px 0; color: rgba(255,255,255,0.2); font-size: 12px; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
 </style>
 </head>
 <body>
@@ -383,11 +390,17 @@ input[type=number] { -moz-appearance: textfield; }
       <div class="spin" id="spin-login"></div>
       <span id="txt-login">Ingresar</span>
     </button>
-    <div style="text-align:center;margin-top:22px;display:flex;flex-direction:column;gap:10px;">
-      <a href="#" onclick="cerrarModal('login');abrirModal('recuperar');return false"
-         style="color:rgba(255,255,255,0.35);font-size:13px;">¿Olvidaste tu contraseña?</a>
-      <a href="#" onclick="cerrarModal('login');abrirModal('registro');return false"
-         style="color:rgba(255,255,255,0.35);font-size:13px;">No tengo cuenta</a>
+      <div style="text-align:center;margin-top:22px;display:flex;flex-direction:column;gap:10px;">
+        <a href="#" onclick="cerrarModal('login');abrirModal('recuperar');return false"
+           style="color:rgba(255,255,255,0.35);font-size:13px;">¿Olvidaste tu contraseña?</a>
+        <a href="#" onclick="cerrarModal('login');abrirModal('registro');return false"
+           style="color:rgba(255,255,255,0.35);font-size:13px;">No tengo cuenta</a>
+      </div>
+      <div class="divider">O CONTINUAR CON</div>
+      <button class="btn-google" onclick="loginConGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="google-icon">
+        Iniciar con Google
+      </button>
     </div>
   </div>
 </div>
@@ -415,6 +428,26 @@ input[type=number] { -moz-appearance: textfield; }
       <a href="#" onclick="cerrarModal('registro');abrirModal('login');return false"
          style="color:rgba(255,255,255,0.35);font-size:13px;">Ya tengo cuenta</a>
     </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL GOOGLE SETUP (NUEVOS USUARIOS) -->
+<div class="ov" id="ov-google-setup">
+  <div class="glass-card">
+    <button class="btn-close" onclick="cerrarModal('google-setup')">✕</button>
+    <div style="font-size:1.3rem;font-weight:700;margin-bottom:12px;text-align:center;">Finaliza tu perfil</div>
+    <p style="text-align:center;margin-bottom:22px;font-size:0.8rem;">Elige un nombre de usuario y contraseña para tu cuenta.</p>
+    <div id="msg-google-setup" class="msg"></div>
+    <input type="text" id="gs-user" class="input-field" placeholder="Nombre de usuario" autocomplete="username">
+    <input type="password" id="gs-pass" class="input-field" placeholder="Contraseña personalizada" autocomplete="new-password">
+    <button id="btn-gs" class="submit-btn" onclick="confirmarGoogleSetup()">
+      <div class="spin" id="spin-gs"></div>
+      <span id="txt-gs">Completar registro</span>
+    </button>
   </div>
 </div>
 
@@ -686,5 +719,76 @@ document.addEventListener('DOMContentLoaded', async () => {
   setInterval(processNotifQueue,  3000);
 });
 </script>
+<!-- ── FIREBASE ── -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAr2kiKpt69DUmTcljpa6QpXjf0_y9O2Dc",
+    authDomain: "boostspeedprueba.firebaseapp.com",
+    projectId: "boostspeedprueba",
+    storageBucket: "boostspeedprueba.firebasestorage.app",
+    messagingSenderId: "309854255753",
+    appId: "1:309854255753:web:4293c4e48349417b626458"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  let googleUserTemp = null;
+
+  window.loginConGoogle = async function() {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      
+      const res = await API.post('/api/auth/google', { 
+        googleId: user.uid, 
+        email: user.email 
+      });
+      
+      if (res.isNew) {
+        googleUserTemp = user;
+        cerrarModal('login');
+        abrirModal('google-setup');
+      } else if (res.ok) {
+        localStorage.setItem('bs_token', res.token);
+        localStorage.setItem('bs_user', JSON.stringify(res.user));
+        location.href = '/dashboard.html';
+      } else {
+        mostrarMsg('msg-login', res.error, 'err');
+      }
+    } catch (error) {
+      console.error(error);
+      mostrarMsg('msg-login', 'Error al iniciar con Google', 'err');
+    }
+  };
+
+  window.confirmarGoogleSetup = async function() {
+    const user = document.getElementById('gs-user').value.trim();
+    const pass = document.getElementById('gs-pass').value;
+    if (!user || !pass) return mostrarMsg('msg-google-setup', 'Crea un usuario y contraseña', 'err');
+    if (pass.length < 6) return mostrarMsg('msg-google-setup', 'Mínimo 6 caracteres', 'err');
+    
+    cargando('gs', true);
+    const res = await API.post('/api/auth/google/confirm', {
+      username: user,
+      password: pass,
+      googleId: googleUserTemp.uid,
+      email: googleUserTemp.email,
+      displayName: googleUserTemp.displayName
+    });
+    cargando('gs', false);
+    
+    if (!res.ok) return mostrarMsg('msg-google-setup', res.error, 'err');
+    
+    localStorage.setItem('bs_token', res.token);
+    localStorage.setItem('bs_user', JSON.stringify(res.user));
+    location.href = '/dashboard.html';
+  };
+</script>
+
 </body>
 </html>
