@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
@@ -77,15 +77,15 @@ main{position:relative;z-index:1;flex:1;padding:1.4rem;max-width:1060px;margin:0
 .pane.active{display:block;animation:pIn .38s cubic-bezier(.23,1,.32,1)}
 @keyframes pIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-.card{background:var(--sur);border:1px solid var(--bdr);border-radius:13px;padding:1.3rem;margin-bottom:1.1rem;position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s}
-.card:hover{border-color:rgba(0,255,30,.2);box-shadow:0 6px 26px rgba(0,0,0,.45)}
+.card{background:var(--sur);border:none;border-radius:13px;padding:1.3rem;margin-bottom:1.1rem;position:relative;overflow:hidden;transition:box-shadow .3s;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.card:hover{box-shadow:0 8px 32px rgba(0,255,30,.08)}
 .ct{font-family:'Rajdhani',sans-serif;font-size:1.08rem;font-weight:700;margin-bottom:.95rem;display:flex;align-items:center;gap:.45rem}
 
 .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:.85rem;margin-bottom:1.1rem}
-.sb{background:var(--sur);border:1px solid var(--bdr);border-radius:11px;padding:.95rem;text-align:center;position:relative;overflow:hidden;opacity:0;transform:translateY(10px);transition:transform .3s,border-color .3s}
+.sb{background:var(--sur);border:none;border-radius:11px;padding:.95rem;text-align:center;position:relative;overflow:hidden;opacity:0;transform:translateY(10px);transition:transform .3s,box-shadow .3s;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
 .sb.vis{animation:cIn .4s cubic-bezier(.23,1,.32,1) forwards}
 @keyframes cIn{to{opacity:1;transform:translateY(0)}}
-.sb:hover{transform:translateY(-3px);border-color:rgba(0,255,30,.28)}
+.sb:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,255,30,.1)}
 .sb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
 .sb.warn-sb::after{background:linear-gradient(90deg,transparent,var(--warn),transparent)}
 .sb.warn-sb .sv{color:var(--warn)}
