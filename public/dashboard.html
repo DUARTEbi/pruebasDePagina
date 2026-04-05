@@ -250,7 +250,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   </a>
   <nav class="pc-nav" id="pc-nav">
     <button class="pc-nav-btn active" id="pc-inicio" onclick="tab('inicio')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Inicio</button>
-    <button class="pc-nav-btn" id="pc-likes" onclick="tab('likes')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg>Likes</button>
+    <button class="pc-nav-btn" id="pc-likes" onclick="tab('likes')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linejoin="round" stroke-linecap="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg>Likes</button>
     <button class="pc-nav-btn" id="pc-auto" onclick="tab('auto')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Auto</button>
     <button class="pc-nav-btn" id="pc-hist" onclick="tab('hist')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Historial</button>
     <button class="pc-nav-btn" id="pc-acceso" onclick="tab('acceso')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Acceso</button>
@@ -266,7 +266,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div class="stats-card-inner">
       <div class="stat-item"><div class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="stat-val" id="st-usuarios">—</div><div class="stat-lbl">Usuarios</div></div>
       <div class="stat-divider"></div>
-      <div class="stat-item"><div class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div class="stat-val" id="st-likes-total">—</div><div class="stat-lbl">Likes hoy</div></div>
+      <div class="stat-item"><div class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path stroke-linejoin="round" stroke-linecap="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div class="stat-val" id="st-likes-total">—</div><div class="stat-lbl">Likes hoy</div></div>
       <div class="stat-divider"></div>
       <div class="stat-item"><div class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div><div class="stat-val" id="st-misLikes">—</div><div class="stat-lbl">Mis likes</div></div>
     </div>
@@ -275,10 +275,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div id="inicio-cargando"><div class="ldg"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div></div>
     <div id="inicio-con-plan" style="display:none">
       <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem">
-        <div style="width:38px;height:38px;border-radius:10px;background:var(--gdim);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:heartBeat 1.8s ease-in-out infinite"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--g)" stroke="var(--g)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--gdim);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:heartBeat 1.8s ease-in-out infinite"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--g)" stroke="var(--g)" stroke-width="2"><path stroke-linejoin="round" stroke-linecap="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
         <div><div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.95rem" id="inicio-plan-nombre">Plan activo</div><div style="color:var(--mut);font-size:.74rem" id="inicio-plan-sub">Listo para enviar likes</div></div>
       </div>
-      <button class="btn bp bf btn-manual" onclick="tab('likes')" style="margin-bottom:.5rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg>Likes manualmente</button>
+      <button class="btn bp bf btn-manual" onclick="tab('likes')" style="margin-bottom:.5rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linejoin="round" stroke-linecap="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg>Likes manualmente</button>
       <button class="btn btn-auto-inicio bf" onclick="tab('auto')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Likes automáticos</button>
     </div>
     <div id="inicio-sin-plan" style="display:none">
@@ -328,12 +328,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <div class="limitbar"><div class="limitfill" id="limit-fill" style="width:0%"></div></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
-      <div style="background:var(--bg3);border-radius:9px;padding:.6rem .75rem;display:flex;align-items:center;gap:.5rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg><div><div style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:var(--g);line-height:1" id="es-likes">—</div><div style="font-size:.62rem;color:var(--mut);text-transform:uppercase;letter-spacing:.3px;margin-top:.12rem" id="es-likes-lbl">Disponibles</div></div></div>
+      <div style="background:var(--bg3);border-radius:9px;padding:.6rem .75rem;display:flex;align-items:center;gap:.5rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path stroke-linejoin="round" stroke-linecap="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg><div><div style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:var(--g);line-height:1" id="es-likes">—</div><div style="font-size:.62rem;color:var(--mut);text-transform:uppercase;letter-spacing:.3px;margin-top:.12rem" id="es-likes-lbl">Disponibles</div></div></div>
       <div style="background:var(--bg3);border-radius:9px;padding:.6rem .75rem;display:flex;align-items:center;gap:.5rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg><div><div style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:var(--g);line-height:1" id="es-enviados">—</div><div style="font-size:.62rem;color:var(--mut);text-transform:uppercase;letter-spacing:.3px;margin-top:.12rem">Total enviados</div></div></div>
     </div>
   </div>
   <div class="card">
-    <div class="ctit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg>Enviar Likes</div>
+    <div class="ctit" style="display:flex;justify-content:space-between;width:100%"><span style="display:flex;align-items:center;gap:.4rem"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path stroke-linejoin="round" stroke-linecap="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg>Enviar Likes</span><span style="font-size:.7rem;color:var(--txt);font-weight:700;background:var(--sur);padding:.18rem .55rem;border-radius:100px;border:1px solid var(--bdr)" id="likes-manual-disponibles"></span></div>
     <div class="msg" id="msg-likes"></div>
     <div class="fg"><label>UID de Free Fire</label><div class="uiw"><input type="text" id="ff-uid" placeholder="Ej: 273968086" inputmode="numeric" autocomplete="one-time-code" name="ff_uid_field" onkeydown="if(event.key==='Enter')enviarLikes()"/><button class="usb" id="btn-send" onclick="enviarLikes()"><div class="spin" id="spin-send"></div><svg id="ico-send" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div></div>
     <div class="rbox" id="rbox">
@@ -378,7 +378,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   <div class="card">
     <div class="phdr"><div class="pav" id="p-av">?</div><div><div class="pname" id="p-name">—</div><div style="color:var(--mut);font-size:.8rem;margin-top:.1rem" id="p-contact">—</div><div class="uidrow"><code id="p-uid">BS-000000</code><button class="cpbtn" onclick="copiarUID()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div></div>
     <div class="ir"><span class="ik"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> Plan</span><span class="iv" id="p-plan">—</span></div>
-    <div class="ir"><span class="ik"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg> Info plan</span><span class="iv" id="p-plan-info">—</span></div>
+    <div class="ir"><span class="ik"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linejoin="round" stroke-linecap="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg> Info plan</span><span class="iv" id="p-plan-info">—</span></div>
     <div class="ir"><span class="ik"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Envíos/día</span><span class="iv" id="p-dia">0</span></div>
     <div class="ir"><span class="ik"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Vence</span><span class="iv" id="p-vence">—</span></div>
     <div class="ir"><span class="ik"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Miembro desde</span><span class="iv" id="p-desde">—</span></div>
@@ -395,7 +395,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </main>
 <nav class="bnav">
   <button class="bn active" id="bn-inicio" onclick="tab('inicio')"><div class="bnI"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>Inicio</button>
-  <button class="bn" id="bn-likes" onclick="tab('likes')"><div class="bnI"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div>Likes</button>
+  <button class="bn" id="bn-likes" onclick="tab('likes')"><div class="bnI"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linejoin="round" stroke-linecap="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div>Likes</button>
   <button class="bn" id="bn-auto" onclick="tab('auto')"><div class="bnI"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>Auto</button>
   <button class="bn" id="bn-hist" onclick="tab('hist')"><div class="bnI"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>Historial</button>
   <button class="bn" id="bn-acceso" onclick="tab('acceso')"><div class="bnI"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>Acceso</button>
@@ -491,13 +491,27 @@ function pintarUI(u,hist){
 
 function pintarAutoStats(u){
   if(!u) return;
-  let tipo='—';if(u.ilimitado) tipo='Ilimitado';else if(u.plan_tipo==='dias') tipo='Por días';else if(u.plan_tipo==='likes') tipo='Por likes';
-  const elTipo=document.getElementById('auto-plan-tipo');const elEpd=document.getElementById('auto-envios-dia');const elDr=document.getElementById('auto-dias-rest');const elTe=document.getElementById('auto-total-enviados');
-  if(elTipo) elTipo.textContent=tipo;if(elEpd) elEpd.textContent=u.ilimitado?'∞':(u.envios_por_dia||0);
-  if(elDr){if(u.ilimitado) elDr.textContent='∞';else if(u.plan_tipo==='dias'&&u.plan_vence) elDr.textContent=Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000))+'d';else elDr.textContent='—';}
-  if(elTe) elTe.textContent=(u.total_likes_enviados||0).toLocaleString('es');
-  const banner=document.getElementById('auto-status-banner');const sinPlan=document.getElementById('auto-sin-plan');
-  if(banner&&sinPlan){banner.style.display=u.plan_activo?'flex':'none';sinPlan.style.display=u.plan_activo?'none':'block';}
+  let elLpNombre = document.getElementById('auto-lp-nombre');
+  let elLpSub = document.getElementById('auto-lp-sub');
+  let elLpBadge = document.getElementById('auto-lp-badge');
+  if(u.plan_activo){
+      if(elLpBadge){ elLpBadge.className='pbadge pon'; elLpBadge.textContent='Activo'; }
+      if(elLpNombre) elLpNombre.textContent = u.ilimitado ? 'Plan Ilimitado' : (u.plan_nombre || 'Plan activo');
+      if(elLpSub) {
+          if(u.ilimitado) elLpSub.textContent = 'Sin límites · Envíos ilimitados';
+          else if(u.plan_tipo==='likes') elLpSub.textContent = `${(u.likes_disponibles||0).toLocaleString('es')} likes · ${u.envios_por_dia} envíos/día`;
+          else {
+              const d = u.plan_vence ? Math.max(0, Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)) : 0;
+              elLpSub.textContent = `${d} días restantes · ${u.envios_por_dia} envíos/día`;
+          }
+      }
+  } else {
+      if(elLpBadge){ elLpBadge.className='pbadge poff'; elLpBadge.textContent='Sin plan'; }
+      if(elLpNombre) elLpNombre.textContent = 'Sin plan activo';
+      if(elLpSub) elLpSub.textContent = 'Canjea un código en Acceso';
+  }
+  const sinPlan=document.getElementById('auto-sin-plan');
+  if(sinPlan) sinPlan.style.display=u.plan_activo?'none':'block';
 }
 
 let _autoIds=[];
@@ -509,12 +523,21 @@ async function cargarAutoIDs(manual=false){
     if(!res.ok){list.innerHTML='<div class="empty"><p>Error cargando IDs</p></div>';return;}
     _autoIds=res.ids||[];const maxSlots=res.max_slots||2;const used=_autoIds.length;
     document.getElementById('auto-slots-used').textContent=used;
-    document.getElementById('auto-slots-total').textContent=maxSlots>=10?`/ ∞ slots`:`/ ${maxSlots} slots`;
+    document.getElementById('auto-slots-total').textContent=maxSlots>=10?`/ ∞ IDs`:`/ ${maxSlots} IDs`;
+    let limitVal = document.getElementById('auto-limit-val');
+    let limitFill = document.getElementById('auto-limit-fill');
+    if(limitVal) limitVal.textContent = maxSlots>=10?`${used}/∞ IDs`:`${used}/${maxSlots} IDs`;
+    if(limitFill) limitFill.style.width = maxSlots>=10?'20%':`${Math.min(100,(used/maxSlots)*100)}%`;
+    let likesManualDisp = document.getElementById('likes-manual-disponibles');
+    if(likesManualDisp){
+        let manualDisp = Math.max(0, maxSlots - used);
+        likesManualDisp.textContent = `Disponibles manualmente: ${maxSlots>=10?'∞':manualDisp}`;
+    }
     const addBtn=document.getElementById('auto-add-btn');const toggleBtn=document.getElementById('btn-toggle-add-form');const slotMsg=document.getElementById('auto-slots-msg');
     if(used>=maxSlots){
       if(addBtn){addBtn.disabled=true;addBtn.style.opacity='.4';addBtn.style.cursor='not-allowed';}
       if(toggleBtn){toggleBtn.disabled=true;toggleBtn.style.opacity='.5';}
-      if(slotMsg) slotMsg.innerHTML=`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Slots llenos (${used}/${maxSlots}). Elimina un ID para agregar otro.`;
+      if(slotMsg) slotMsg.innerHTML=`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Límite de IDs alcanzado (${used}/${maxSlots}). Elimina un ID para agregar otro.`;
       const form=document.getElementById('auto-add-form');if(form) form.style.display='none';_addFormOpen=false;const lbl=document.getElementById('add-form-btn-lbl');if(lbl) lbl.textContent='Agregar ID';
     }else{
       if(addBtn){addBtn.disabled=false;addBtn.style.opacity='1';addBtn.style.cursor='pointer';}
@@ -525,7 +548,7 @@ async function cargarAutoIDs(manual=false){
     else{list.innerHTML=_autoIds.map(id=>renderIDCard(id)).join('');setTimeout(initNeonLines,80);}
     const hace10dias=Date.now()-10*86400000;const logFiltrado=(res.log||[]).filter(l=>new Date(l.fecha).getTime()>hace10dias).slice(0,5);
     if(!logFiltrado.length){logList.innerHTML='<div class="empty" style="padding:1rem"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><p style="font-size:.75rem">Sin envíos automáticos aún</p></div>';}
-    else{logList.innerHTML=logFiltrado.map(l=>`<div class="log-item"><div class="log-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div class="log-info"><div class="log-name">${l.player_name||l.ff_uid}</div><div class="log-uid">${l.ff_uid}${l.nivel?' · Nv.'+l.nivel:''}</div></div><div class="log-right"><div class="log-likes">+${l.likes_agregados||0}</div><div class="log-time">${tiempoRelativo(new Date(l.fecha))}</div></div></div>`).join('')+(res.log.length>5?`<p style="text-align:center;color:var(--mut);font-size:.72rem;margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--bdr)">Desliza para ver más · Historial completo en <strong style="color:var(--g)">Historial</strong></p>`:'');}
+    else{logList.innerHTML=logFiltrado.map(l=>`<div class="log-item"><div class="log-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path stroke-linejoin="round" stroke-linecap="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div class="log-info"><div class="log-name">${l.player_name||l.ff_uid}</div><div class="log-uid">${l.ff_uid}${l.nivel?' · Nv.'+l.nivel:''}</div></div><div class="log-right"><div class="log-likes">+${l.likes_agregados||0}</div><div class="log-time">${tiempoRelativo(new Date(l.fecha))}</div></div></div>`).join('')+(res.log.length>5?`<p style="text-align:center;color:var(--mut);font-size:.72rem;margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--bdr)">Desliza para ver más · Historial completo en <strong style="color:var(--g)">Historial</strong></p>`:'');}
   }catch(e){list.innerHTML='<div class="empty"><p>Error de conexión</p></div>';}
   finally{if(icoRefresh) icoRefresh.style.animation='';}
 }
@@ -670,7 +693,7 @@ function pintarHistorial(hist){
     const fecha=new Date(h.fecha);const fStr=fecha.toLocaleDateString('es',{day:'2-digit',month:'2-digit'})+' '+fecha.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
     const antes=(h.likes_antes||0).toLocaleString('es');const despues=(h.likes_despues||0).toLocaleString('es');const agr=(h.likes_agregados||0).toLocaleString('es');
     const autoBadge=h.auto_envio?'<span style="background:rgba(0,255,30,.1);border:1px solid rgba(0,255,30,.25);color:var(--g);font-size:.58rem;font-weight:700;padding:.1rem .4rem;border-radius:100px;text-transform:uppercase;letter-spacing:.3px;margin-left:.4rem">Auto</span>':'';
-    return `<div class="hist-item" style="animation-delay:${i*35}ms"><div class="hist-top"><div class="hico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div class="hinfo"><div class="hname">${h.player_name||'—'}${autoBadge}</div><div class="huid">${h.ff_uid} · Nv.${h.nivel||'—'} · ${h.region||'—'}</div></div><div><div class="hbadge">+${agr}</div><div class="hbdate">${fStr}</div></div></div><div class="hist-stats"><div class="hstat"><div class="hstat-lbl">Antes</div><div class="hstat-val">${antes}</div></div><div class="hstat"><div class="hstat-lbl">Después</div><div class="hstat-val green">${despues}</div></div><div class="hstat"><div class="hstat-lbl">Agregados</div><div class="hstat-val green">+${agr}</div></div></div></div>`;
+    return `<div class="hist-item" style="animation-delay:${i*35}ms"><div class="hist-top"><div class="hico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path stroke-linejoin="round" stroke-linecap="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div class="hinfo"><div class="hname">${h.player_name||'—'}${autoBadge}</div><div class="huid">${h.ff_uid} · Nv.${h.nivel||'—'} · ${h.region||'—'}</div></div><div><div class="hbadge">+${agr}</div><div class="hbdate">${fStr}</div></div></div><div class="hist-stats"><div class="hstat"><div class="hstat-lbl">Antes</div><div class="hstat-val">${antes}</div></div><div class="hstat"><div class="hstat-lbl">Después</div><div class="hstat-val green">${despues}</div></div><div class="hstat"><div class="hstat-lbl">Agregados</div><div class="hstat-val green">+${agr}</div></div></div></div>`;
   }).join('');
 }
 
