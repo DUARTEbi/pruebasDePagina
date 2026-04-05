@@ -46,15 +46,6 @@ body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--txt);min-he
 .lbox h1{font-family:'Rajdhani',sans-serif;font-size:1.7rem;font-weight:700;margin-bottom:.2rem}
 .lbox p{color:var(--mut);font-size:.84rem;margin-bottom:1.5rem}
 
-.topb{position:sticky;top:0;z-index:100;background:rgba(7,7,7,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);height:56px;display:none;align-items:center;padding:0 1.4rem;justify-content:space-between;animation:sD .5s cubic-bezier(.23,1,.32,1)}
-@keyframes sD{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
-.logo{font-family:'Rajdhani',sans-serif;font-size:1.25rem;font-weight:700;color:var(--g);letter-spacing:2px;display:flex;align-items:center;gap:.4rem;animation:logoGlow 3s ease-in-out infinite}
-@keyframes logoGlow{0%,100%{text-shadow:0 0 8px rgba(0,255,30,.3)}50%{text-shadow:0 0 18px rgba(0,255,30,.7),0 0 40px rgba(0,255,30,.2)}}
-
-/* pulso de estado eliminado o reemplazado por dot-pulse */
-@keyframes bl{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.6)}}
-@keyframes rp{0%{transform:scale(.4);opacity:.8}100%{transform:scale(2.6);opacity:0}}
-
 .abadge{background:rgba(255,71,87,.12);border:1px solid rgba(255,71,87,.28);color:var(--red);font-size:.67rem;font-weight:700;padding:.17rem .52rem;border-radius:100px;text-transform:uppercase;letter-spacing:.7px}
 .tnav{display:flex;gap:.35rem}
 .tn{background:transparent;border:1px solid transparent;color:var(--mut);font-family:'Exo 2',sans-serif;font-size:.82rem;font-weight:700;padding:.38rem .8rem;border-radius:7px;cursor:pointer;transition:all .2s}
@@ -147,38 +138,7 @@ tr:hover td{background:rgba(0,255,30,.02)}
 .bauto{background:rgba(0,255,30,.09);color:var(--g);border:1px solid rgba(0,255,30,.18)}
 .bambos{background:rgba(255,193,7,.1);color:var(--warn);border:1px solid rgba(255,193,7,.2)}
 
-.api-stats{background:var(--bg3);border:1px solid rgba(255,193,7,.15);border-radius:11px;padding:1rem 1.2rem;margin-bottom:1.1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
-.api-ico{width:38px;height:38px;border-radius:9px;background:rgba(255,193,7,.1);border:1px solid rgba(255,193,7,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem}
-.api-info{flex:1}
-.api-title{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:var(--warn);margin-bottom:.1rem}
-.api-sub{color:var(--mut);font-size:.76rem;line-height:1.5}
-.api-right{display:flex;flex-direction:column;align-items:flex-end;gap:.18rem}
-.api-val{font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:700;color:var(--warn);line-height:1}
-.api-bar-wrap{width:120px;height:5px;background:rgba(255,193,7,.12);border-radius:3px;overflow:hidden}
-.api-bar-fill{height:100%;border-radius:3px;background:var(--warn);transition:width .5s ease}
-.api-pct{font-size:.68rem;color:var(--mut);text-align:right}
-
-.likes-hoy-banner{
-  background:var(--bg3);
-  border:1px solid rgba(77,171,255,.18);
-  border-radius:11px;
-  padding:1rem 1.2rem;
-  margin-bottom:1.1rem;
-  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
-}
-.lh-ico{
-  width:38px;height:38px;border-radius:9px;
-  background:rgba(77,171,255,.1);border:1px solid rgba(77,171,255,.2);
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;font-size:1.1rem;
-}
-.lh-info{flex:1;min-width:0}
-.lh-title{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:var(--blue);margin-bottom:.1rem}
-.lh-sub{color:var(--mut);font-size:.76rem;line-height:1.5}
-.lh-right{display:flex;flex-direction:column;align-items:flex-end;gap:.14rem}
-.lh-val{font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:700;color:var(--blue);line-height:1}
-.lh-val-sub{font-size:.68rem;color:var(--mut);text-align:right}
-.lh-pills{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.25rem}
+.api-stats{background:var(--bg3);border:1px solid rgba(255,193,7,.15);border-radius:11px;padding:1rem 1.2rem;margin-bottom:1.1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;display:none!important}
 
 .spin-wrap{display:flex;align-items:center;justify-content:center;padding:2rem;gap:.6rem;color:var(--mut);font-size:.82rem}
 .spin{width:16px;height:16px;border:2px solid var(--bdr);border-top-color:var(--g);border-radius:50%;animation:sp .7s linear infinite}
@@ -213,18 +173,45 @@ tr:hover td{background:rgba(0,255,30,.02)}
 .ir .ik{color:var(--mut);font-size:.82rem}
 .ir .iv{font-weight:700;font-size:.86rem}
 
-.mobn{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,7,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--bdr);padding:.38rem .38rem calc(.38rem + env(safe-area-inset-bottom));z-index:100;justify-content:space-around}
-.mb{display:flex;flex-direction:column;align-items:center;gap:.14rem;padding:.34rem .55rem;border-radius:8px;background:transparent;border:none;color:var(--mut);font-family:'Exo 2',sans-serif;font-size:.6rem;font-weight:700;cursor:pointer;transition:color .2s;text-transform:uppercase;letter-spacing:.3px;touch-action:manipulation;min-width:44px}
-.mb.active,.mb:hover{color:var(--g)}
-.mb .mico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid transparent;transition:all .2s}
-.mb.active .mico{background:var(--gdim);border-color:rgba(0,255,30,.25)}
-.mb.active .mico svg,.mb:hover .mico svg{stroke:var(--g)}
-
-@media(max-width:620px){
-  .tnav{display:none!important}
-  .mobn{display:flex}
-  main{padding:1rem 1rem 5.5rem}
+.mobn-dock-container {
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  width:calc(100% - 40px);max-width:480px;z-index:500;
+  background:rgba(255,255,255,.03);backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);
+  border:1px solid rgba(255,255,255,.08);border-radius:24px;
+  padding:.4rem .6rem;display:flex;justify-content:space-between;
+  box-shadow:0 10px 40px rgba(0,0,0,0.4);
+  animation:dockIn .6s cubic-bezier(.23,1,.32,1);
 }
+@keyframes dockIn{from{transform:translateX(-50%) translateY(100%);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+
+.mb{
+  display:flex;flex-direction:column;align-items:center;gap:.1rem;
+  padding:.35rem .2rem;border-radius:14px;background:transparent;border:none;
+  color:var(--mut);font-family:'Exo 2',sans-serif;font-size:.55rem;font-weight:700;
+  cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.4px;
+  touch-action:manipulation;flex:1;min-width:0;position:relative;
+}
+.mb::after{
+  content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%) scaleX(0);
+  width:20px;height:2px;background:var(--g);border-radius:2px;transition:transform .3s;
+}
+.mb.active::after{transform:translateX(-50%) scaleX(1)}
+.mb.active,.mb:hover{color:var(--g)}
+.mb .mico{
+  width:32px;height:32px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid transparent;transition:all .25s;position:relative;
+}
+.mb .mico::before{
+  content:'';position:absolute;inset:0;background:var(--gdim);border-radius:11px;opacity:0;transition:opacity .2s;
+}
+.mb.active .mico::before,.mb:hover .mico::before{opacity:1}
+.mb.active .mico{border-color:rgba(0,255,30,.25);box-shadow:0 0 15px rgba(0,255,30,.12)}
+.mb.active .mico svg,.mb:hover .mico svg{stroke:var(--g);position:relative;z-index:1}
+.mb svg{transition:stroke .2s}
+
+main{padding:1.4rem 1.4rem 6.5rem;max-width:960px;margin:0 auto;width:100%}
+@media(max-width:620px){ main{padding:1rem 1rem 7rem} }
 </style>
 
 </head>
@@ -240,30 +227,22 @@ tr:hover td{background:rgba(0,255,30,.02)}
     <div class="msg" id="msg-login"></div>
     <div class="fg"><label>Usuario</label><input type="text" id="au" placeholder="admin" autocomplete="username"/></div>
     <div class="fg"><label>Contraseña</label><input type="password" id="ap" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')aLogin()"/></div>
-    <button class="btn bp bf" onclick="aLogin()">Entrar →</button>
+    <button class="btn bp bf" onclick="aLogin()">Entrar</button>
   </div>
 </div>
 
-<!-- TOPBAR -->
-<div class="topb" id="topb">
-  <div class="logo-container">
-    <div class="dot-pulse-wrapper">
-      <div class="dot-ring"></div>
-      <div class="dot-center"></div>
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 2rem; padding:0 1rem">
+    <div class="logo-container">
+      <div class="dot-pulse-wrapper">
+        <div class="dot-ring"></div>
+        <div class="dot-center"></div>
+      </div>
+      <span class="logo-boost">Boost</span><span class="logo-speed">Speed</span>
+      <svg class="rayo-impacto" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <span class="badge brev" style="font-size:.65rem; margin-left:.5rem; padding:.1rem .5rem; border:1px solid rgba(0,255,30,0.3)">ADMIN</span>
     </div>
-    <span class="logo-boost">Boost</span><span class="logo-speed">Speed</span>
-    <svg class="rayo-impacto" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-    <span class="badge brev" style="font-size:.65rem; margin-left:.5rem; padding:.1rem .5rem; border:1px solid rgba(0,255,30,0.3)">ADMIN</span>
+    <button class="btn bo bsm" onclick="aSalir()">Salir</button>
   </div>
-  <div class="tnav" id="tnav">
-    <button class="tn active" id="at-dash" onclick="aTab('dash')">Dashboard</button>
-    <button class="tn" id="at-cod"  onclick="aTab('cod')">Códigos</button>
-    <button class="tn" id="at-usr"  onclick="aTab('usr')">Usuarios</button>
-    <button class="tn" id="at-extra" onclick="aTab('extra')">Extra</button>
-    <button class="tn" id="at-rec"  onclick="aTab('rec')">Recuperación</button>
-  </div>
-  <button class="bout" onclick="aSalir()">Salir</button>
-</div>
 
 <main id="amain">
 
@@ -296,7 +275,7 @@ tr:hover td{background:rgba(0,255,30,.02)}
 
     <!-- Widget uso de API key -->
     <div class="api-stats">
-      <div class="api-ico">⚡</div>
+      <div class="api-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
       <div class="api-info">
         <div class="api-title">Uso de la API key hoy</div>
         <div class="api-sub" id="api-sub-txt">Cargando datos…</div>
@@ -308,28 +287,12 @@ tr:hover td{background:rgba(0,255,30,.02)}
       </div>
     </div>
 
-    <!-- ── NUEVO: Widget IDs con likes hoy ── -->
-    <div class="likes-hoy-banner" id="likes-hoy-banner">
-      <div class="lh-ico">❤️</div>
-      <div class="lh-info">
-        <div class="lh-title">IDs que recibieron likes hoy</div>
-        <div class="lh-sub" id="lh-sub-txt">Cargando…</div>
-        <div class="lh-pills" id="lh-pills"></div>
-      </div>
-      <div class="lh-right">
-        <div class="lh-val" id="lh-ids-count">—</div>
-        <div class="lh-val-sub" id="lh-val-sub">IDs únicos</div>
-      </div>
-    </div>
-    <!-- ── FIN widget ── -->
-
+    <!-- ID Summary Stats Grid -->
     <div class="sg">
       <div class="sb"><div class="sv" id="a-tu">0</div><div class="sl">Usuarios</div></div>
       <div class="sb"><div class="sv" id="a-tc">0</div><div class="sl">Códigos</div></div>
       <div class="sb"><div class="sv" id="a-uc">0</div><div class="sl">Usados</div></div>
       <div class="sb"><div class="sv" id="a-ap">0</div><div class="sl">Planes activos</div></div>
-      <!-- ── NUEVO stat box ── -->
-      <div class="sb blue-sb"><div class="sv" id="a-ids-hoy">0</div><div class="sl">IDs hoy</div></div>
     </div>
 
     <div class="card">
@@ -340,53 +303,7 @@ tr:hover td{background:rgba(0,255,30,.02)}
       </table></div>
     </div>
 
-    <!-- ── NUEVA TARJETA: Detalle de likes por ID hoy ── -->
-    <div class="card" id="card-likes-hoy">
-      <div class="ct" style="justify-content:space-between">
-        <span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" style="vertical-align:-2px;margin-right:.3rem"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          IDs con likes hoy
-          <span id="lh-fecha-tag" style="font-family:'Exo 2',sans-serif;font-size:.72rem;font-weight:400;color:var(--mut);margin-left:.4rem"></span>
-        </span>
-        <div style="display:flex;gap:.4rem;align-items:center">
-          <span id="lh-total-tag" style="font-family:'Rajdhani',sans-serif;font-size:.88rem;color:var(--blue);display:none">
-            <strong id="lh-total-lk">0</strong> <span style="color:var(--mut);font-weight:400">likes totales</span>
-          </span>
-          <button class="btn bo bsm" onclick="loadLikesHoy()" title="Actualizar">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Filtro tipo de envío -->
-      <div id="lh-filter-wrap" style="display:none;margin-bottom:.85rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center">
-        <span style="color:var(--mut);font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px">Filtrar:</span>
-        <button class="btn bo bsm lh-filter-btn active" id="lhf-todos"   onclick="filtrarLikesHoy('todos')">Todos</button>
-        <button class="btn bo bsm lh-filter-btn"        id="lhf-auto"    onclick="filtrarLikesHoy('auto')">Solo auto</button>
-        <button class="btn bo bsm lh-filter-btn"        id="lhf-manual"  onclick="filtrarLikesHoy('manual')">Solo manual</button>
-      </div>
-
-      <div class="tw">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Target ID</th>
-              <th>Enviado por</th>
-              <th>Likes hoy</th>
-              <th>Tipo</th>
-              <th>Último envío</th>
-            </tr>
-          </thead>
-          <tbody id="tb-likes-hoy">
-            <tr><td colspan="6" class="spin-wrap" style="border:none">
-              <div class="spin"></div> Cargando…
-            </td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <!-- ── FIN tarjeta likes hoy ── -->
+    <!-- Tarjeta de IDs con likes hoy eliminada por solicitud del usuario -->
 
   </div>
 
@@ -434,7 +351,7 @@ tr:hover td{background:rgba(0,255,30,.02)}
       </div>
       <div id="campos-ilimitado" style="display:none">
         <div style="background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:10px;padding:.9rem 1rem;margin-bottom:.75rem">
-          <p style="color:#a78bfa;font-size:.82rem;font-weight:700;margin-bottom:.3rem">⚠️ Plan Ilimitado</p>
+          <p style="color:#a78bfa;font-size:.82rem;font-weight:700;margin-bottom:.3rem">Plan Ilimitado</p>
           <p style="color:var(--mut);font-size:.78rem;line-height:1.55">Sin límite de likes, días ni envíos. Los usuarios ilimitados NO aparecen en el top.</p>
         </div>
         <div class="fr">
@@ -475,7 +392,7 @@ tr:hover td{background:rgba(0,255,30,.02)}
           <label>ID único o nombre de usuario</label>
           <input type="text" id="q-usr" placeholder="BS-ABC123 o username" onkeydown="if(event.key==='Enter')buscarUsr()"/>
         </div>
-        <button class="btn bp" onclick="buscarUsr()">Buscar →</button>
+        <button class="btn bp" onclick="buscarUsr()">Buscar</button>
       </div>
     </div>
 
@@ -493,13 +410,13 @@ tr:hover td{background:rgba(0,255,30,.02)}
         <div class="msg" id="msg-edit"></div>
 
         <div style="background:rgba(255,193,7,.06);border:1px solid rgba(255,193,7,.18);border-radius:9px;padding:.7rem .9rem;margin-bottom:.85rem;font-size:.78rem;color:var(--warn);line-height:1.55">
-          ⚠️ <strong>Los valores que ingreses reemplazarán</strong> el plan actual del usuario, no se suman.
+          <strong>Los valores que ingreses reemplazarán</strong> el plan actual del usuario, no se suman.
         </div>
 
         <div class="tipo-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:.8rem">
-          <div class="topt sel" id="etopt-dias"      onclick="selEditTipo('dias')"><h4>📅 Por días</h4><p>Asignar días de plan</p></div>
-          <div class="topt" id="etopt-likes"          onclick="selEditTipo('likes')"><h4>❤️ Por likes</h4><p>Asignar cantidad de likes</p></div>
-          <div class="topt ilim-opt" id="etopt-ilimitado" onclick="selEditTipo('ilimitado')"><h4>🚀 Ilimitado</h4><p>Sin límites</p></div>
+          <div class="topt sel" id="etopt-dias"      onclick="selEditTipo('dias')"><h4>Por días</h4><p>Asignar días de plan</p></div>
+          <div class="topt" id="etopt-likes"          onclick="selEditTipo('likes')"><h4>Por likes</h4><p>Asignar cantidad de likes</p></div>
+          <div class="topt ilim-opt" id="etopt-ilimitado" onclick="selEditTipo('ilimitado')"><h4>Ilimitado</h4><p>Sin límites</p></div>
         </div>
 
         <div id="edit-campos-dias">
@@ -562,9 +479,9 @@ tr:hover td{background:rgba(0,255,30,.02)}
         <label>Días a sumar o restar</label>
         <div style="display:flex; gap:.6rem">
           <input type="number" id="extra-days-val" value="1" placeholder="Ej: 5 o -5" style="flex:1"/>
-          <button class="btn bp" onclick="aplicarDiasExtra()">Aplicar Ajuste →</button>
+          <button class="btn bp" onclick="aplicarDiasExtra()">Aplicar Ajuste</button>
         </div>
-        <p style="font-size:.65rem; color:var(--warn); margin-top:.5rem">⚠️ Nota: Usa números negativos para restar días. Solo afecta a usuarios con plan por días activo.</p>
+        <p style="font-size:.65rem; color:var(--warn); margin-top:.5rem">Nota: Usa números negativos para restar días. Solo afecta a usuarios con plan por días activo.</p>
       </div>
     </div>
   </div>
@@ -580,7 +497,7 @@ tr:hover td{background:rgba(0,255,30,.02)}
           <label>Buscar usuario (ID o username)</label>
           <input type="text" id="rec-q" placeholder="BS-ABC123 o username" onkeydown="if(event.key==='Enter')buscarRec()"/>
         </div>
-        <button class="btn bp" onclick="buscarRec()">Buscar →</button>
+        <button class="btn bp" onclick="buscarRec()">Buscar</button>
       </div>
       <div id="rec-found" style="display:none;margin-top:1rem;padding:1rem;background:var(--bg3);border:1px solid var(--bdr);border-radius:10px">
         <p style="font-size:.84rem;margin-bottom:.8rem">Usuario: <strong id="rec-uname">—</strong> &nbsp;·&nbsp; ID: <code id="rec-uid-s" style="color:var(--g)">—</code></p>
@@ -589,7 +506,7 @@ tr:hover td{background:rgba(0,255,30,.02)}
             <label>Código personalizado (opcional)</label>
             <input type="text" id="rec-cc" placeholder="Vacío = aleatorio" style="text-transform:uppercase" maxlength="14"/>
           </div>
-          <button class="btn bp" onclick="genRecCod()">Generar →</button>
+          <button class="btn bp" onclick="genRecCod()">Generar</button>
         </div>
         <div class="cbox" id="rec-cbox" style="margin-top:.85rem">
           <p style="margin-bottom:.3rem">Código de recuperación (válido 48h)</p>
@@ -639,23 +556,6 @@ tr:hover td{background:rgba(0,255,30,.02)}
   </div>
 </div>
 
-<nav class="mobn" id="mobn">
-  <button class="mb active" id="mb-dash" onclick="aTab('dash');mAct(this)">
-    <div class="mico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>Panel
-  </button>
-  <button class="mb" id="mb-cod" onclick="aTab('cod');mAct(this)">
-    <div class="mico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>Códigos
-  </button>
-  <button class="mb" id="mb-usr" onclick="aTab('usr');mAct(this)">
-    <div class="mico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>Usuarios
-  </button>
-  <button class="mb" id="mb-rec" onclick="aTab('rec');mAct(this)">
-    <div class="mico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>Rec.
-  </button>
-  <button class="mb" onclick="aSalir()">
-    <div class="mico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>Salir
-  </button>
-</nav>
 
 <script src="/js/api.js"></script>
 <script>
@@ -724,7 +624,6 @@ async function aLogin() {
 
 function mostrarPanel() {
   document.getElementById('login-scr').style.display = 'none';
-  document.getElementById('topb').style.display      = 'flex';
   document.getElementById('amain').style.display     = 'block';
   document.getElementById('mobn').style.display      = 'flex';
   document.querySelectorAll('.sb').forEach((el, i) =>
@@ -741,10 +640,12 @@ function aSalir() {
 
 function aTab(t) {
   document.querySelectorAll('#amain .pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('#tnav .tn').forEach(b => b.classList.remove('active'));
   document.getElementById('pane-' + t).classList.add('active');
-  const tn = document.getElementById('at-' + t);
-  if (tn) tn.classList.add('active');
+  
+  document.querySelectorAll('.mb').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('mb-' + t);
+  if (btn) btn.classList.add('active');
+
   if (t === 'dash') loadDash();
   if (t === 'cod')  loadCods();
   if (t === 'usr')  loadUsrs();
@@ -806,8 +707,6 @@ async function loadDash() {
   // Ocultar widget viejo
   if(document.querySelector('.api-stats')) document.querySelector('.api-stats').style.display = 'none';
 
-  loadLikesHoy();
-
   const tbody = document.getElementById('dash-rec');
   tbody.innerHTML = r.usuariosRecientes.length
     ? r.usuariosRecientes.map(u => `
@@ -822,160 +721,6 @@ async function loadDash() {
     : '<tr><td colspan="4" style="text-align:center;color:var(--mut);padding:1.8rem">Sin usuarios por ahora</td></tr>';
 }
 
-/* ══════════════════════════════════════════════════════
-   NUEVA FUNCIÓN: cargar IDs con likes hoy
-   Endpoint esperado: GET /api/admin/likes-hoy
-   Respuesta esperada del servidor:
-   {
-     ok: true,
-     fecha: "2025-08-15",           // fecha local del servidor (YYYY-MM-DD)
-     total_ids: 12,                 // cantidad de IDs únicos que recibieron likes
-     total_likes: 3450,             // suma de todos los likes enviados hoy
-     manuales: 5,                   // IDs que solo recibieron envíos manuales
-     automaticos: 4,                // IDs que solo recibieron envíos automáticos
-     ambos: 3,                      // IDs con ambos tipos
-     registros: [
-       {
-         target_id: "123456789",    // ID de Instagram/TikTok u otra red
-         usuario: "username",       // usuario de BoostSpeed que realizó el envío
-         likes_hoy: 450,            // total de likes enviados a este ID hoy
-         tipo: "auto",              // "auto" | "manual" | "ambos"
-         ultimo_envio: "2025-08-15T14:32:00Z"  // ISO timestamp del último envío
-       }
-     ]
-   }
-   ══════════════════════════════════════════════════════ */
-async function loadLikesHoy() {
-  /* mostrar spinner en la tabla */
-  document.getElementById('tb-likes-hoy').innerHTML =
-    '<tr><td colspan="6" style="border:none"><div class="spin-wrap"><div class="spin"></div> Cargando…</div></td></tr>';
-
-  const r = await API.getAdmin('/api/admin/likes-hoy', admTok);
-
-  /* banner superior */
-  const idsCountEl = document.getElementById('lh-ids-count');
-  const subTxtEl   = document.getElementById('lh-sub-txt');
-  const pillsEl    = document.getElementById('lh-pills');
-  const statEl     = document.getElementById('a-ids-hoy');
-
-  if (!r.ok) {
-    idsCountEl.textContent = '—';
-    subTxtEl.textContent   = 'No se pudo cargar · Revisa el servidor';
-    document.getElementById('tb-likes-hoy').innerHTML =
-      '<tr><td colspan="6" style="text-align:center;color:var(--mut);padding:1.8rem">Error al cargar datos</td></tr>';
-    return;
-  }
-
-  /* cachear para filtrado local */
-  _likesHoyData = r.registros || [];
-
-  const total     = r.total_ids    || 0;
-  const totalLk   = r.total_likes  || 0;
-  const manuales  = r.manuales     || 0;
-  const autos     = r.automaticos  || 0;
-  const ambos     = r.ambos        || 0;
-  const fecha     = r.fecha        || new Date().toLocaleDateString('es');
-
-  /* stat box */
-  statEl.textContent = total;
-
-  /* banner */
-  idsCountEl.textContent = total;
-  subTxtEl.textContent = total > 0
-    ? `${totalLk.toLocaleString('es')} likes enviados · ${fecha}`
-    : `Ningún ID ha recibido likes hoy · ${fecha}`;
-
-  /* pills resumen tipo */
-  pillsEl.innerHTML = '';
-  if (total > 0) {
-    const iconAuto = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:2px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
-    const iconMan  = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:2px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`;
-    const iconMix  = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:2px"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>`;
-
-    if (autos    > 0) pillsEl.innerHTML += `<span class="badge bok">${iconAuto} Auto: ${autos}</span>`;
-    if (manuales > 0) pillsEl.innerHTML += `<span class="badge bmanual">${iconMan} Manual: ${manuales}</span>`;
-    if (ambos    > 0) pillsEl.innerHTML += `<span class="badge bambos">${iconMix} Ambos: ${ambos}</span>`;
-  }
-
-  /* encabezado tarjeta */
-  document.getElementById('lh-fecha-tag').textContent = fecha;
-  const totalTag = document.getElementById('lh-total-tag');
-  if (total > 0) {
-    document.getElementById('lh-total-lk').textContent = totalLk.toLocaleString('es');
-    totalTag.style.display = 'flex';
-  } else {
-    totalTag.style.display = 'none';
-  }
-
-  /* mostrar filtros solo si hay datos */
-  document.getElementById('lh-filter-wrap').style.display = total > 0 ? 'flex' : 'none';
-
-  /* resetear filtro activo */
-  document.querySelectorAll('.lh-filter-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('lhf-todos').classList.add('active');
-
-  /* renderizar tabla con todos los registros */
-  renderLikesHoyTabla(_likesHoyData);
-}
-
-/* ── Renderiza la tabla de likes hoy con el array recibido ── */
-function renderLikesHoyTabla(registros) {
-  const tbody = document.getElementById('tb-likes-hoy');
-  if (!registros || registros.length === 0) {
-    tbody.innerHTML =
-      '<tr><td colspan="6" style="text-align:center;color:var(--mut);padding:1.8rem">Sin actividad de likes hoy</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = registros.map((reg, i) => {
-    /* badge de tipo */
-    const iconAuto = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="vertical-align:-1px;margin-right:3px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
-    const iconMan  = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="vertical-align:-1px;margin-right:3px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`;
-    const iconMix  = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="vertical-align:-1px;margin-right:3px"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/></svg>`;
-
-    const tipoBadge = reg.tipo === 'auto'
-      ? `<span class="badge bok">${iconAuto} Auto</span>`
-      : reg.tipo === 'manual'
-        ? `<span class="badge bmanual">${iconMan} Manual</span>`
-        : `<span class="badge bambos">${iconMix} Ambos</span>`;
-
-    /* hora del último envío (solo hora local) */
-    const horaUltimo = reg.ultimo_envio
-      ? new Date(reg.ultimo_envio).toLocaleTimeString('es', { hour:'2-digit', minute:'2-digit' })
-      : '—';
-    const fechaUltimo = reg.ultimo_envio
-      ? new Date(reg.ultimo_envio).toLocaleDateString('es')
-      : '—';
-
-    return `<tr>
-      <td style="color:var(--mut);font-size:.76rem">${i + 1}</td>
-      <td>
-        <code style="color:var(--blue);font-weight:700;letter-spacing:1px;font-size:.82rem">${reg.target_id}</code>
-      </td>
-      <td style="font-size:.8rem">${reg.usuario || '—'}</td>
-      <td>
-        <span style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:var(--g)">
-          ${(reg.likes_hoy || 0).toLocaleString('es')}
-        </span>
-        <span style="color:var(--mut);font-size:.7rem;margin-left:.2rem">lk</span>
-      </td>
-      <td>${tipoBadge}</td>
-      <td style="color:var(--mut);font-size:.76rem" title="${fechaUltimo}">${horaUltimo}</td>
-    </tr>`;
-  }).join('');
-}
-
-/* ── Filtrado local (sin llamada extra al servidor) ── */
-function filtrarLikesHoy(tipo) {
-  document.querySelectorAll('.lh-filter-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('lhf-' + tipo).classList.add('active');
-
-  const filtrado = tipo === 'todos'
-    ? _likesHoyData
-    : _likesHoyData.filter(r => r.tipo === tipo || (tipo !== 'todos' && r.tipo === 'ambos'));
-
-  renderLikesHoyTabla(filtrado);
-}
 
 /* ─────────────── Resto de funciones sin cambios ─────────────── */
 
@@ -984,10 +729,16 @@ async function crearCod() {
   if (tipoPlan === 'ilimitado') {
     body.ilimitado = true;
     body.custom = document.getElementById('c-cust-ilim').value.trim();
+  } else if (tipoPlan === 'revendedor') {
+    body.tipo      = 'revendedor';
+    body.dias      = parseInt(document.getElementById('c-dias').value);
+    body.envios_dia = parseInt(document.getElementById('c-env-dias').value);
+    body.custom    = document.getElementById('c-cust-dias').value.trim();
   } else if (tipoPlan === 'dias') {
     body.dias      = parseInt(document.getElementById('c-dias').value);
     body.envios_dia = parseInt(document.getElementById('c-env-dias').value);
     body.custom    = document.getElementById('c-cust-dias').value.trim();
+    body.tipo      = 'dias';
   } else {
     body.likes      = parseInt(document.getElementById('c-lktotal').value);
     body.envios_dia = parseInt(document.getElementById('c-env-likes').value);
@@ -1029,7 +780,7 @@ async function loadCods() {
     ? r.codigos.map(c => {
         const tipo = c.ilimitado ? 'ilimitado' : (c.tipo || 'dias');
         const tipoBadge = c.ilimitado
-          ? '<span class="badge bilim"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="margin-right:3px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Ilimitado</span>'
+          ? '<span class="badge bilim">Ilimitado</span>'
           : tipo === 'likes'
             ? '<span class="badge blikes">Likes</span>'
             : '<span class="badge bdias">Días</span>';
@@ -1110,7 +861,7 @@ function mostrarDetUsr(u) {
     <div class="ir"><span class="ik">Usuario</span><span class="iv">${u.username}</span></div>
     <div class="ir"><span class="ik">Contacto</span><span class="iv">${u.contact}</span></div>
     <div class="ir"><span class="ik">Plan</span><span class="iv"><span class="badge ${u.plan_activo?'bok':'bnone'}">${u.plan_activo?u.plan_nombre:'Sin plan'}</span></span></div>
-    <div class="ir"><span class="ik">Tipo</span><span class="iv"><span class="badge ${u.ilimitado?'bilim':u.plan_tipo==='likes'?'blikes':'bdias'}">${u.ilimitado?'🚀 Ilimitado':u.plan_tipo||'días'}</span></span></div>
+    <div class="ir"><span class="ik">Tipo</span><span class="iv"><span class="badge ${u.ilimitado?'bilim':u.plan_tipo==='likes'?'blikes':'bdias'}">${u.ilimitado?'Ilimitado':u.plan_tipo||'días'}</span></span></div>
     ${planInfo}
     <div class="ir"><span class="ik">Envíos por día</span><span class="iv">${u.ilimitado?'∞':u.envios_por_dia}</span></div>
     <div class="ir"><span class="ik">Envíos hoy</span><span class="iv">${u.envios_hoy}</span></div>
@@ -1139,23 +890,23 @@ function pedirConfirmarGuardar() {
   let detalle = '';
 
   if (editTipo === 'ilimitado') {
-    detalle = `<strong>Tipo:</strong> 🚀 Ilimitado<br><strong>Sin límite</strong> de días, likes ni envíos.`;
+    detalle = `<strong>Tipo:</strong> Ilimitado<br><strong>Sin límite</strong> de días, likes ni envíos.`;
   } else if (editTipo === 'dias') {
     const dias   = parseInt(document.getElementById('e-dias').value) || 0;
     const envDia = parseInt(document.getElementById('e-env-dias').value) || 3;
     const activo = document.getElementById('e-stat-dias').value === 'true';
-    detalle = `<strong>Tipo:</strong> 📅 Por días<br>`
+    detalle = `<strong>Tipo:</strong> Por días<br>`
             + `<strong>Días del plan:</strong> ${dias} días<br>`
             + `<strong>Envíos por día:</strong> ${envDia}<br>`
-            + `<strong>Estado:</strong> ${activo ? '✅ Activo' : '❌ Inactivo'}`;
+            + `<strong>Estado:</strong> ${activo ? 'Activo' : 'Inactivo'}`;
   } else {
     const lk     = parseInt(document.getElementById('e-lk').value) || 0;
     const envDia = parseInt(document.getElementById('e-env-likes').value) || 3;
     const activo = document.getElementById('e-stat-likes').value === 'true';
-    detalle = `<strong>Tipo:</strong> ❤️ Por likes<br>`
+    detalle = `<strong>Tipo:</strong> Por likes<br>`
             + `<strong>Likes (nuevo total):</strong> ${lk.toLocaleString('es')}<br>`
             + `<strong>Envíos por día:</strong> ${envDia}<br>`
-            + `<strong>Estado:</strong> ${activo ? '✅ Activo' : '❌ Inactivo'}`;
+            + `<strong>Estado:</strong> ${activo ? 'Activo' : 'Inactivo'}`;
   }
 
   document.getElementById('confirm-detail').innerHTML = detalle;
@@ -1188,7 +939,7 @@ async function confirmarGuardar() {
     }, admTok);
   }
   if (!r.ok) return showMsg('msg-edit', r.error, 'err');
-  showMsg('msg-edit', '✓ Plan actualizado correctamente', 'ok');
+  showMsg('msg-edit', 'Plan actualizado correctamente', 'ok');
   mostrarDetUsr(r.usuario);
   loadDash();
   loadUsrs();
@@ -1241,7 +992,7 @@ async function loadUsrs() {
           <td>${u.username}</td>
           <td style="color:var(--mut);font-size:.78rem;max-width:120px;overflow:hidden;text-overflow:ellipsis">${u.contact}</td>
           <td><span class="badge ${u.plan_activo?'bok':'bnone'}">${u.plan_activo?'Activo':'Sin plan'}</span></td>
-          <td><span class="badge ${u.ilimitado?'bilim':u.plan_tipo==='likes'?'blikes':'bdias'}">${u.ilimitado?'🚀 Ilim.':u.plan_tipo||'días'}</span></td>
+          <td><span class="badge ${u.ilimitado?'bilim':u.plan_tipo==='likes'?'blikes':'bdias'}">${u.ilimitado?'Ilim.':u.plan_tipo||'días'}</span></td>
           <td style="font-size:.78rem">${planInfo}</td>
           <td style="color:var(--mut);font-size:.78rem">${new Date(u.creado_en).toLocaleDateString('es')}</td>
           <td><button class="btn bo bsm" onclick='mostrarDetUsr(${JSON.stringify(u).replace(/'/g,"&#39;")})'>Ver</button></td>
@@ -1274,7 +1025,7 @@ async function genRecCod() {
   if (!r.ok) return showMsg('msg-rec-a', r.error, 'err');
   document.getElementById('rec-cv').textContent = r.codigo;
   document.getElementById('rec-cbox').style.display = 'block';
-  showMsg('msg-rec-a', '✓ Código generado. Compártelo con el usuario.', 'ok');
+  showMsg('msg-rec-a', 'Código generado. Compártelo con el usuario.', 'ok');
 }
 
 function copiarRecCod() {
@@ -1289,6 +1040,42 @@ function showMsg(id, txt, tipo) {
   el.style.display = txt ? 'block' : 'none';
   if (txt) setTimeout(() => { if (el.textContent === txt) el.style.display = 'none'; }, 5500);
 }
+
+async function aplicarDiasExtra() {
+  const d = parseInt(document.getElementById('extra-days-val').value);
+  if (!d || isNaN(d)) return showMsg('msg-extra', 'Ingresa un número válido', 'err');
+  if (!confirm(`¿Confirmas ajustar ${d} días a todos los usuarios activos?`)) return;
+
+  const r = await API.postAdmin('/api/admin/usuarios/extra-days', { tipo: 'dias', cantidad: d }, admTok);
+  if (!r.ok) return showMsg('msg-extra', r.error, 'err');
+  showMsg('msg-extra', `Ajuste completado en ${r.rows?.length || r.modified || 0} usuarios.`, 'ok');
+  loadDash();
+}
 </script>
+
+<!-- NAVIGATION DOCK STYLE VIDRIO -->
+<div class="mobn-dock-container" id="mobn">
+  <button class="mb active" id="mb-dash" onclick="aTab('dash')">
+    <div class="mico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+    <span>DASH</span>
+  </button>
+  <button class="mb" id="mb-cod" onclick="aTab('cod')">
+    <div class="mico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+    <span>CÓDIGOS</span>
+  </button>
+  <button class="mb" id="mb-usr" onclick="aTab('usr')">
+    <div class="mico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+    <span>USUARIOS</span>
+  </button>
+  <button class="mb" id="mb-extra" onclick="aTab('extra')">
+    <div class="mico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+    <span>EXTRA</span>
+  </button>
+  <button class="mb" id="mb-rec" onclick="aTab('rec')">
+    <div class="mico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <span>REC</span>
+  </button>
+</div>
+
 </body>
 </html>
