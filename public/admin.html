@@ -250,7 +250,7 @@ main{padding:1.4rem 1.4rem 6.5rem;max-width:960px;margin:0 auto;width:100%}
   <div class="pane active" id="pane-dash">
 
     <!-- WIDGET API KEY (REINTEGRADO) -->
-    <div class="card" id="card-api-usage" style="display:none; margin-bottom:1.2rem; background:rgba(20,20,20,0.4)">
+    <div class="card" id="card-api-usage" style="margin-bottom:1.2rem; background:rgba(20,20,20,0.4)">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
         <div style="display:flex; align-items:center; gap:.8rem;">
           <div style="width:40px; height:40px; border-radius:10px; background:rgba(255,193,7,0.1); display:flex; align-items:center; justify-content:center; color:var(--warn)">
@@ -674,8 +674,8 @@ async function loadDash() {
   const txtEl  = document.getElementById('api-usage-txt');
   const fillEl = document.getElementById('api-usage-fill');
 
+  document.getElementById('card-api-usage').style.display = 'block'; 
   if (r.keyUsage) {
-    document.getElementById('card-api-usage').style.display = 'block';
     valEl.textContent = r.keyUsage;
     const parts = String(r.keyUsage).split('/');
     if (parts.length === 2) {
