@@ -525,19 +525,52 @@ function pintarUI(u,hist){
     const esL = document.getElementById(pfx + 'es-likes'), esEnv = document.getElementById(pfx + 'es-enviados');
     if(esEnv) esEnv.textContent = (u.total_likes_enviados||0).toLocaleString('es');
     if(esL) {
-       if(u.plan_activo && !u.ilimitado && u.plan_tipo==='dias'){
-         const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;
-         esL.textContent=d+'d';
-       } else {
-         esL.textContent=(u.likes_disponibles||0).toLocaleString('es');
-       }
+      const lbl = document.getElementById(pfx + 'es-likes-lbl');
+      if(u.plan_activo && !u.ilimitado && (u.plan_tipo==='dias' || u.plan_tipo==='revendedor')){
+        const d = u.plan_vence ? Math.max(0, Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)) : 0;
+        esL.textContent = d + (d === 1 ? ' día' : ' días');
+        if(lbl) lbl.textContent = 'Días restantes';
+      } else {
+        esL.textContent = (u.likes_disponibles||0).toLocaleString('es');
+        if(lbl) lbl.textContent = 'Likes disponibles';
+      }
     }
   };
   statsUpdate(''); statsUpdate('auto-');
 
-  if(u.plan_activo){badge.className='pbadge pon';badge.textContent='Activo';pn.textContent=u.plan_nombre;if(u.plan_tipo==='likes'){const lenv=u.likes_enviados_plan||0,ltot=u.likes_limite_plan||0;ps.textContent=ltot>0?`${lenv.toLocaleString('es')} / ${ltot.toLocaleString('es')} likes · ${u.envios_por_dia} envíos/día`:`${(u.likes_disponibles||0).toLocaleString('es')} likes · ${u.envios_por_dia} envíos/día`;}else{const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;ps.textContent=`${d} día${d!==1?'s':''} restante${d!==1?'s':''} · ${u.envios_por_dia} envíos/día`;}}else{badge.textContent='Sin plan';badge.className='pbadge poff';pn.textContent='Sin plan activo';ps.textContent='Canjea un código en Acceso';}
+  if(u.plan_activo){
+    badge.className='pbadge pon';
+    badge.textContent='Activo';
+    pn.textContent=u.plan_nombre;
+    if(u.plan_tipo==='likes'){
+      const lenv=u.likes_enviados_plan||0,ltot=u.likes_limite_plan||0;
+      ps.textContent=ltot>0?`${lenv.toLocaleString('es')} / ${ltot.toLocaleString('es')} likes · ${u.envios_por_dia} envíos/día`:`${(u.likes_disponibles||0).toLocaleString('es')} likes · ${u.envios_por_dia} envíos/día`;
+    }else{
+      const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;
+      ps.textContent=`${d} día${d!==1?'s':''} restante${d!==1?'s':''} · ${u.envios_por_dia} envíos/día`;
+    }
+  }else{
+    badge.textContent='Sin plan';
+    badge.className='pbadge poff';
+    pn.textContent='Sin plan activo';
+    ps.textContent='Canjea un código en Acceso';
+  }
   document.getElementById('inicio-cargando').style.display='none';
-  if(u.plan_activo){document.getElementById('inicio-con-plan').style.display='block';document.getElementById('inicio-sin-plan').style.display='none';document.getElementById('inicio-plan-nombre').textContent=u.plan_nombre||'Plan activo';const sub=document.getElementById('inicio-plan-sub');if(u.plan_tipo==='dias'){const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;sub.textContent=`${d} día${d!==1?'s':''} restante${d!==1?'s':''} · ${u.envios_por_dia} envíos/día`;}else sub.textContent=`${(u.likes_disponibles||0).toLocaleString('es')} likes restantes · ${u.envios_por_dia} envíos/día`;}else{document.getElementById('inicio-con-plan').style.display='none';document.getElementById('inicio-sin-plan').style.display='block';}
+  if(u.plan_activo){
+    document.getElementById('inicio-con-plan').style.display='block';
+    document.getElementById('inicio-sin-plan').style.display='none';
+    document.getElementById('inicio-plan-nombre').textContent=u.plan_nombre||'Plan activo';
+    const sub=document.getElementById('inicio-plan-sub');
+    if(u.plan_tipo==='dias' || u.plan_tipo==='revendedor'){
+      const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;
+      sub.textContent=`${d} día${d!==1?'s':''} restante${d!==1?'s':''} · ${u.envios_por_dia} envíos/día`;
+    }else {
+      sub.textContent=`${(u.likes_disponibles||0).toLocaleString('es')} likes restantes · ${u.envios_por_dia} envíos/día`;
+    }
+  }else{
+    document.getElementById('inicio-con-plan').style.display='none';
+    document.getElementById('inicio-sin-plan').style.display='block';
+  }
   
   const autoWrap=document.getElementById('auto-btn-likes-wrap');if(autoWrap) autoWrap.style.display=u.plan_activo?'block':'none';
   document.getElementById('p-av').textContent=ini;document.getElementById('p-name').textContent=u.username;document.getElementById('p-contact').textContent=u.contact;document.getElementById('p-uid').textContent=u.uid;
