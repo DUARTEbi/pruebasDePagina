@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>Panel – BoostSpeed</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;500;600;700;800&family=Yellowtail&display=swap" rel="stylesheet"/>
 <style>
 :root{--g:#00FF1E;--gm:#00e61a;--gdim:rgba(0,255,30,.10);--bg:#070707;--bg2:#0d0d0d;--bg3:#131313;--sur:#171717;--bdr:rgba(0,255,30,.13);--txt:#eef2ee;--mut:#6b806b;--red:#ff4757;--warn:#ffc107;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -23,11 +23,12 @@ body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--txt);min-he
 @keyframes bgp{0%,100%{opacity:.5}50%{opacity:1}}
 .nl-canvas{position:absolute;inset:0;pointer-events:none;width:100%;height:100%;z-index:3;border-radius:inherit;}
 .tb{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;min-height:56px;background:rgba(7,7,7,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 1rem;justify-content:space-between;flex-shrink:0;overflow:hidden;}
-.tb-line{position:absolute;bottom:0;left:0;height:1px;width:40%;background:linear-gradient(90deg,transparent,rgba(0,255,30,.9),transparent);animation:tbLine 3s linear infinite;}
-@keyframes tbLine{0%{left:-40%}100%{left:100%}}
-.logo{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--g);letter-spacing:2px;display:flex;align-items:center;gap:.4rem;text-decoration:none;white-space:nowrap;flex-shrink:0;animation:logoGlow 3s ease-in-out infinite;}
+.neon-pingpong-container{width:100%;height:2px;background:rgba(255,255,255,.02);position:absolute;bottom:0;left:0;overflow:hidden;box-shadow:0 0 5px rgba(0,0,0,.5);z-index:101}
+.neon-pingpong-line{position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(to right,transparent,var(--g) 50%,transparent);box-shadow:0 0 10px rgba(0,255,30,.7),0 0 20px rgba(0,255,30,.4);animation:neon-swipe-pingpong 4s ease-in-out infinite}
+@keyframes neon-swipe-pingpong{0%{left:-100%}50%{left:100%}100%{left:-100%}}
+.logo{font-family:'Yellowtail',cursive;font-size:1.6rem;font-weight:400;color:var(--g);letter-spacing:1px;display:flex;align-items:center;gap:.4rem;text-decoration:none;white-space:nowrap;flex-shrink:0;animation:logoGlow 3s ease-in-out infinite;}
 @keyframes logoGlow{0%,100%{text-shadow:0 0 8px rgba(0,255,30,.3)}50%{text-shadow:0 0 18px rgba(0,255,30,.8),0 0 40px rgba(0,255,30,.3)}}
-.logo span{color:var(--txt);font-weight:500}
+.logo span{color:var(--txt);font-weight:400;font-family:'Yellowtail',cursive}
 .logo-bolt{display:inline-block;font-style:normal;margin-left:.1rem;font-size:1.15rem;transform-origin:center center;animation:thunderStrike 2.6s ease-in-out infinite;filter:drop-shadow(0 0 3px rgba(0,255,30,.4));}
 @keyframes thunderStrike{0%{opacity:.25;transform:scale(.88) rotate(-4deg)}38%{opacity:1;transform:scale(1.35) rotate(4deg) skewX(-8deg);filter:drop-shadow(0 0 8px #ffe600) drop-shadow(0 0 18px rgba(255,230,0,.9));color:#ffe600}54%{opacity:.15;transform:scale(.85) rotate(-2deg);filter:none;color:var(--g)}100%{opacity:.25;transform:scale(.88) rotate(-4deg)}}
 .pulse{width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:0 0 8px rgba(0,255,30,.6);position:relative;flex-shrink:0;animation:bl 1.6s infinite;}
@@ -40,8 +41,8 @@ main{position:relative;z-index:1;flex:1;padding:calc(56px + 1rem) 1rem 0;max-wid
 .pane{display:none;animation:tabIn .35s cubic-bezier(.23,1,.32,1) both}
 .pane.active{display:block}
 @keyframes tabIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.card{background:var(--sur);border:1px solid var(--bdr);border-radius:14px;padding:1.2rem;margin-bottom:.9rem;position:relative;transition:border-color .3s,box-shadow .3s;}
-.card:hover{border-color:rgba(0,255,30,.32);box-shadow:0 6px 32px rgba(0,255,30,.1)}
+.card{background:var(--sur);border:none;border-radius:14px;padding:1.2rem;margin-bottom:.9rem;position:relative;transition:box-shadow .3s;}
+.card:hover{box-shadow:0 6px 32px rgba(0,255,30,.1)}
 .ctit{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.9rem;display:flex;align-items:center;gap:.45rem;}
 .ctit svg{flex-shrink:0;opacity:.75}
 .btn-manual{background:var(--g);color:#000;box-shadow:0 2px 12px rgba(0,255,30,.25);position:relative;overflow:hidden;animation:manualPulse 2.5s ease-in-out infinite;}
@@ -53,7 +54,7 @@ main{position:relative;z-index:1;flex:1;padding:calc(56px + 1rem) 1rem 0;max-wid
 .btn-auto-inicio:hover{background:rgba(0,255,30,.08);border-color:var(--g);transform:translateY(-2px)}
 @keyframes autoPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,30,.2)}50%{box-shadow:0 0 0 4px rgba(0,255,30,0)}}
 .pane{will-change:opacity,transform}.id-card,.top-item,.hist-item{will-change:auto}.btn-auto-likes,.btn-manual,.btn-auto-inicio{will-change:transform}
-.stats-card{background:var(--sur);border:1px solid var(--bdr);border-radius:14px;position:relative;overflow:hidden;animation:statCardGlow 4s ease-in-out infinite;}
+.stats-card{background:var(--sur);border:none;border-radius:14px;position:relative;overflow:hidden;animation:statCardGlow 4s ease-in-out infinite;}
 @keyframes statCardGlow{0%,100%{box-shadow:0 0 0 0 rgba(0,255,30,.05),0 4px 20px rgba(0,0,0,.3)}50%{box-shadow:0 0 0 3px rgba(0,255,30,0),0 4px 28px rgba(0,255,30,.12)}}
 .stats-card::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(0,255,30,.04) 50%,transparent 100%);transform:translateX(-100%);animation:statShine 4s ease-in-out infinite;}
 @keyframes statShine{0%,20%{transform:translateX(-100%)}50%,100%{transform:translateX(100%)}}
@@ -74,11 +75,11 @@ main{position:relative;z-index:1;flex:1;padding:calc(56px + 1rem) 1rem 0;max-wid
 @keyframes planPing{0%{box-shadow:0 0 0 0 rgba(0,255,30,.7)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
 .poff{background:rgba(255,71,87,.07);border:1px solid rgba(255,71,87,.22);color:var(--red)}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.9rem}
-.info-card{background:var(--bg3);border:1px solid var(--bdr);border-radius:11px;padding:.9rem;position:relative;transition:border-color .3s,transform .3s;}
-.info-card:hover{border-color:rgba(0,255,30,.28);transform:translateY(-2px)}
+.info-card{background:var(--bg3);border:none;border-radius:11px;padding:.9rem;position:relative;transition:transform .3s;}
+.info-card:hover{transform:translateY(-2px)}
 .info-card:nth-child(1){animation:floatY 4s 0s ease-in-out infinite}.info-card:nth-child(2){animation:floatY 4s .8s ease-in-out infinite}.info-card:nth-child(3){animation:floatY 4s 1.6s ease-in-out infinite}.info-card:nth-child(4){animation:floatY 4s 2.4s ease-in-out infinite}
 .info-ico{margin-bottom:.45rem}.info-title{font-family:'Rajdhani',sans-serif;font-size:.88rem;font-weight:700;margin-bottom:.25rem}.info-desc{color:var(--mut);font-size:.73rem;line-height:1.5}
-.invite-card{background:linear-gradient(135deg,rgba(0,255,30,.06),rgba(0,255,30,.02));border:1px solid rgba(0,255,30,.18);border-radius:13px;padding:1.1rem;margin-bottom:.9rem;text-align:center;}
+.invite-card{background:linear-gradient(135deg,rgba(0,255,30,.06),rgba(0,255,30,.02));border:none;border-radius:13px;padding:1.1rem;margin-bottom:.9rem;text-align:center;}
 .invite-title{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.3rem;color:var(--g)}
 .invite-desc{color:var(--mut);font-size:.78rem;line-height:1.5;margin-bottom:.75rem}
 .invite-btns{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
@@ -104,7 +105,7 @@ main{position:relative;z-index:1;flex:1;padding:calc(56px + 1rem) 1rem 0;max-wid
 .msg{padding:.58rem .9rem;border-radius:9px;font-size:.82rem;margin-bottom:.8rem;display:none;animation:fadeIn .3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 .ok{background:rgba(0,255,30,.08);border:1px solid rgba(0,255,30,.22);color:var(--g)}.err{background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.22);color:var(--red)}.warn{background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.22);color:var(--warn)}
-.rbox{background:var(--bg3);border:1px solid rgba(0,255,30,.2);border-radius:13px;padding:1.1rem;margin-top:.7rem;display:none;animation:fadeIn .4s cubic-bezier(.23,1,.32,1);}
+.rbox{background:var(--bg3);border:none;border-radius:13px;padding:1.1rem;margin-top:.7rem;display:none;animation:fadeIn .4s cubic-bezier(.23,1,.32,1);}
 .rplayer{display:flex;align-items:center;gap:.85rem;margin-bottom:.9rem;padding-bottom:.9rem;border-bottom:1px solid var(--bdr)}
 .rav{width:46px;height:46px;border-radius:50%;background:var(--gdim);border:2px solid var(--g);display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:var(--g);font-weight:700;flex-shrink:0;}
 .rname{font-family:'Rajdhani',sans-serif;font-size:1.08rem;font-weight:700}.rsub{color:var(--mut);font-size:.75rem;margin-top:.1rem}.rsent{margin-left:auto;text-align:right}
@@ -112,17 +113,17 @@ main{position:relative;z-index:1;flex:1;padding:calc(56px + 1rem) 1rem 0;max-wid
 @keyframes pop{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
 .rlbl{color:var(--mut);font-size:.62rem;text-transform:uppercase;letter-spacing:.4px}
 .rcols{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}.rc{background:var(--sur);border-radius:9px;padding:.5rem;text-align:center}.rcv{font-weight:700;font-size:.88rem}.rcv.green{color:var(--g)}.rcl{color:var(--mut);font-size:.62rem;text-transform:uppercase;margin-bottom:.18rem}
-.top-item{display:flex;align-items:center;gap:.75rem;padding:.65rem .85rem;border-radius:14px;border:1px solid var(--bdr);background:var(--bg3);margin-bottom:.45rem;opacity:0;transform:translateX(-8px);transition:border-color .25s,transform .25s,box-shadow .25s;}
+.top-item{display:flex;align-items:center;gap:.75rem;padding:.65rem .85rem;border-radius:14px;border:none;background:var(--bg3);margin-bottom:.45rem;opacity:0;transform:translateX(-8px);transition:transform .25s,box-shadow .25s;}
 .top-item.vis{animation:tIn .4s cubic-bezier(.23,1,.32,1) forwards}
 @keyframes tIn{to{opacity:1;transform:translateX(0)}}
-.top-item:hover{border-color:rgba(0,255,30,.32);transform:translateX(4px)!important;box-shadow:0 4px 16px rgba(0,255,30,.08)}
+.top-item:hover{transform:translateX(4px)!important;box-shadow:0 4px 16px rgba(0,255,30,.08)}
 .top-av{width:32px;height:32px;border-radius:50%;background:var(--gdim);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:.85rem;color:var(--g);font-weight:700;flex-shrink:0;}
 .top-name{font-weight:600;font-size:.86rem;flex:1;transition:color .25s}.top-item:hover .top-name{color:var(--g)}
 .top-lks{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:var(--g);text-align:right}.top-ll{color:var(--mut);font-size:.6rem;text-transform:uppercase;text-align:right}
 #historial-list{max-height:420px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,255,30,.2) transparent;}
 #historial-list::-webkit-scrollbar{width:4px}#historial-list::-webkit-scrollbar-track{background:transparent}#historial-list::-webkit-scrollbar-thumb{background:rgba(0,255,30,.2);border-radius:4px}
-.hist-item{border-radius:11px;border:1px solid var(--bdr);background:var(--bg3);margin-bottom:.45rem;opacity:1;transition:border-color .2s,box-shadow .2s;overflow:hidden;animation:cIn .35s cubic-bezier(.23,1,.32,1) both;}
-.hist-item:hover{border-color:rgba(0,255,30,.22);box-shadow:0 2px 12px rgba(0,255,30,.06)}
+.hist-item{border-radius:11px;border:none;background:var(--bg3);margin-bottom:.45rem;opacity:1;transition:box-shadow .2s;overflow:hidden;animation:cIn .35s cubic-bezier(.23,1,.32,1) both;}
+.hist-item:hover{box-shadow:0 2px 12px rgba(0,255,30,.06)}
 .hist-top{display:flex;align-items:center;gap:.65rem;padding:.62rem .82rem .5rem}
 .hico{width:32px;height:32px;border-radius:8px;background:var(--gdim);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .hinfo{flex:1;min-width:0}.hname{font-weight:700;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt)}.huid{color:var(--mut);font-size:.68rem;font-family:monospace;margin-top:.06rem}
@@ -141,8 +142,8 @@ main{position:relative;z-index:1;flex:1;padding:calc(56px + 1rem) 1rem 0;max-wid
 .cpbtn{background:none;border:none;color:var(--mut);padding:.1rem;display:flex;transition:color .2s}.cpbtn:hover{color:var(--g)}
 .ir{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--bdr)}.ir:last-child{border-bottom:none}
 .ik{color:var(--mut);font-size:.82rem;display:flex;align-items:center;gap:.38rem}.iv{font-weight:700;font-size:.86rem}
-.copt{display:flex;align-items:center;gap:.85rem;padding:.82rem;border-radius:11px;border:1px solid var(--bdr);background:var(--bg3);margin-bottom:.55rem;transition:all .24s;text-decoration:none;color:var(--txt);}
-.copt:hover{border-color:rgba(0,255,30,.28);transform:translateX(3px);background:rgba(0,255,30,.03)}
+.copt{display:flex;align-items:center;gap:.85rem;padding:.82rem;border-radius:11px;border:none;background:var(--bg3);margin-bottom:.55rem;transition:all .24s;text-decoration:none;color:var(--txt);}
+.copt:hover{transform:translateX(3px);background:rgba(0,255,30,.03)}
 .cico{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:floatY 3.2s ease-in-out infinite;}
 .copt:nth-child(2) .cico{animation-delay:.7s}
 .tgico{background:rgba(0,136,204,.14);border:1px solid rgba(0,136,204,.28)}.waico{background:rgba(37,211,102,.14);border:1px solid rgba(37,211,102,.28)}
@@ -171,14 +172,14 @@ main{position:relative;z-index:1;flex:1;padding:calc(56px + 1rem) 1rem 0;max-wid
 .auto-badge{background:rgba(0,255,30,.12);border:1px solid rgba(0,255,30,.3);color:var(--g);font-size:.65rem;font-weight:700;padding:.2rem .5rem;border-radius:100px;text-transform:uppercase;letter-spacing:.5px;animation:badgePulse 2s ease-in-out infinite;}
 @keyframes badgePulse{0%,100%{opacity:.8}50%{opacity:1;background:rgba(0,255,30,.2)}}
 .auto-arrow{color:var(--mut);transition:transform .3s,color .3s}.btn-auto-likes:hover .auto-arrow{transform:translateX(4px);color:var(--g)}
-.auto-status-banner{background:linear-gradient(135deg,rgba(0,255,30,.08) 0%,rgba(0,255,30,.03) 100%);border:1px solid rgba(0,255,30,.25);border-radius:13px;padding:1rem 1.1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.9rem;position:relative;overflow:hidden;}
+.auto-status-banner{background:linear-gradient(135deg,rgba(0,255,30,.08) 0%,rgba(0,255,30,.03) 100%);border:none;border-radius:13px;padding:1rem 1.1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.9rem;position:relative;overflow:hidden;}
 .auto-status-banner::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(0,255,30,.03),transparent);animation:scanLine 4s linear infinite;}
 @keyframes scanLine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .auto-status-dot{width:44px;height:44px;border-radius:50%;background:rgba(0,255,30,.08);border:1px solid rgba(0,255,30,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .auto-status-inner-dot{width:14px;height:14px;border-radius:50%;background:var(--g);box-shadow:0 0 10px rgba(0,255,30,.7);animation:bl 1.2s ease-in-out infinite;}
 .auto-status-title{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--g);margin-bottom:.15rem}.auto-status-sub{color:var(--mut);font-size:.75rem;line-height:1.5}
 .auto-status-tag{font-size:.68rem;font-weight:700;padding:.22rem .55rem;border-radius:100px;background:rgba(0,255,30,.12);border:1px solid rgba(0,255,30,.25);color:var(--g);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;animation:planPing 2s ease-in-out infinite;}
-.add-id-section{background:var(--bg3);border:1px solid var(--bdr);border-radius:13px;padding:1.1rem;margin-bottom:.9rem;}
+.add-id-section{background:var(--bg3);border:none;border-radius:13px;padding:1.1rem;margin-bottom:.9rem;}
 .add-id-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;}
 .add-id-title{font-family:'Rajdhani',sans-serif;font-size:.96rem;font-weight:700;display:flex;align-items:center;gap:.4rem;}
 .id-slot-counter{display:flex;align-items:center;gap:.4rem;background:var(--sur);border:1px solid var(--bdr);border-radius:100px;padding:.2rem .65rem;font-size:.72rem;font-weight:700;}
@@ -188,8 +189,8 @@ main{position:relative;z-index:1;flex:1;padding:calc(56px + 1rem) 1rem 0;max-wid
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .id-cards-list{margin-top:.85rem;display:flex;flex-direction:column;gap:.6rem}
-.id-card{background:var(--sur);border:1px solid var(--bdr);border-radius:12px;overflow:hidden;transition:border-color .3s,box-shadow .3s;}
-.id-card:hover{border-color:rgba(0,255,30,.28);box-shadow:0 4px 20px rgba(0,255,30,.07)}
+.id-card{background:var(--sur);border:none;border-radius:12px;overflow:hidden;transition:box-shadow .3s;}
+.id-card:hover{box-shadow:0 4px 20px rgba(0,255,30,.07)}
 .id-card-top{display:flex;align-items:center;gap:.75rem;padding:.75rem .9rem .6rem;}
 .id-card-icon{width:36px;height:36px;border-radius:9px;background:var(--gdim);border:1px solid rgba(0,255,30,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .id-card-info{flex:1;min-width:0}.id-card-uid{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--txt);letter-spacing:.5px}.id-card-name{color:var(--mut);font-size:.72rem;margin-top:.08rem}
@@ -210,7 +211,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .id-delete-btn{background:none;border:none;color:var(--mut);display:flex;align-items:center;padding:.15rem;border-radius:5px;transition:color .2s,background .2s;}.id-delete-btn:hover{color:var(--red);background:rgba(255,71,87,.1)}
 .id-empty{text-align:center;padding:2rem 1rem;border:1px dashed rgba(0,255,30,.15);border-radius:12px;margin-top:.5rem;}
 .id-empty-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.92rem;margin-bottom:.3rem;color:var(--mut);opacity:.7}.id-empty-sub{color:var(--mut);font-size:.75rem;opacity:.5}
-.auto-log{background:var(--bg3);border:1px solid var(--bdr);border-radius:13px;padding:1rem;margin-bottom:.9rem;}
+.auto-log{background:var(--bg3);border:none;border-radius:13px;padding:1rem;margin-bottom:.9rem;}
 .auto-log-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;}
 .auto-log-title{font-family:'Rajdhani',sans-serif;font-size:.96rem;font-weight:700;display:flex;align-items:center;gap:.4rem;}
 .log-live-chip{display:inline-flex;align-items:center;gap:.35rem;background:rgba(0,255,30,.08);border:1px solid rgba(0,255,30,.2);border-radius:100px;padding:.18rem .5rem;font-size:.65rem;font-weight:700;color:var(--g);}
@@ -236,7 +237,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <div id="meteors"></div>
 <div class="bggl"></div>
 <div class="tb">
-  <div class="tb-line"></div>
+  <div class="neon-pingpong-container"><div class="neon-pingpong-line"></div></div>
   <a class="logo" href="/"><div class="pulse"></div>Boost<span>Speed</span><i class="logo-bolt">⚡</i></a>
   <nav class="pc-nav" id="pc-nav">
     <button class="pc-nav-btn active" id="pc-inicio" onclick="tab('inicio')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Inicio</button>
@@ -341,7 +342,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </div>
 <!-- AUTO -->
 <div class="pane" id="pane-auto">
-  <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:13px;padding:.85rem 1rem;margin-bottom:.9rem;position:relative;overflow:hidden;">
+  <div style="background:var(--bg3);border:none;border-radius:13px;padding:.85rem 1rem;margin-bottom:.9rem;position:relative;overflow:hidden;">
     <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:.5"></div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem 1rem;">
       <div style="display:flex;align-items:center;gap:.5rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span style="font-size:.7rem;color:var(--mut)">Plan</span><span style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.88rem;color:var(--g);margin-left:auto" id="auto-plan-tipo">—</span></div>
@@ -355,7 +356,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div style="flex:1"><div class="auto-status-title">Envío Automático Activo</div><div class="auto-status-sub">Sistema para enviar likes a tu ID o IDs automáticamente. Ya no tendrás que enviarte manualmente si lo deseas.</div></div>
     <span class="auto-status-tag">EN VIVO</span>
   </div>
-  <div id="auto-sin-plan" style="display:none;background:rgba(255,71,87,.05);border:1px solid rgba(255,71,87,.2);border-radius:13px;padding:1rem;margin-bottom:.9rem;text-align:center">
+  <div id="auto-sin-plan" style="display:none;background:rgba(255,71,87,.05);border:none;border-radius:13px;padding:1rem;margin-bottom:.9rem;text-align:center">
     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.5" style="margin:0 auto .5rem;display:block;opacity:.6"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
     <p style="color:var(--mut);font-size:.82rem">Necesitas un <strong style="color:var(--txt)">plan activo</strong> para usar el modo automático.</p>
     <button class="btn bo bsm" style="margin-top:.65rem" onclick="tab('acceso')">Ver planes</button>
@@ -369,13 +370,13 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <button onclick="toggleAddForm()" id="btn-toggle-add-form" style="background:var(--g);color:#000;border:none;border-radius:7px;padding:.3rem .7rem;font-family:'Exo 2',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.3rem;transition:all .2s;white-space:nowrap;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="add-form-btn-lbl">Agregar ID</span></button>
       </div>
     </div>
-    <div id="auto-add-form" style="background:var(--bg2);border:1px solid rgba(0,255,30,.18);border-radius:11px;padding:.9rem;margin-bottom:.6rem;display:none;animation:fadeIn .25s ease">
+    <div id="auto-add-form" style="background:var(--bg2);border:none;border-radius:11px;padding:.9rem;margin-bottom:.6rem;display:none;animation:fadeIn .25s ease">
       <div class="msg" id="msg-auto-add"></div>
       <div style="margin-bottom:.65rem">
         <label style="display:block;font-size:.68rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.3rem">UID de Free Fire</label>
         <input type="text" id="auto-uid-input" placeholder="Ej: 273968086" inputmode="numeric" autocomplete="off" style="width:100%;background:var(--bg3);border:1px solid var(--bdr);border-radius:9px;padding:.62rem .9rem;color:var(--txt);font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.5px;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s;" onfocus="this.style.borderColor='var(--g)';this.style.boxShadow='0 0 0 3px rgba(0,255,30,.09)'" onblur="this.style.borderColor='';this.style.boxShadow=''"/>
       </div>
-      <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:.75rem;margin-bottom:.65rem">
+      <div style="background:var(--bg3);border:none;border-radius:10px;padding:.75rem;margin-bottom:.65rem">
         <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.65rem"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span style="font-size:.72rem;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.5px">Configurar envío</span></div>
         <div style="display:flex;gap:.4rem;margin-bottom:.7rem">
           <button onclick="setAutoTipo('likes')" id="auto-toggle-likes" style="flex:1;padding:.38rem .5rem;border-radius:8px;border:1px solid rgba(0,255,30,.35);background:rgba(0,255,30,.1);color:var(--g);font-family:'Exo 2',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s">❤️ Por Likes</button>
