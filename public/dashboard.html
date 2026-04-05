@@ -479,8 +479,8 @@ function pintarUI(u,hist){
   const env=u.envios_hoy||0,lim=u.ilimitado?999:(u.envios_por_dia||0),pct=lim>0?Math.min((env/lim)*100,100):0;
   const statsUpdate = (pfx) => {
     const val = document.getElementById(pfx + 'limit-val'), fill = document.getElementById(pfx + 'limit-fill');
-    if(val) val.textContent = u.ilimitado ? `${env}/∞` : `${env}/${lim}`;
-    if(fill) fill.style.width = u.ilimitado ? '15%' : pct+'%';
+    if(val) val.textContent = `${env}/${lim}`;
+    if(fill) fill.style.width = pct+'%';
     const esL = document.getElementById(pfx + 'es-likes'), esEnv = document.getElementById(pfx + 'es-enviados');
     if(esEnv) esEnv.textContent = (u.total_likes_enviados||0).toLocaleString('es');
     if(esL) {
@@ -488,22 +488,22 @@ function pintarUI(u,hist){
          const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;
          esL.textContent=d+'d';
        } else {
-         esL.textContent=u.ilimitado?'∞':(u.likes_disponibles||0).toLocaleString('es');
+         esL.textContent=(u.likes_disponibles||0).toLocaleString('es');
        }
     }
   };
   statsUpdate(''); statsUpdate('auto-');
 
-  if(u.plan_activo){badge.className='pbadge pon';if(u.ilimitado){badge.textContent='🚀 Ilimitado';pn.textContent='Plan Ilimitado';ps.textContent='Sin límites · Envíos ilimitados';}else if(u.plan_tipo==='likes'){badge.textContent='Activo';pn.textContent=u.plan_nombre;const lenv=u.likes_enviados_plan||0,ltot=u.likes_limite_plan||0;ps.textContent=ltot>0?`${lenv.toLocaleString('es')} / ${ltot.toLocaleString('es')} likes · ${u.envios_por_dia} envíos/día`:`${(u.likes_disponibles||0).toLocaleString('es')} likes · ${u.envios_por_dia} envíos/día`;}else{badge.textContent='Activo';pn.textContent=u.plan_nombre;const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;ps.textContent=`${d} día${d!==1?'s':''} restante${d!==1?'s':''} · ${u.envios_por_dia} envíos/día`;}}else{badge.textContent='Sin plan';badge.className='pbadge poff';pn.textContent='Sin plan activo';ps.textContent='Canjea un código en Acceso';}
+  if(u.plan_activo){badge.className='pbadge pon';badge.textContent='Activo';pn.textContent=u.plan_nombre;if(u.plan_tipo==='likes'){const lenv=u.likes_enviados_plan||0,ltot=u.likes_limite_plan||0;ps.textContent=ltot>0?`${lenv.toLocaleString('es')} / ${ltot.toLocaleString('es')} likes · ${u.envios_por_dia} envíos/día`:`${(u.likes_disponibles||0).toLocaleString('es')} likes · ${u.envios_por_dia} envíos/día`;}else{const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;ps.textContent=`${d} día${d!==1?'s':''} restante${d!==1?'s':''} · ${u.envios_por_dia} envíos/día`;}}else{badge.textContent='Sin plan';badge.className='pbadge poff';pn.textContent='Sin plan activo';ps.textContent='Canjea un código en Acceso';}
   document.getElementById('inicio-cargando').style.display='none';
-  if(u.plan_activo){document.getElementById('inicio-con-plan').style.display='block';document.getElementById('inicio-sin-plan').style.display='none';document.getElementById('inicio-plan-nombre').textContent=u.ilimitado?'Plan Ilimitado ∞':(u.plan_nombre||'Plan activo');const sub=document.getElementById('inicio-plan-sub');if(u.ilimitado) sub.textContent='Sin límites · Envíos ilimitados';else if(u.plan_tipo==='dias'){const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;sub.textContent=`${d} día${d!==1?'s':''} restante${d!==1?'s':''} · ${u.envios_por_dia} envíos/día`;}else sub.textContent=`${(u.likes_disponibles||0).toLocaleString('es')} likes restantes`;}else{document.getElementById('inicio-con-plan').style.display='none';document.getElementById('inicio-sin-plan').style.display='block';}
+  if(u.plan_activo){document.getElementById('inicio-con-plan').style.display='block';document.getElementById('inicio-sin-plan').style.display='none';document.getElementById('inicio-plan-nombre').textContent=u.plan_nombre||'Plan activo';const sub=document.getElementById('inicio-plan-sub');if(u.plan_tipo==='dias'){const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;sub.textContent=`${d} día${d!==1?'s':''} restante${d!==1?'s':''} · ${u.envios_por_dia} envíos/día`;}else sub.textContent=`${(u.likes_disponibles||0).toLocaleString('es')} likes restantes · ${u.envios_por_dia} envíos/día`;}else{document.getElementById('inicio-con-plan').style.display='none';document.getElementById('inicio-sin-plan').style.display='block';}
   
   const autoWrap=document.getElementById('auto-btn-likes-wrap');if(autoWrap) autoWrap.style.display=u.plan_activo?'block':'none';
   document.getElementById('p-av').textContent=ini;document.getElementById('p-name').textContent=u.username;document.getElementById('p-contact').textContent=u.contact;document.getElementById('p-uid').textContent=u.uid;
   document.getElementById('p-plan').textContent=u.plan_activo?(u.ilimitado?'🚀 Ilimitado':u.plan_nombre):'Sin plan';
-  document.getElementById('p-dia').textContent=u.ilimitado?'∞ / día':(u.envios_por_dia+' / día');
-  const pi=document.getElementById('p-plan-info');if(pi){if(!u.plan_activo)pi.textContent='—';else if(u.ilimitado)pi.textContent='Sin límites';else if(u.plan_tipo==='likes'){const lenv=u.likes_enviados_plan||0,ltot=u.likes_limite_plan||0;pi.textContent=ltot>0?`${lenv.toLocaleString('es')} / ${ltot.toLocaleString('es')} likes`:`${(u.likes_disponibles||0).toLocaleString('es')} likes restantes`;}else{const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;pi.textContent=`${d} día${d!==1?'s':''} restante${d!==1?'s':''}`;}}
-  document.getElementById('p-vence').textContent=u.ilimitado?'∞':(u.plan_vence?new Date(u.plan_vence).toLocaleDateString('es'):(u.plan_tipo==='likes'?'Al completar likes':'—'));
+  document.getElementById('p-dia').textContent=(u.envios_por_dia||0)+' / día';
+  const pi=document.getElementById('p-plan-info');if(pi){if(!u.plan_activo)pi.textContent='—';else if(u.plan_tipo==='likes'){const lenv=u.likes_enviados_plan||0,ltot=u.likes_limite_plan||0;pi.textContent=ltot>0?`${lenv.toLocaleString('es')} / ${ltot.toLocaleString('es')} likes`:`${(u.likes_disponibles||0).toLocaleString('es')} likes restantes`;}else{const d=u.plan_vence?Math.max(0,Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)):0;pi.textContent=`${d} día${d!==1?'s':''} restante${d!==1?'s':''}`;}}
+  document.getElementById('p-vence').textContent=(u.plan_vence?new Date(u.plan_vence).toLocaleDateString('es'):(u.plan_tipo==='likes'?'Al completar likes':'—'));
   document.getElementById('p-desde').textContent=new Date(u.creado_en).toLocaleDateString('es');
   pintarHistorial(hist);pintarAutoStats(u);
 }
@@ -515,10 +515,9 @@ function pintarAutoStats(u){
   let elLpBadge = document.getElementById('auto-lp-badge');
   if(u.plan_activo){
       if(elLpBadge){ elLpBadge.className='pbadge pon'; elLpBadge.textContent='Activo'; }
-      if(elLpNombre) elLpNombre.textContent = u.ilimitado ? 'Plan Ilimitado' : (u.plan_nombre || 'Plan activo');
+      if(elLpNombre) elLpNombre.textContent = u.plan_nombre || 'Plan activo';
       if(elLpSub) {
-          if(u.ilimitado) elLpSub.textContent = 'Sin límites · Envíos ilimitados';
-          else if(u.plan_tipo==='likes') elLpSub.textContent = `${(u.likes_disponibles||0).toLocaleString('es')} likes · ${u.envios_por_dia} envíos/día`;
+          if(u.plan_tipo==='likes') elLpSub.textContent = `${(u.likes_disponibles||0).toLocaleString('es')} likes · ${u.envios_por_dia} envíos/día`;
           else {
               const d = u.plan_vence ? Math.max(0, Math.ceil((new Date(u.plan_vence)-Date.now())/86400000)) : 0;
               elLpSub.textContent = `${d} días restantes · ${u.envios_por_dia} envíos/día`;
@@ -542,18 +541,18 @@ async function cargarAutoIDs(manual=false){
     if(!res.ok){list.innerHTML='<div class="empty"><p>Error cargando IDs</p></div>';return;}
     _autoIds=res.ids||[];const maxSlots=res.max_slots||2;const used=_autoIds.length;
     document.getElementById('auto-slots-used').textContent=used;
-    document.getElementById('auto-slots-total').textContent=maxSlots>=999?`/ ∞ IDs`:`/ ${maxSlots} IDs`;
+    document.getElementById('auto-slots-total').textContent=`/ ${maxSlots} IDs`;
     
     // Nueva lógica para las dos barras en AUTO
     let slotsVal = document.getElementById('auto-slots-val');
     let slotsFill = document.getElementById('auto-slots-fill');
-    if(slotsVal) slotsVal.textContent = maxSlots>=999?`${used}/∞ IDs`:`${used}/${maxSlots} IDs`;
-    if(slotsFill) slotsFill.style.width = maxSlots>=999?'20%':`${Math.min(100,(used/maxSlots)*100)}%`;
+    if(slotsVal) slotsVal.textContent = `${used}/${maxSlots} IDs`;
+    if(slotsFill) slotsFill.style.width = `${Math.min(100,(used/maxSlots)*100)}%`;
     
     let likesManualDisp = document.getElementById('likes-manual-disponibles');
     if(likesManualDisp){
         let manualDisp = Math.max(0, maxSlots - used);
-        likesManualDisp.textContent = `Disponibles: ${maxSlots>=999?'∞':manualDisp}`;
+        likesManualDisp.textContent = `Disponibles: ${manualDisp}`;
     }
     const addBtn=document.getElementById('auto-add-btn');const toggleBtn=document.getElementById('btn-toggle-add-form');const slotMsg=document.getElementById('auto-slots-msg');
     if(used>=maxSlots){
