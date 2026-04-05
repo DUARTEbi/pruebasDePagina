@@ -213,70 +213,89 @@ function adminMiddleware(req, res, next) {
   }
 }
 
-function llamarApiFF(uid, server = 'BR', useAlternateEndpoint = false) {
-  return new Promise((resolve, reject) => {
-    const apiKey  = (process.env.FF_API_KEY || '').trim();
-    let apiBase = (process.env.FF_API_URL || 'https://rtpysistemsapi.squareweb.app').trim().replace(/\/+$/, '');
-    if (!apiKey) return reject(new Error('FF_API_KEY no configurada en variables de entorno'));
+async function llamarApiFF(uid, server = 'BR') {
+  const apiKey = (process.env.FF_API_KEY || '').trim();
+  let apiBase = (process.env.FF_API_URL || 'https://rtpysistemsapi.squareweb.app').trim().replace(/\/+$/, '');
 
-    let finalEndpoint = apiBase;
-    // Si no incluye '?' ni rutas específicas, adivinamos el endpoint
-    if (!apiBase.includes('/like') && !apiBase.includes('/send_likes') && !apiBase.includes('?')) {
-        finalEndpoint = useAlternateEndpoint ? apiBase + '/send_likes' : apiBase + '/like';
+  if (!apiKey) throw new Error('FF_API_KEY no configurada');
+  if (!apiBase) throw new Error('FF_API_URL no configurada');
+
+  const targets = [];
+  // Escenario 1: URL base pura (dominio) -> Probar ambas rutas comunes
+  if (!apiBase.includes('/like') && !apiBase.includes('/send_likes') && !apiBase.includes('?')) {
+    targets.push(`${apiBase}/send_likes`); // Prioridad a la nueva API
+    targets.push(`${apiBase}/like`);       // Retrocompatibilidad
+  } else {
+    // Escenario 2: El usuario ya puso una ruta específica
+    targets.push(apiBase);
+    // Como salvavidas, si la que puso falla, intentamos la ruta hermana
+    if (apiBase.includes('/like')) {
+        targets.push(apiBase.replace('/like', '/send_likes'));
+    } else if (apiBase.includes('/send_likes')) {
+        targets.push(apiBase.replace('/send_likes', '/like'));
     }
+  }
 
-    const separator = finalEndpoint.includes('?') ? '&' : '?';
-    const params  = `uid=${encodeURIComponent(uid)}&apikey=${encodeURIComponent(apiKey)}&server=${encodeURIComponent(server)}&id=${encodeURIComponent(uid)}&key=${encodeURIComponent(apiKey)}`;
-    const fullUrl = `${finalEndpoint}${separator}${params}`;
+  let lastError = null;
+  for (const baseUrl of targets) {
+    try {
+      const result = await ejecutarPeticion(baseUrl, uid, apiKey, server);
+      return result; // Éxito: JSON recibido
+    } catch (err) {
+      if (err.message.includes('HTML_RESPONSE') || err.message.includes('Unexpected token <')) {
+        console.log(`[API FF] Falló endpoint ${baseUrl.split('?')[0]} con respuesta HTML. Probando siguiente...`);
+        lastError = err;
+        continue;
+      }
+      // Si el error es de red o tiempo de espera real, abortamos el bucle para no esperar 60s
+      throw err;
+    }
+  }
+
+  throw new Error(`La API no respondió con un JSON válido en ninguna de las rutas intentadas. Revisa tu FF_API_URL en Railway. (Recibido: ${lastError ? lastError.message : 'N/A'})`);
+}
+
+function ejecutarPeticion(baseUrl, uid, apiKey, server) {
+  return new Promise((resolve, reject) => {
+    const separator = baseUrl.includes('?') ? '&' : '?';
+    // Parámetros universales para cubrir ambos tipos de API (antigua y nueva)
+    const params = `uid=${encodeURIComponent(uid)}&apikey=${encodeURIComponent(apiKey)}&server=${encodeURIComponent(server)}&id=${encodeURIComponent(uid)}&key=${encodeURIComponent(apiKey)}`;
+    const fullUrl = `${baseUrl}${separator}${params}`;
 
     const safeLogUrl = fullUrl.replace(new RegExp(encodeURIComponent(apiKey), 'g'), '***');
-    console.log(`[API FF] Llamando: ${safeLogUrl}`);
+    console.log(`[API FF] Intentando: ${safeLogUrl}`);
 
     const options = {
-      timeout: 30000,
+      timeout: 15000, // Menos tiempo por intento para que el fallback sea rápido
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'application/json'
       }
     };
 
-    const req = https.get(fullUrl, options, (res) => {
+    const client = fullUrl.startsWith('https') ? https : http;
+    const req = client.get(fullUrl, options, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
+        const trimmed = data.trim();
+        // Detectar si es HTML (común en 404 o errores de hosting)
+        if (trimmed.startsWith('<!doctype') || trimmed.startsWith('<html') || trimmed.toLowerCase().includes('<body')) {
+          return reject(new Error(`HTML_RESPONSE: ${trimmed.slice(0, 50)}...`));
+        }
         try {
-          // Intentar limpiar posibles espacios o carácteres raros al inicio
-          const trimmedData = data.trim();
-          if (trimmedData.startsWith('<!doctype') || trimmedData.startsWith('<html')) {
-             throw new Error('HTML_RESPONSE');
-          }
-
-          const parsed = JSON.parse(trimmedData);
+          const parsed = JSON.parse(trimmed);
           parsed._httpStatus = res.statusCode;
           if (parsed.key_usage) lastKeyUsage = String(parsed.key_usage);
-
-          const errMsg = String(parsed.error || '').toLowerCase();
-          if (res.statusCode === 500 && errMsg.includes('server_unavailable') && server !== 'BR') {
-            console.log(`[API FF] Servidor ${server} no disponible, reintentando con BR...`);
-            llamarApiFF(uid, 'BR', useAlternateEndpoint).then(resolve).catch(reject);
-            return;
-          }
-
           resolve(parsed);
         } catch (e) {
-          // Si falló el parseo (HTML o error de JSON) y nunca iteramos, intentamos el alternativo (si aplica la lógica de autocompletar)
-          if (!useAlternateEndpoint && !apiBase.includes('/like') && !apiBase.includes('/send_likes') && !apiBase.includes('?')) {
-             console.log(`[API FF] Reintentando con endpoint alternativo por fallo de respuesta...`);
-             llamarApiFF(uid, server, true).then(resolve).catch(reject);
-             return;
-          }
-          const snippet = data.trim().slice(0, 100);
-          reject(new Error(`Respuesta inválida de la API${res.statusCode !== 200 ? ' (HTTP '+res.statusCode+')' : ''}: ${snippet}`));
+          reject(new Error(`Respuesta no es JSON: ${trimmed.slice(0, 50)}...`));
         }
       });
     });
-    req.on('error',   (err) => { console.error('[API FF] Error:', err.message); reject(err); });
-    req.on('timeout', ()    => { req.destroy(); reject(new Error('Tiempo de espera agotado (30s)')); });
+
+    req.on('error', (err) => reject(err));
+    req.on('timeout', () => { req.destroy(); reject(new Error('Timeout (15s)')); });
   });
 }
 
