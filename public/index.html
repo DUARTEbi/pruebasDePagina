@@ -282,8 +282,11 @@ input[type=number] { -moz-appearance: textfield; }
       <p class="anim-fade delay-2">Plataforma dedicada a Free Fire: Servicios premium para impulsar tu cuenta. Seguro y rápido, diseñado para que seas superior a los demás.</p>
 
       <div class="hero-cta mt-4 anim-fade delay-2">
-        <button class="btn btn-primary" onclick="abrirModal('login')">Iniciar sesión</button>
-        <button class="btn btn-outline" onclick="abrirModal('registro')">Crear cuenta</button>
+        <button class="btn btn-primary" onclick="abrirModal('login')">Ingresar al Sistema</button>
+        <button class="btn btn-outline" onclick="loginConGoogle()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="16" style="margin-right:8px;vertical-align:middle;">
+          Empezar con Google
+        </button>
       </div>
 
       <div class="stats-wrapper anim-fade delay-3">
@@ -421,6 +424,7 @@ input[type=number] { -moz-appearance: textfield; }
     </button>
     <p style="margin-top:20px;font-size:12px;text-align:center;color:rgba(255,255,255,0.25);">Podrás cambiar estos datos luego en tu Perfil.</p>
   </div>
+</div>
 
 <!-- MODAL RECUPERAR — 3 pasos -->
 <div class="ov" id="ov-recuperar">
