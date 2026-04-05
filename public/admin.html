@@ -29,25 +29,16 @@ body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--txt);min-he
 .bggl{position:fixed;top:-20%;left:50%;transform:translateX(-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,30,.04) 0%,transparent 65%);pointer-events:none;z-index:0;animation:bgp 6s ease-in-out infinite}
 @keyframes bgp{0%,100%{opacity:.6}50%{opacity:1}}
 
-.logo-bolt{
-  display:inline-block;font-style:normal;margin-left:.08rem;
-  transform-origin:center center;
-  animation:thunderStrike 2.6s ease-in-out infinite;
-  filter:drop-shadow(0 0 3px rgba(0,255,30,.4));
-}
-@keyframes thunderStrike{
-  0%   {opacity:.25;transform:scale(.88) rotate(-4deg);filter:drop-shadow(0 0 1px rgba(0,255,30,.2))}
-  30%  {opacity:.3;transform:scale(.9) rotate(-6deg);filter:drop-shadow(0 0 2px rgba(255,230,0,.3))}
-  38%  {opacity:1;transform:scale(1.35) rotate(4deg) skewX(-8deg);
-        filter:drop-shadow(0 0 8px #ffe600) drop-shadow(0 0 18px rgba(255,230,0,.9)) drop-shadow(0 0 30px rgba(0,255,30,.7));
-        color:#ffe600}
-  42%  {opacity:.6;transform:scale(1.1) rotate(-3deg);filter:drop-shadow(0 0 4px #ffe600);color:#ffe600}
-  46%  {opacity:1;transform:scale(1.22) rotate(2deg) skewX(-4deg);
-        filter:drop-shadow(0 0 6px #ffe600) drop-shadow(0 0 14px rgba(0,255,30,.8));
-        color:#fff}
-  54%  {opacity:.15;transform:scale(.85) rotate(-2deg);filter:none;color:var(--g)}
-  100% {opacity:.25;transform:scale(.88) rotate(-4deg);filter:drop-shadow(0 0 1px rgba(0,255,30,.2));color:var(--g)}
-}
+.logo-container{display:flex;align-items:center}
+.logo-boost{font-family:'Yellowtail',cursive;font-weight:400;font-size:1.6rem;color:#f0f0f0}
+.logo-speed{font-family:'Yellowtail',cursive;font-weight:400;font-size:1.6rem;color:var(--g);text-shadow:0 0 15px rgba(0,255,30,.4)}
+.rayo-impacto{color:#FFEA00;display:inline-block;vertical-align:middle;will-change:transform,opacity,filter;transform-origin:center bottom;animation:strike 3.5s infinite linear;margin-left:5px}
+@keyframes strike{0%,80%,85%,92%,100%{opacity:.1;transform:scale(.9) rotate(0deg);filter:drop-shadow(0 0 2px rgba(255,234,0,.2))}82%{opacity:1;transform:scale(1.1) rotate(-5deg);filter:drop-shadow(0 0 10px #FFEA00)}88%{opacity:1;transform:scale(1.3) rotate(6deg);filter:drop-shadow(0 0 15px #FFEA00) drop-shadow(0 0 5px #fff)}}
+
+.dot-pulse-wrapper{position:relative;width:12px;height:12px;display:flex;align-items:center;justify-content:center;margin-right:8px}
+.dot-center{width:6px;height:6px;background-color:var(--g);border-radius:50%;position:relative;z-index:2;box-shadow:0 0 8px rgba(0,255,30,.8)}
+.dot-ring{position:absolute;width:100%;height:100%;border:1.5px solid rgba(0,255,30,.4);border-radius:50%;animation:dotPulse 1.5s cubic-bezier(.16,1,.3,1) infinite;z-index:1}
+@keyframes dotPulse{0%{transform:scale(.8);opacity:1}100%{transform:scale(2.5);opacity:0}}
 
 #login-scr{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem}
 .lbox{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:2.3rem;width:100%;max-width:360px;position:relative;overflow:hidden;animation:lIn .5s cubic-bezier(.23,1,.32,1)}
@@ -60,8 +51,7 @@ body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--txt);min-he
 .logo{font-family:'Rajdhani',sans-serif;font-size:1.25rem;font-weight:700;color:var(--g);letter-spacing:2px;display:flex;align-items:center;gap:.4rem;animation:logoGlow 3s ease-in-out infinite}
 @keyframes logoGlow{0%,100%{text-shadow:0 0 8px rgba(0,255,30,.3)}50%{text-shadow:0 0 18px rgba(0,255,30,.7),0 0 40px rgba(0,255,30,.2)}}
 
-.pulse{position:relative;width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:var(--glow);animation:bl 1.6s infinite;flex-shrink:0}
-.pulse::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(0,255,30,.3);animation:rp 1.6s ease-out infinite}
+/* pulso de estado eliminado o reemplazado por dot-pulse */
 @keyframes bl{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.6)}}
 @keyframes rp{0%{transform:scale(.4);opacity:.8}100%{transform:scale(2.6);opacity:0}}
 
@@ -256,11 +246,20 @@ tr:hover td{background:rgba(0,255,30,.02)}
 
 <!-- TOPBAR -->
 <div class="topb" id="topb">
-  <div class="logo"><div class="pulse"></div>Boost<span style="color:var(--txt);font-weight:500">Speed</span><i class="logo-bolt">⚡</i><span class="abadge" style="margin-left:.5rem">Admin</span></div>
+  <div class="logo-container">
+    <div class="dot-pulse-wrapper">
+      <div class="dot-ring"></div>
+      <div class="dot-center"></div>
+    </div>
+    <span class="logo-boost">Boost</span><span class="logo-speed">Speed</span>
+    <svg class="rayo-impacto" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    <span class="badge brev" style="font-size:.65rem; margin-left:.5rem; padding:.1rem .5rem; border:1px solid rgba(0,255,30,0.3)">ADMIN</span>
+  </div>
   <div class="tnav" id="tnav">
     <button class="tn active" id="at-dash" onclick="aTab('dash')">Dashboard</button>
     <button class="tn" id="at-cod"  onclick="aTab('cod')">Códigos</button>
     <button class="tn" id="at-usr"  onclick="aTab('usr')">Usuarios</button>
+    <button class="tn" id="at-extra" onclick="aTab('extra')">Extra</button>
     <button class="tn" id="at-rec"  onclick="aTab('rec')">Recuperación</button>
   </div>
   <button class="bout" onclick="aSalir()">Salir</button>
@@ -399,16 +398,24 @@ tr:hover td{background:rgba(0,255,30,.02)}
       <div class="fg"><label>Tipo de plan</label></div>
       <div class="tipo-grid">
         <div class="topt sel" id="topt-dias" onclick="selTipo('dias')">
-          <h4>📅 Por días</h4>
-          <p>El plan dura X días desde que se canjea</p>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-bottom:.3rem"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <h4>Por días</h4>
+          <p>El plan dura X días desde canje</p>
         </div>
         <div class="topt" id="topt-likes" onclick="selTipo('likes')">
-          <h4>❤️ Por likes</h4>
-          <p>El plan dura hasta agotar los likes</p>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-bottom:.3rem"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <h4>Por likes</h4>
+          <p>Dura hasta agotar los likes</p>
+        </div>
+        <div class="topt" id="topt-revendedor" onclick="selTipo('revendedor')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-bottom:.3rem"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <h4>Revendedor</h4>
+          <p>Plan especial para reventa</p>
         </div>
         <div class="topt ilim-opt" id="topt-ilimitado" onclick="selTipo('ilimitado')">
-          <h4>🚀 Ilimitado</h4>
-          <p>Sin límite de likes, días ni envíos</p>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-bottom:.3rem;stroke:#a78bfa"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <h4>Ilimitado</h4>
+          <p>Sin ningún límite</p>
         </div>
       </div>
       <div id="campos-dias">
@@ -538,6 +545,27 @@ tr:hover td{background:rgba(0,255,30,.02)}
         <thead><tr><th>ID único</th><th>Usuario</th><th>Contacto</th><th>Plan</th><th>Tipo</th><th>Likes</th><th>Registrado</th><th></th></tr></thead>
         <tbody id="tb-usr"></tbody>
       </table></div>
+    </div>
+  </div>
+
+  <!-- EXTRA (AJUSTES MASIVOS) -->
+  <div class="pane" id="pane-extra">
+    <div class="card">
+      <div class="ctit">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="10"/></svg>
+        Ajustes masivos de usuarios
+      </div>
+      <div class="msg" id="msg-extra"></div>
+      <p style="color:var(--mut); font-size:.85rem; margin-bottom:1.5rem">Añade o quita días de plan a TODOS los usuarios activos simultáneamente.</p>
+      
+      <div class="fg">
+        <label>Días a sumar o restar</label>
+        <div style="display:flex; gap:.6rem">
+          <input type="number" id="extra-days-val" value="1" placeholder="Ej: 5 o -5" style="flex:1"/>
+          <button class="btn bp" onclick="aplicarDiasExtra()">Aplicar Ajuste →</button>
+        </div>
+        <p style="font-size:.65rem; color:var(--warn); margin-top:.5rem">⚠️ Nota: Usa números negativos para restar días. Solo afecta a usuarios con plan por días activo.</p>
+      </div>
     </div>
   </div>
 
@@ -749,52 +777,49 @@ async function loadDash() {
   const r = await API.getAdmin('/api/admin/stats', admTok);
   if (!r.ok) return;
 
-  document.getElementById('a-tu').textContent = r.totalUsuarios || 0;
-  document.getElementById('a-tc').textContent = r.totalCodigos  || 0;
-  document.getElementById('a-uc').textContent = r.codigosUsados || 0;
-  document.getElementById('a-ap').textContent = r.planesActivos || 0;
+  document.getElementById('a-tu').textContent = (r.totalUsuarios || 0).toLocaleString();
+  document.getElementById('a-tc').textContent = (r.totalCodigos  || 0).toLocaleString();
+  document.getElementById('a-uc').textContent = (r.codigosUsados || 0).toLocaleString();
+  document.getElementById('a-ap').textContent = (r.planesActivos || 0).toLocaleString();
 
-  /* ── Widget uso API key ── */
-  const valEl  = document.getElementById('api-hoy');
-  const subEl  = document.getElementById('api-sub-txt');
-  const barEl  = document.getElementById('api-bar');
-  const pctEl  = document.getElementById('api-pct');
+  // Widget API Key (Reintegrado)
+  const valEl  = document.getElementById('api-usage-val');
+  const txtEl  = document.getElementById('api-usage-txt');
+  const fillEl = document.getElementById('api-usage-fill');
 
   if (r.keyUsage) {
-    const parts = String(r.keyUsage).split('/');
-    const used  = parseInt(parts[0], 10) || 0;
-    const max   = parseInt(parts[1], 10) || 0;
-    const pct   = max > 0 ? Math.min(100, Math.round(used / max * 100)) : 0;
+    document.getElementById('card-api-usage').style.display = 'block';
     valEl.textContent = r.keyUsage;
-    barEl.style.width = pct + '%';
-    barEl.style.background = pct >= 90 ? 'var(--red)' : 'var(--warn)';
-    pctEl.textContent = max > 0 ? pct + '% usado' : '';
-    subEl.textContent = max > 0
-      ? `Quedan ${(max - used).toLocaleString('es')} llamadas · Se reinicia según el proveedor`
-      : 'Usos reportados por la API key del proveedor';
-  } else {
-    const envHoy = r.enviosHoy || 0;
-    valEl.textContent = envHoy > 0 ? envHoy.toLocaleString('es') : '—';
-    barEl.style.width = '0%';
-    pctEl.textContent = '';
-    subEl.textContent = envHoy > 0
-      ? `${envHoy.toLocaleString('es')} envíos registrados hoy · Límite visible tras el primer envío`
-      : 'Sin envíos aún hoy · El límite se muestra tras el primer envío';
+    const parts = String(r.keyUsage).split('/');
+    if (parts.length === 2) {
+      const uses = parseInt(parts[0].trim());
+      const limit = parseInt(parts[1].trim());
+      const pct = Math.min((uses / limit) * 100, 100);
+      fillEl.style.width = pct + '%';
+      if (pct > 90) fillEl.style.background = 'var(--red)';
+      else if (pct > 70) fillEl.style.background = 'var(--warn)';
+      else fillEl.style.background = 'var(--g)';
+      txtEl.textContent = uses > 0 ? `Consumo estable de la API` : `Sin envíos aún hoy`;
+    }
   }
 
-  /* ── Usuarios recientes ── */
-  document.getElementById('dash-rec').innerHTML = r.usuariosRecientes.length
+  // Ocultar widget viejo
+  if(document.querySelector('.api-stats')) document.querySelector('.api-stats').style.display = 'none';
+
+  loadLikesHoy();
+
+  const tbody = document.getElementById('dash-rec');
+  tbody.innerHTML = r.usuariosRecientes.length
     ? r.usuariosRecientes.map(u => `
         <tr>
           <td><code style="color:var(--g);font-size:.75rem">${u.uid}</code></td>
           <td>${u.username}</td>
-          <td><span class="badge ${u.plan_activo ? (u.ilimitado ? 'bilim' : 'bok') : 'bnone'}">${u.plan_activo ? (u.ilimitado ? '🚀 Ilimitado' : u.plan_nombre) : 'Sin plan'}</span></td>
+          <td><span class="badge ${u.plan_activo ? (u.ilimitado ? 'bilim' : 'bok') : 'bnone'}">
+            ${u.plan_activo ? (u.ilimitado ? '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="margin-right:3px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Ilimitado' : u.plan_nombre) : 'Sin plan'}
+          </span></td>
           <td style="color:var(--mut);font-size:.78rem">${new Date(u.creado_en).toLocaleDateString('es')}</td>
         </tr>`).join('')
-    : '<tr><td colspan="4" style="text-align:center;color:var(--mut);padding:1.8rem">Sin usuarios</td></tr>';
-
-  /* ── Cargar tabla de likes hoy ── */
-  loadLikesHoy();
+    : '<tr><td colspan="4" style="text-align:center;color:var(--mut);padding:1.8rem">Sin usuarios por ahora</td></tr>';
 }
 
 /* ══════════════════════════════════════════════════════
