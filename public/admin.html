@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>Admin – BoostSpeed</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;500;600;700;800&family=Yellowtail&display=swap" rel="stylesheet"/>
 <style>
 :root{
   --g:#00FF1E;--gm:#00e61a;--gdim:rgba(0,255,30,.10);--glow:0 0 20px rgba(0,255,30,.4);
@@ -270,6 +270,30 @@ tr:hover td{background:rgba(0,255,30,.02)}
 
   <!-- DASHBOARD -->
   <div class="pane active" id="pane-dash">
+
+    <!-- WIDGET API KEY (REINTEGRADO) -->
+    <div class="card" id="card-api-usage" style="display:none; margin-bottom:1.2rem; background:rgba(20,20,20,0.4)">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+        <div style="display:flex; align-items:center; gap:.8rem;">
+          <div style="width:40px; height:40px; border-radius:10px; background:rgba(255,193,7,0.1); display:flex; align-items:center; justify-content:center; color:var(--warn)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div>
+            <div style="font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem; color:#fff">Uso de la API key hoy</div>
+            <div style="color:var(--mut); font-size:.7rem" id="api-usage-txt">Consultando límites...</div>
+          </div>
+        </div>
+        <div style="flex:1; max-width:200px">
+          <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:100px; overflow:hidden;">
+            <div id="api-usage-fill" style="height:100%; width:0%; background:var(--warn); transition:width .8s ease; box-shadow:0 0 10px var(--warn)"></div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Rajdhani',sans-serif; font-size:1.2rem; font-weight:700; color:var(--warn);" id="api-usage-val">0 / 0</div>
+          <div style="color:var(--mut); font-size:.6rem; text-transform:uppercase; letter-spacing:1px;">Usos hoy</div>
+        </div>
+      </div>
+    </div>
 
     <!-- Widget uso de API key -->
     <div class="api-stats">
