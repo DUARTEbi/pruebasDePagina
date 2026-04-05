@@ -1,0 +1,1237 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#070707"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>Admin – BoostSpeed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --g:#00FF1E;--gm:#00e61a;--gdim:rgba(0,255,30,.10);--glow:0 0 20px rgba(0,255,30,.4);
+  --bg:#070707;--bg2:#0d0d0d;--bg3:#131313;--sur:#171717;
+  --bdr:rgba(0,255,30,.13);--txt:#eef2ee;--mut:#6b806b;
+  --red:#ff4757;--warn:#ffc107;--blue:#4dabff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{-webkit-tap-highlight-color:transparent;tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+button,a,[onclick]{outline:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:focus,a:focus,[onclick]:focus{outline:none}
+button:focus-visible,a:focus-visible{outline:2px solid var(--g);outline-offset:2px}
+
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+
+#meteors{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bggl{position:fixed;top:-20%;left:50%;transform:translateX(-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,30,.04) 0%,transparent 65%);pointer-events:none;z-index:0;animation:bgp 6s ease-in-out infinite}
+@keyframes bgp{0%,100%{opacity:.6}50%{opacity:1}}
+
+.logo-bolt{
+  display:inline-block;font-style:normal;margin-left:.08rem;
+  transform-origin:center center;
+  animation:thunderStrike 2.6s ease-in-out infinite;
+  filter:drop-shadow(0 0 3px rgba(0,255,30,.4));
+}
+@keyframes thunderStrike{
+  0%   {opacity:.25;transform:scale(.88) rotate(-4deg);filter:drop-shadow(0 0 1px rgba(0,255,30,.2))}
+  30%  {opacity:.3;transform:scale(.9) rotate(-6deg);filter:drop-shadow(0 0 2px rgba(255,230,0,.3))}
+  38%  {opacity:1;transform:scale(1.35) rotate(4deg) skewX(-8deg);
+        filter:drop-shadow(0 0 8px #ffe600) drop-shadow(0 0 18px rgba(255,230,0,.9)) drop-shadow(0 0 30px rgba(0,255,30,.7));
+        color:#ffe600}
+  42%  {opacity:.6;transform:scale(1.1) rotate(-3deg);filter:drop-shadow(0 0 4px #ffe600);color:#ffe600}
+  46%  {opacity:1;transform:scale(1.22) rotate(2deg) skewX(-4deg);
+        filter:drop-shadow(0 0 6px #ffe600) drop-shadow(0 0 14px rgba(0,255,30,.8));
+        color:#fff}
+  54%  {opacity:.15;transform:scale(.85) rotate(-2deg);filter:none;color:var(--g)}
+  100% {opacity:.25;transform:scale(.88) rotate(-4deg);filter:drop-shadow(0 0 1px rgba(0,255,30,.2));color:var(--g)}
+}
+
+#login-scr{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem}
+.lbox{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:2.3rem;width:100%;max-width:360px;position:relative;overflow:hidden;animation:lIn .5s cubic-bezier(.23,1,.32,1)}
+@keyframes lIn{from{transform:translateY(28px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.lbox h1{font-family:'Rajdhani',sans-serif;font-size:1.7rem;font-weight:700;margin-bottom:.2rem}
+.lbox p{color:var(--mut);font-size:.84rem;margin-bottom:1.5rem}
+
+.topb{position:sticky;top:0;z-index:100;background:rgba(7,7,7,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);height:56px;display:none;align-items:center;padding:0 1.4rem;justify-content:space-between;animation:sD .5s cubic-bezier(.23,1,.32,1)}
+@keyframes sD{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.logo{font-family:'Rajdhani',sans-serif;font-size:1.25rem;font-weight:700;color:var(--g);letter-spacing:2px;display:flex;align-items:center;gap:.4rem;animation:logoGlow 3s ease-in-out infinite}
+@keyframes logoGlow{0%,100%{text-shadow:0 0 8px rgba(0,255,30,.3)}50%{text-shadow:0 0 18px rgba(0,255,30,.7),0 0 40px rgba(0,255,30,.2)}}
+
+.pulse{position:relative;width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:var(--glow);animation:bl 1.6s infinite;flex-shrink:0}
+.pulse::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(0,255,30,.3);animation:rp 1.6s ease-out infinite}
+@keyframes bl{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.6)}}
+@keyframes rp{0%{transform:scale(.4);opacity:.8}100%{transform:scale(2.6);opacity:0}}
+
+.abadge{background:rgba(255,71,87,.12);border:1px solid rgba(255,71,87,.28);color:var(--red);font-size:.67rem;font-weight:700;padding:.17rem .52rem;border-radius:100px;text-transform:uppercase;letter-spacing:.7px}
+.tnav{display:flex;gap:.35rem}
+.tn{background:transparent;border:1px solid transparent;color:var(--mut);font-family:'Exo 2',sans-serif;font-size:.82rem;font-weight:700;padding:.38rem .8rem;border-radius:7px;cursor:pointer;transition:all .2s}
+.tn.active,.tn:hover{color:var(--g);border-color:var(--bdr);background:var(--gdim)}
+.bout{background:transparent;border:1px solid rgba(255,71,87,.26);color:var(--red);font-family:'Exo 2',sans-serif;font-size:.76rem;font-weight:700;padding:.32rem .72rem;border-radius:6px;cursor:pointer;transition:all .2s}
+.bout:hover{background:rgba(255,71,87,.09)}
+
+main{position:relative;z-index:1;flex:1;padding:1.4rem;max-width:1060px;margin:0 auto;width:100%;display:none}
+.pane{display:none}
+.pane.active{display:block;animation:pIn .38s cubic-bezier(.23,1,.32,1)}
+@keyframes pIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:var(--sur);border:1px solid var(--bdr);border-radius:13px;padding:1.3rem;margin-bottom:1.1rem;position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s}
+.card:hover{border-color:rgba(0,255,30,.2);box-shadow:0 6px 26px rgba(0,0,0,.45)}
+.ct{font-family:'Rajdhani',sans-serif;font-size:1.08rem;font-weight:700;margin-bottom:.95rem;display:flex;align-items:center;gap:.45rem}
+
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:.85rem;margin-bottom:1.1rem}
+.sb{background:var(--sur);border:1px solid var(--bdr);border-radius:11px;padding:.95rem;text-align:center;position:relative;overflow:hidden;opacity:0;transform:translateY(10px);transition:transform .3s,border-color .3s}
+.sb.vis{animation:cIn .4s cubic-bezier(.23,1,.32,1) forwards}
+@keyframes cIn{to{opacity:1;transform:translateY(0)}}
+.sb:hover{transform:translateY(-3px);border-color:rgba(0,255,30,.28)}
+.sb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.sb.warn-sb::after{background:linear-gradient(90deg,transparent,var(--warn),transparent)}
+.sb.warn-sb .sv{color:var(--warn)}
+.sb.blue-sb::after{background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+.sb.blue-sb .sv{color:var(--blue)}
+.sb.blue-sb:hover{border-color:rgba(77,171,255,.3)}
+.sv{font-family:'Rajdhani',sans-serif;font-size:1.7rem;font-weight:700;color:var(--g)}
+.sl{color:var(--mut);font-size:.7rem;text-transform:uppercase;letter-spacing:.5px;margin-top:.1rem}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.52rem 1.05rem;border-radius:8px;font-family:'Exo 2',sans-serif;font-weight:700;font-size:.84rem;cursor:pointer;border:none;transition:all .2s;touch-action:manipulation}
+.bp{background:var(--g);color:#000}.bp:hover{background:var(--gm);box-shadow:var(--glow);transform:translateY(-1px)}
+.bp:active{transform:scale(.96)}
+.br{background:var(--red);color:#fff}.br:hover{opacity:.85;transform:translateY(-1px)}
+.bo{background:transparent;border:1px solid var(--bdr);color:var(--txt)}.bo:hover{border-color:var(--g);color:var(--g)}
+.bpur{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.28);color:#a78bfa}.bpur:hover{background:rgba(167,139,250,.22)}
+.bsm{padding:.3rem .65rem;font-size:.75rem;border-radius:6px}
+.bf{width:100%}
+
+.tipo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:.85rem}
+.topt{border:2px solid var(--bdr);border-radius:10px;padding:.7rem .5rem;cursor:pointer;transition:all .2s;text-align:center;background:var(--bg2);touch-action:manipulation}
+.topt.sel{border-color:var(--g);background:var(--gdim)}
+.topt h4{font-family:'Rajdhani',sans-serif;font-size:.9rem;font-weight:700;margin-bottom:.12rem}
+.topt p{color:var(--mut);font-size:.68rem;line-height:1.3}
+.topt.sel h4{color:var(--g)}
+.topt.ilim-opt{border-color:rgba(167,139,250,.25);background:rgba(167,139,250,.04)}
+.topt.ilim-opt.sel{border-color:#a78bfa;background:rgba(167,139,250,.12)}
+.topt.ilim-opt.sel h4{color:#a78bfa}
+
+.fr{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.65rem;margin-bottom:.65rem}
+.fg{margin-bottom:.72rem}
+.fg label{display:block;font-size:.73rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.3rem}
+.fg input,.fg select{width:100%;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:.6rem .88rem;color:var(--txt);font-family:'Exo 2',sans-serif;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s;touch-action:manipulation}
+.fg input:focus,.fg select:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,255,30,.09)}
+.fg input::placeholder{color:var(--mut)}
+select option{background:var(--bg2)}
+
+/* (rest of styles preserved by JS truncation in Write-Host, we will just write it all) */
+
+.msg{padding:.56rem .88rem;border-radius:8px;font-size:.81rem;margin-bottom:.8rem;display:none;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.ok{background:rgba(0,255,30,.08);border:1px solid rgba(0,255,30,.2);color:var(--g)}
+.err{background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.2);color:var(--red)}
+
+.cbox{background:var(--bg3);border:1px solid rgba(0,255,30,.26);border-radius:11px;padding:1.1rem;text-align:center;margin-top:.85rem;position:relative;display:none;animation:fadeIn .4s cubic-bezier(.23,1,.32,1)}
+.cbox.ilim-box{border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.06)}
+.cbig{font-family:monospace;font-size:1.9rem;font-weight:700;color:var(--g);letter-spacing:4px;animation:tg 2s ease-in-out infinite}
+.ilim-box .cbig{color:#a78bfa;animation:tgp 2s ease-in-out infinite}
+@keyframes tg{0%,100%{text-shadow:0 0 12px rgba(0,255,30,.4)}50%{text-shadow:0 0 26px rgba(0,255,30,.8)}}
+@keyframes tgp{0%,100%{text-shadow:0 0 12px rgba(167,139,250,.4)}50%{text-shadow:0 0 26px rgba(167,139,250,.8)}}
+.cbox p{color:var(--mut);font-size:.78rem;margin-top:.3rem}
+.ccpy{position:absolute;top:.65rem;right:.65rem;background:var(--gdim);border:1px solid var(--bdr);border-radius:6px;padding:.26rem .52rem;color:var(--g);font-size:.74rem;cursor:pointer;font-weight:700;transition:all .2s;touch-action:manipulation}
+.ccpy:hover{background:rgba(0,255,30,.18)}
+
+.tw{overflow-x:auto;border-radius:10px;border:1px solid var(--bdr);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead tr{background:var(--bg3)}
+th{padding:.58rem .85rem;text-align:left;color:var(--mut);font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;font-weight:700;white-space:nowrap}
+td{padding:.65rem .85rem;border-top:1px solid var(--bdr);vertical-align:middle}
+tr:hover td{background:rgba(0,255,30,.02)}
+.badge{display:inline-flex;align-items:center;padding:.15rem .5rem;border-radius:100px;font-size:.67rem;font-weight:700;text-transform:uppercase;white-space:nowrap}
+.bok{background:rgba(0,255,30,.09);color:var(--g);border:1px solid rgba(0,255,30,.18)}
+.boff{background:rgba(255,71,87,.08);color:var(--red);border:1px solid rgba(255,71,87,.18)}
+.bnone{background:rgba(255,255,255,.04);color:var(--mut);border:1px solid rgba(255,255,255,.07)}
+.bdias{background:rgba(77,171,255,.1);color:var(--blue);border:1px solid rgba(77,171,255,.2)}
+.blikes{background:rgba(255,71,87,.1);color:#ff8a93;border:1px solid rgba(255,71,87,.2)}
+.bilim{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2)}
+
+.bmanual{background:rgba(77,171,255,.1);color:var(--blue);border:1px solid rgba(77,171,255,.2)}
+.bauto{background:rgba(0,255,30,.09);color:var(--g);border:1px solid rgba(0,255,30,.18)}
+.bambos{background:rgba(255,193,7,.1);color:var(--warn);border:1px solid rgba(255,193,7,.2)}
+
+.api-stats{background:var(--bg3);border:1px solid rgba(255,193,7,.15);border-radius:11px;padding:1rem 1.2rem;margin-bottom:1.1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.api-ico{width:38px;height:38px;border-radius:9px;background:rgba(255,193,7,.1);border:1px solid rgba(255,193,7,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem}
+.api-info{flex:1}
+.api-title{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:var(--warn);margin-bottom:.1rem}
+.api-sub{color:var(--mut);font-size:.76rem;line-height:1.5}
+.api-right{display:flex;flex-direction:column;align-items:flex-end;gap:.18rem}
+.api-val{font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:700;color:var(--warn);line-height:1}
+.api-bar-wrap{width:120px;height:5px;background:rgba(255,193,7,.12);border-radius:3px;overflow:hidden}
+.api-bar-fill{height:100%;border-radius:3px;background:var(--warn);transition:width .5s ease}
+.api-pct{font-size:.68rem;color:var(--mut);text-align:right}
+
+.likes-hoy-banner{
+  background:var(--bg3);
+  border:1px solid rgba(77,171,255,.18);
+  border-radius:11px;
+  padding:1rem 1.2rem;
+  margin-bottom:1.1rem;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.lh-ico{
+  width:38px;height:38px;border-radius:9px;
+  background:rgba(77,171,255,.1);border:1px solid rgba(77,171,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:1.1rem;
+}
+.lh-info{flex:1;min-width:0}
+.lh-title{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:var(--blue);margin-bottom:.1rem}
+.lh-sub{color:var(--mut);font-size:.76rem;line-height:1.5}
+.lh-right{display:flex;flex-direction:column;align-items:flex-end;gap:.14rem}
+.lh-val{font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:700;color:var(--blue);line-height:1}
+.lh-val-sub{font-size:.68rem;color:var(--mut);text-align:right}
+.lh-pills{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.25rem}
+
+.spin-wrap{display:flex;align-items:center;justify-content:center;padding:2rem;gap:.6rem;color:var(--mut);font-size:.82rem}
+.spin{width:16px;height:16px;border:2px solid var(--bdr);border-top-color:var(--g);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+.ov{
+  position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:400;
+  display:flex;align-items:center;justify-content:center;padding:1rem;
+  opacity:0;pointer-events:none;transition:opacity .15s;
+}
+.ov.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--bg2);border:1px solid rgba(255,71,87,.22);border-radius:16px;
+  padding:1.9rem;width:100%;max-width:385px;position:relative;
+  transform:translateY(10px);transition:transform .15s,opacity .15s;opacity:0;
+}
+.ov.open .modal{transform:translateY(0);opacity:1}
+.mc{position:absolute;top:.75rem;right:.75rem;background:none;border:none;color:var(--mut);cursor:pointer;padding:.2rem;display:flex;transition:color .2s,transform .2s;touch-action:manipulation}
+.mc:hover{color:var(--txt);transform:rotate(90deg)}
+.modal h2{font-family:'Rajdhani',sans-serif;font-size:1.35rem;font-weight:700;margin-bottom:.25rem;text-align:center;color:var(--red)}
+.modal p{color:var(--mut);font-size:.85rem;text-align:center;margin-bottom:1.2rem;line-height:1.55}
+.dbtns{display:flex;gap:.65rem;margin-top:.8rem}
+
+#ov-confirm .modal{border-color:rgba(0,255,30,.22)}
+#ov-confirm .modal h2{color:var(--g)}
+.confirm-detail{background:var(--bg3);border:1px solid var(--bdr);border-radius:9px;padding:.85rem 1rem;margin:.5rem 0 1rem;font-size:.83rem;line-height:1.7;text-align:left}
+.confirm-detail strong{color:var(--g)}
+
+.udet{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:1rem}
+.ir{display:flex;justify-content:space-between;align-items:center;padding:.54rem 0;border-bottom:1px solid var(--bdr)}
+.ir:last-child{border-bottom:none}
+.ir .ik{color:var(--mut);font-size:.82rem}
+.ir .iv{font-weight:700;font-size:.86rem}
+
+.mobn{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,7,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--bdr);padding:.38rem .38rem calc(.38rem + env(safe-area-inset-bottom));z-index:100;justify-content:space-around}
+.mb{display:flex;flex-direction:column;align-items:center;gap:.14rem;padding:.34rem .55rem;border-radius:8px;background:transparent;border:none;color:var(--mut);font-family:'Exo 2',sans-serif;font-size:.6rem;font-weight:700;cursor:pointer;transition:color .2s;text-transform:uppercase;letter-spacing:.3px;touch-action:manipulation;min-width:44px}
+.mb.active,.mb:hover{color:var(--g)}
+.mb .mico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid transparent;transition:all .2s}
+.mb.active .mico{background:var(--gdim);border-color:rgba(0,255,30,.25)}
+.mb.active .mico svg,.mb:hover .mico svg{stroke:var(--g)}
+
+@media(max-width:620px){
+  .tnav{display:none!important}
+  .mobn{display:flex}
+  main{padding:1rem 1rem 5.5rem}
+}
+</style>
+
+</head>
+<body>
+<div id="meteors"></div>
+<div class="bggl"></div>
+
+<!-- LOGIN -->
+<div id="login-scr">
+  <div class="lbox">
+    <h1>Panel Admin</h1>
+    <p>Acceso exclusivo para administradores</p>
+    <div class="msg" id="msg-login"></div>
+    <div class="fg"><label>Usuario</label><input type="text" id="au" placeholder="admin" autocomplete="username"/></div>
+    <div class="fg"><label>Contraseña</label><input type="password" id="ap" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')aLogin()"/></div>
+    <button class="btn bp bf" onclick="aLogin()">Entrar →</button>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topb" id="topb">
+  <div class="logo"><div class="pulse"></div>Boost<span style="color:var(--txt);font-weight:500">Speed</span><i class="logo-bolt">⚡</i><span class="abadge" style="margin-left:.5rem">Admin</span></div>
+  <div class="tnav" id="tnav">
+    <button class="tn active" id="at-dash" onclick="aTab('dash')">Dashboard</button>
+    <button class="tn" id="at-cod"  onclick="aTab('cod')">Códigos</button>
+    <button class="tn" id="at-usr"  onclick="aTab('usr')">Usuarios</button>
+    <button class="tn" id="at-rec"  onclick="aTab('rec')">Recuperación</button>
+  </div>
+  <button class="bout" onclick="aSalir()">Salir</button>
+</div>
+
+<main id="amain">
+
+  <!-- DASHBOARD -->
+  <div class="pane active" id="pane-dash">
+
+    <!-- Widget uso de API key -->
+    <div class="api-stats">
+      <div class="api-ico">⚡</div>
+      <div class="api-info">
+        <div class="api-title">Uso de la API key hoy</div>
+        <div class="api-sub" id="api-sub-txt">Cargando datos…</div>
+      </div>
+      <div class="api-right">
+        <div class="api-val" id="api-hoy">—</div>
+        <div class="api-bar-wrap"><div class="api-bar-fill" id="api-bar" style="width:0%"></div></div>
+        <div class="api-pct" id="api-pct"></div>
+      </div>
+    </div>
+
+    <!-- ── NUEVO: Widget IDs con likes hoy ── -->
+    <div class="likes-hoy-banner" id="likes-hoy-banner">
+      <div class="lh-ico">❤️</div>
+      <div class="lh-info">
+        <div class="lh-title">IDs que recibieron likes hoy</div>
+        <div class="lh-sub" id="lh-sub-txt">Cargando…</div>
+        <div class="lh-pills" id="lh-pills"></div>
+      </div>
+      <div class="lh-right">
+        <div class="lh-val" id="lh-ids-count">—</div>
+        <div class="lh-val-sub" id="lh-val-sub">IDs únicos</div>
+      </div>
+    </div>
+    <!-- ── FIN widget ── -->
+
+    <div class="sg">
+      <div class="sb"><div class="sv" id="a-tu">0</div><div class="sl">Usuarios</div></div>
+      <div class="sb"><div class="sv" id="a-tc">0</div><div class="sl">Códigos</div></div>
+      <div class="sb"><div class="sv" id="a-uc">0</div><div class="sl">Usados</div></div>
+      <div class="sb"><div class="sv" id="a-ap">0</div><div class="sl">Planes activos</div></div>
+      <!-- ── NUEVO stat box ── -->
+      <div class="sb blue-sb"><div class="sv" id="a-ids-hoy">0</div><div class="sl">IDs hoy</div></div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Usuarios recientes</div>
+      <div class="tw"><table>
+        <thead><tr><th>ID único</th><th>Usuario</th><th>Plan</th><th>Registrado</th></tr></thead>
+        <tbody id="dash-rec"></tbody>
+      </table></div>
+    </div>
+
+    <!-- ── NUEVA TARJETA: Detalle de likes por ID hoy ── -->
+    <div class="card" id="card-likes-hoy">
+      <div class="ct" style="justify-content:space-between">
+        <span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" style="vertical-align:-2px;margin-right:.3rem"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          IDs con likes hoy
+          <span id="lh-fecha-tag" style="font-family:'Exo 2',sans-serif;font-size:.72rem;font-weight:400;color:var(--mut);margin-left:.4rem"></span>
+        </span>
+        <div style="display:flex;gap:.4rem;align-items:center">
+          <span id="lh-total-tag" style="font-family:'Rajdhani',sans-serif;font-size:.88rem;color:var(--blue);display:none">
+            <strong id="lh-total-lk">0</strong> <span style="color:var(--mut);font-weight:400">likes totales</span>
+          </span>
+          <button class="btn bo bsm" onclick="loadLikesHoy()" title="Actualizar">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtro tipo de envío -->
+      <div id="lh-filter-wrap" style="display:none;margin-bottom:.85rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center">
+        <span style="color:var(--mut);font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px">Filtrar:</span>
+        <button class="btn bo bsm lh-filter-btn active" id="lhf-todos"   onclick="filtrarLikesHoy('todos')">Todos</button>
+        <button class="btn bo bsm lh-filter-btn"        id="lhf-auto"    onclick="filtrarLikesHoy('auto')">Solo auto</button>
+        <button class="btn bo bsm lh-filter-btn"        id="lhf-manual"  onclick="filtrarLikesHoy('manual')">Solo manual</button>
+      </div>
+
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Target ID</th>
+              <th>Enviado por</th>
+              <th>Likes hoy</th>
+              <th>Tipo</th>
+              <th>Último envío</th>
+            </tr>
+          </thead>
+          <tbody id="tb-likes-hoy">
+            <tr><td colspan="6" class="spin-wrap" style="border:none">
+              <div class="spin"></div> Cargando…
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- ── FIN tarjeta likes hoy ── -->
+
+  </div>
+
+  <!-- CÓDIGOS -->
+  <div class="pane" id="pane-cod">
+    <div class="card">
+      <div class="ct">Crear código de acceso</div>
+      <div class="msg" id="msg-cod"></div>
+      <div class="fg"><label>Tipo de plan</label></div>
+      <div class="tipo-grid">
+        <div class="topt sel" id="topt-dias" onclick="selTipo('dias')">
+          <h4>📅 Por días</h4>
+          <p>El plan dura X días desde que se canjea</p>
+        </div>
+        <div class="topt" id="topt-likes" onclick="selTipo('likes')">
+          <h4>❤️ Por likes</h4>
+          <p>El plan dura hasta agotar los likes</p>
+        </div>
+        <div class="topt ilim-opt" id="topt-ilimitado" onclick="selTipo('ilimitado')">
+          <h4>🚀 Ilimitado</h4>
+          <p>Sin límite de likes, días ni envíos</p>
+        </div>
+      </div>
+      <div id="campos-dias">
+        <div class="fr">
+          <div class="fg"><label>Días del plan</label><input type="number" id="c-dias" min="1" value="30"/></div>
+          <div class="fg"><label>Envíos por día</label><input type="number" id="c-env-dias" min="1" value="3"/></div>
+          <div class="fg"><label>Código personalizado</label><input type="text" id="c-cust-dias" placeholder="Vacío = aleatorio" style="text-transform:uppercase" maxlength="12"/></div>
+        </div>
+      </div>
+      <div id="campos-likes" style="display:none">
+        <div class="fr">
+          <div class="fg"><label>Cantidad de likes</label><input type="number" id="c-lktotal" min="1" value="500"/></div>
+          <div class="fg"><label>Envíos por día</label><input type="number" id="c-env-likes" min="1" value="3"/></div>
+          <div class="fg"><label>Código personalizado</label><input type="text" id="c-cust-likes" placeholder="Vacío = aleatorio" style="text-transform:uppercase" maxlength="12"/></div>
+        </div>
+      </div>
+      <div id="campos-ilimitado" style="display:none">
+        <div style="background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:10px;padding:.9rem 1rem;margin-bottom:.75rem">
+          <p style="color:#a78bfa;font-size:.82rem;font-weight:700;margin-bottom:.3rem">⚠️ Plan Ilimitado</p>
+          <p style="color:var(--mut);font-size:.78rem;line-height:1.55">Sin límite de likes, días ni envíos. Los usuarios ilimitados NO aparecen en el top.</p>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>Código personalizado</label><input type="text" id="c-cust-ilim" placeholder="Vacío = aleatorio" style="text-transform:uppercase" maxlength="12"/></div>
+        </div>
+      </div>
+      <button class="btn bp" id="btn-crear-cod" onclick="crearCod()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Generar código
+      </button>
+      <div class="cbox" id="ncbox">
+        <p style="margin-bottom:.3rem" id="nc-tipo-lbl">Código generado</p>
+        <div class="cbig" id="nc-val">—</div>
+        <p id="nc-det">—</p>
+        <button class="ccpy" onclick="copiarCod()">Copiar</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct" style="justify-content:space-between">
+        <span>Todos los códigos</span>
+        <button class="btn bo bsm" onclick="loadCods()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </button>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>Código</th><th>Tipo</th><th>Detalle</th><th>Env/día</th><th>Estado</th><th>Usado por</th><th>Creado</th><th></th></tr></thead>
+        <tbody id="tb-cod"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- USUARIOS -->
+  <div class="pane" id="pane-usr">
+    <div class="card">
+      <div class="ct">Buscar usuario</div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end">
+        <div class="fg" style="flex:1;min-width:170px;margin:0">
+          <label>ID único o nombre de usuario</label>
+          <input type="text" id="q-usr" placeholder="BS-ABC123 o username" onkeydown="if(event.key==='Enter')buscarUsr()"/>
+        </div>
+        <button class="btn bp" onclick="buscarUsr()">Buscar →</button>
+      </div>
+    </div>
+
+    <div class="card" id="usr-det-card" style="display:none">
+      <div class="ct" style="justify-content:space-between;margin-bottom:.75rem">
+        <span>Detalle del usuario</span>
+        <button class="btn bo bsm" onclick="cerrarDetUsr()" title="Cerrar">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Cerrar
+        </button>
+      </div>
+      <div class="udet" id="usr-det"></div>
+      <div style="margin-top:1.1rem;padding-top:1rem;border-top:1px solid var(--bdr)">
+        <div class="ct" style="font-size:.92rem;margin-bottom:.65rem">Modificar plan</div>
+        <div class="msg" id="msg-edit"></div>
+
+        <div style="background:rgba(255,193,7,.06);border:1px solid rgba(255,193,7,.18);border-radius:9px;padding:.7rem .9rem;margin-bottom:.85rem;font-size:.78rem;color:var(--warn);line-height:1.55">
+          ⚠️ <strong>Los valores que ingreses reemplazarán</strong> el plan actual del usuario, no se suman.
+        </div>
+
+        <div class="tipo-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:.8rem">
+          <div class="topt sel" id="etopt-dias"      onclick="selEditTipo('dias')"><h4>📅 Por días</h4><p>Asignar días de plan</p></div>
+          <div class="topt" id="etopt-likes"          onclick="selEditTipo('likes')"><h4>❤️ Por likes</h4><p>Asignar cantidad de likes</p></div>
+          <div class="topt ilim-opt" id="etopt-ilimitado" onclick="selEditTipo('ilimitado')"><h4>🚀 Ilimitado</h4><p>Sin límites</p></div>
+        </div>
+
+        <div id="edit-campos-dias">
+          <div class="fr">
+            <div class="fg"><label>Días del plan</label><input type="number" id="e-dias" placeholder="Ej: 30" min="0"/></div>
+            <div class="fg"><label>Envíos por día</label><input type="number" id="e-env-dias" placeholder="Ej: 3" min="1"/></div>
+            <div class="fg"><label>Estado</label><select id="e-stat-dias"><option value="true">Activo</option><option value="false">Inactivo</option></select></div>
+          </div>
+        </div>
+        <div id="edit-campos-likes" style="display:none">
+          <div class="fr">
+            <div class="fg"><label>Cantidad de likes</label><input type="number" id="e-lk" placeholder="Ej: 2023" min="0"/></div>
+            <div class="fg"><label>Envíos por día</label><input type="number" id="e-env-likes" placeholder="Ej: 3" min="1"/></div>
+            <div class="fg"><label>Estado</label><select id="e-stat-likes"><option value="true">Activo</option><option value="false">Inactivo</option></select></div>
+          </div>
+        </div>
+        <div id="edit-campos-ilimitado" style="display:none">
+          <div style="background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:10px;padding:.9rem;margin-bottom:.75rem">
+            <p style="color:#a78bfa;font-size:.82rem;font-weight:700;margin-bottom:.2rem">Plan Ilimitado</p>
+            <p style="color:var(--mut);font-size:.78rem;line-height:1.5">Sin límite de likes, días ni envíos.</p>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:.55rem;flex-wrap:wrap">
+          <button class="btn bp" onclick="pedirConfirmarGuardar()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Guardar cambios
+          </button>
+          <button class="btn bo bsm" onclick="cerrarDetUsr()">Cancelar</button>
+          <button class="btn br bsm" onclick="pedirEliminar()">Eliminar usuario</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct" style="justify-content:space-between">
+        <span>Todos los usuarios</span>
+        <button class="btn bo bsm" onclick="loadUsrs()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </button>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>ID único</th><th>Usuario</th><th>Contacto</th><th>Plan</th><th>Tipo</th><th>Likes</th><th>Registrado</th><th></th></tr></thead>
+        <tbody id="tb-usr"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- RECUPERACIÓN -->
+  <div class="pane" id="pane-rec">
+    <div class="card">
+      <div class="ct">Generar código de recuperación</div>
+      <p style="color:var(--mut);font-size:.81rem;margin-bottom:1rem;line-height:1.55">Genera un código de recuperación para un usuario que no puede acceder. Expira en 48 horas.</p>
+      <div class="msg" id="msg-rec-a"></div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end">
+        <div class="fg" style="flex:1;min-width:170px;margin:0">
+          <label>Buscar usuario (ID o username)</label>
+          <input type="text" id="rec-q" placeholder="BS-ABC123 o username" onkeydown="if(event.key==='Enter')buscarRec()"/>
+        </div>
+        <button class="btn bp" onclick="buscarRec()">Buscar →</button>
+      </div>
+      <div id="rec-found" style="display:none;margin-top:1rem;padding:1rem;background:var(--bg3);border:1px solid var(--bdr);border-radius:10px">
+        <p style="font-size:.84rem;margin-bottom:.8rem">Usuario: <strong id="rec-uname">—</strong> &nbsp;·&nbsp; ID: <code id="rec-uid-s" style="color:var(--g)">—</code></p>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end">
+          <div class="fg" style="flex:1;min-width:150px;margin:0">
+            <label>Código personalizado (opcional)</label>
+            <input type="text" id="rec-cc" placeholder="Vacío = aleatorio" style="text-transform:uppercase" maxlength="14"/>
+          </div>
+          <button class="btn bp" onclick="genRecCod()">Generar →</button>
+        </div>
+        <div class="cbox" id="rec-cbox" style="margin-top:.85rem">
+          <p style="margin-bottom:.3rem">Código de recuperación (válido 48h)</p>
+          <div class="cbig" id="rec-cv">—</div>
+          <p style="color:var(--warn);font-size:.76rem;margin-top:.3rem">Comparte este código con el usuario</p>
+          <button class="ccpy" onclick="copiarRecCod()">Copiar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL ELIMINAR -->
+<div class="ov" id="ov-del">
+  <div class="modal">
+    <button class="mc" onclick="cerrarDel()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2>Eliminar usuario</h2>
+    <p>Esta acción es permanente. Ingresa tu contraseña de administrador para confirmar.</p>
+    <div class="msg" id="msg-del"></div>
+    <div class="fg"><label>Contraseña admin</label><input type="password" id="del-p" placeholder="••••••••" onkeydown="if(event.key==='Enter')confirmarDel()"/></div>
+    <div class="dbtns">
+      <button class="btn bo bf" onclick="cerrarDel()">Cancelar</button>
+      <button class="btn br bf" onclick="confirmarDel()">Confirmar eliminación</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR GUARDADO -->
+<div class="ov" id="ov-confirm">
+  <div class="modal" style="border-color:rgba(0,255,30,.22)">
+    <button class="mc" onclick="cerrarConfirm()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2 style="color:var(--g)">Confirmar cambios</h2>
+    <p>Revisa los cambios antes de aplicarlos. Esto <strong style="color:var(--txt)">reemplazará</strong> el plan actual del usuario.</p>
+    <div class="confirm-detail" id="confirm-detail">—</div>
+    <div class="dbtns">
+      <button class="btn bo bf" onclick="cerrarConfirm()">Cancelar</button>
+      <button class="btn bp bf" onclick="confirmarGuardar()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>
+
+<nav class="mobn" id="mobn">
+  <button class="mb active" id="mb-dash" onclick="aTab('dash');mAct(this)">
+    <div class="mico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>Panel
+  </button>
+  <button class="mb" id="mb-cod" onclick="aTab('cod');mAct(this)">
+    <div class="mico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>Códigos
+  </button>
+  <button class="mb" id="mb-usr" onclick="aTab('usr');mAct(this)">
+    <div class="mico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>Usuarios
+  </button>
+  <button class="mb" id="mb-rec" onclick="aTab('rec');mAct(this)">
+    <div class="mico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>Rec.
+  </button>
+  <button class="mb" onclick="aSalir()">
+    <div class="mico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>Salir
+  </button>
+</nav>
+
+<script src="/js/api.js"></script>
+<script>
+/* METEOROS */
+(function(){
+  const c = document.getElementById('meteors');
+  const ANGLE = 25, VH = innerHeight || 900, VW = innerWidth || 800;
+  const total = VH + 200, moveY = total;
+  const moveX = -Math.tan(ANGLE * Math.PI / 180) * total;
+  const isMob = VW < 768;
+  let paused = false;
+  document.addEventListener('visibilitychange', () => { paused = document.hidden; });
+  function spawnMeteor() {
+    if (paused) { setTimeout(spawnMeteor, 2000); return; }
+    const m = document.createElement('div');
+    const len = 60 + Math.random() * 50;
+    const startX = Math.random() * (VW + 100);
+    m.style.cssText = `left:${startX}px;top:${-len - 20}px;width:2px;height:${len}px;`
+      + `transform:rotate(-${ANGLE}deg) translate3d(0,0,0);`
+      + `background:linear-gradient(to bottom,transparent 0%,rgba(180,255,190,.15) 25%,rgba(0,255,30,.6) 60%,rgba(0,255,30,.95) 82%,#fff 100%);`
+      + `border-radius:0 0 2px 2px;position:absolute;opacity:0;will-change:transform,opacity`;
+    c.appendChild(m);
+    const dur = 2800 + Math.random() * 1200;
+    const t0 = performance.now();
+    function af(now) {
+      if (paused) { requestAnimationFrame(af); return; }
+      const t = Math.min((now - t0) / dur, 1);
+      const op = t < .12 ? t / .12 * .85 : t < .7 ? .85 - (t - .12) / .58 * .55 : Math.max(0, .3 - (t - .7) / .3 * .3);
+      m.style.opacity = op;
+      m.style.transform = `rotate(-${ANGLE}deg) translate3d(${moveX * t}px,${moveY * t}px,0)`;
+      if (t < 1) requestAnimationFrame(af);
+      else { m.remove(); setTimeout(spawnMeteor, 1500 + Math.random() * 4500); }
+    }
+    requestAnimationFrame(af);
+  }
+  spawnMeteor();
+  if (!isMob) {
+    setTimeout(spawnMeteor, 800 + Math.random() * 1200);
+    setTimeout(spawnMeteor, 2200 + Math.random() * 1500);
+  }
+})();
+
+/* ── ESTADO GLOBAL ── */
+let admTok = null, editUID = null, recUID = null;
+let tipoPlan = 'dias', editTipo = 'dias';
+let admUser = 'admin';
+
+/* cache interno para filtrado de likes hoy sin volver a llamar al servidor */
+let _likesHoyData = [];
+
+window.addEventListener('DOMContentLoaded', () => {
+  const t = localStorage.getItem('bs_admin_token');
+  if (t) { admTok = t; mostrarPanel(); }
+});
+
+async function aLogin() {
+  const u = document.getElementById('au').value.trim();
+  const p = document.getElementById('ap').value;
+  admUser = u;
+  const res = await API.post('/api/admin/login', { username:u, password:p });
+  if (!res.ok) return showMsg('msg-login', res.error, 'err');
+  admTok = res.token;
+  localStorage.setItem('bs_admin_token', res.token);
+  mostrarPanel();
+}
+
+function mostrarPanel() {
+  document.getElementById('login-scr').style.display = 'none';
+  document.getElementById('topb').style.display      = 'flex';
+  document.getElementById('amain').style.display     = 'block';
+  document.getElementById('mobn').style.display      = 'flex';
+  document.querySelectorAll('.sb').forEach((el, i) =>
+    setTimeout(() => el.classList.add('vis'), i * 80)
+  );
+  loadDash();
+}
+
+function aSalir() {
+  localStorage.removeItem('bs_admin_token');
+  admTok = null;
+  location.reload();
+}
+
+function aTab(t) {
+  document.querySelectorAll('#amain .pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#tnav .tn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pane-' + t).classList.add('active');
+  const tn = document.getElementById('at-' + t);
+  if (tn) tn.classList.add('active');
+  if (t === 'dash') loadDash();
+  if (t === 'cod')  loadCods();
+  if (t === 'usr')  loadUsrs();
+}
+
+function mAct(el) {
+  document.querySelectorAll('#mobn .mb').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function cerrarDetUsr() {
+  document.getElementById('usr-det-card').style.display = 'none';
+  editUID = null;
+  document.getElementById('msg-edit').style.display = 'none';
+}
+
+function selTipo(tipo) {
+  tipoPlan = tipo;
+  ['dias','likes','ilimitado'].forEach(t => {
+    document.getElementById('topt-' + t).classList.toggle('sel', t === tipo);
+    document.getElementById('campos-' + t).style.display = t === tipo ? 'block' : 'none';
+  });
+  const btn = document.getElementById('btn-crear-cod');
+  btn.style.background = tipo === 'ilimitado' ? '#a78bfa' : '';
+  btn.style.color      = tipo === 'ilimitado' ? '#fff'    : '';
+}
+
+/* ── DASHBOARD ── */
+async function loadDash() {
+  const r = await API.getAdmin('/api/admin/stats', admTok);
+  if (!r.ok) return;
+
+  document.getElementById('a-tu').textContent = r.totalUsuarios || 0;
+  document.getElementById('a-tc').textContent = r.totalCodigos  || 0;
+  document.getElementById('a-uc').textContent = r.codigosUsados || 0;
+  document.getElementById('a-ap').textContent = r.planesActivos || 0;
+
+  /* ── Widget uso API key ── */
+  const valEl  = document.getElementById('api-hoy');
+  const subEl  = document.getElementById('api-sub-txt');
+  const barEl  = document.getElementById('api-bar');
+  const pctEl  = document.getElementById('api-pct');
+
+  if (r.keyUsage) {
+    const parts = String(r.keyUsage).split('/');
+    const used  = parseInt(parts[0], 10) || 0;
+    const max   = parseInt(parts[1], 10) || 0;
+    const pct   = max > 0 ? Math.min(100, Math.round(used / max * 100)) : 0;
+    valEl.textContent = r.keyUsage;
+    barEl.style.width = pct + '%';
+    barEl.style.background = pct >= 90 ? 'var(--red)' : 'var(--warn)';
+    pctEl.textContent = max > 0 ? pct + '% usado' : '';
+    subEl.textContent = max > 0
+      ? `Quedan ${(max - used).toLocaleString('es')} llamadas · Se reinicia según el proveedor`
+      : 'Usos reportados por la API key del proveedor';
+  } else {
+    const envHoy = r.enviosHoy || 0;
+    valEl.textContent = envHoy > 0 ? envHoy.toLocaleString('es') : '—';
+    barEl.style.width = '0%';
+    pctEl.textContent = '';
+    subEl.textContent = envHoy > 0
+      ? `${envHoy.toLocaleString('es')} envíos registrados hoy · Límite visible tras el primer envío`
+      : 'Sin envíos aún hoy · El límite se muestra tras el primer envío';
+  }
+
+  /* ── Usuarios recientes ── */
+  document.getElementById('dash-rec').innerHTML = r.usuariosRecientes.length
+    ? r.usuariosRecientes.map(u => `
+        <tr>
+          <td><code style="color:var(--g);font-size:.75rem">${u.uid}</code></td>
+          <td>${u.username}</td>
+          <td><span class="badge ${u.plan_activo ? (u.ilimitado ? 'bilim' : 'bok') : 'bnone'}">${u.plan_activo ? (u.ilimitado ? '🚀 Ilimitado' : u.plan_nombre) : 'Sin plan'}</span></td>
+          <td style="color:var(--mut);font-size:.78rem">${new Date(u.creado_en).toLocaleDateString('es')}</td>
+        </tr>`).join('')
+    : '<tr><td colspan="4" style="text-align:center;color:var(--mut);padding:1.8rem">Sin usuarios</td></tr>';
+
+  /* ── Cargar tabla de likes hoy ── */
+  loadLikesHoy();
+}
+
+/* ══════════════════════════════════════════════════════
+   NUEVA FUNCIÓN: cargar IDs con likes hoy
+   Endpoint esperado: GET /api/admin/likes-hoy
+   Respuesta esperada del servidor:
+   {
+     ok: true,
+     fecha: "2025-08-15",           // fecha local del servidor (YYYY-MM-DD)
+     total_ids: 12,                 // cantidad de IDs únicos que recibieron likes
+     total_likes: 3450,             // suma de todos los likes enviados hoy
+     manuales: 5,                   // IDs que solo recibieron envíos manuales
+     automaticos: 4,                // IDs que solo recibieron envíos automáticos
+     ambos: 3,                      // IDs con ambos tipos
+     registros: [
+       {
+         target_id: "123456789",    // ID de Instagram/TikTok u otra red
+         usuario: "username",       // usuario de BoostSpeed que realizó el envío
+         likes_hoy: 450,            // total de likes enviados a este ID hoy
+         tipo: "auto",              // "auto" | "manual" | "ambos"
+         ultimo_envio: "2025-08-15T14:32:00Z"  // ISO timestamp del último envío
+       }
+     ]
+   }
+   ══════════════════════════════════════════════════════ */
+async function loadLikesHoy() {
+  /* mostrar spinner en la tabla */
+  document.getElementById('tb-likes-hoy').innerHTML =
+    '<tr><td colspan="6" style="border:none"><div class="spin-wrap"><div class="spin"></div> Cargando…</div></td></tr>';
+
+  const r = await API.getAdmin('/api/admin/likes-hoy', admTok);
+
+  /* banner superior */
+  const idsCountEl = document.getElementById('lh-ids-count');
+  const subTxtEl   = document.getElementById('lh-sub-txt');
+  const pillsEl    = document.getElementById('lh-pills');
+  const statEl     = document.getElementById('a-ids-hoy');
+
+  if (!r.ok) {
+    idsCountEl.textContent = '—';
+    subTxtEl.textContent   = 'No se pudo cargar · Revisa el servidor';
+    document.getElementById('tb-likes-hoy').innerHTML =
+      '<tr><td colspan="6" style="text-align:center;color:var(--mut);padding:1.8rem">Error al cargar datos</td></tr>';
+    return;
+  }
+
+  /* cachear para filtrado local */
+  _likesHoyData = r.registros || [];
+
+  const total     = r.total_ids    || 0;
+  const totalLk   = r.total_likes  || 0;
+  const manuales  = r.manuales     || 0;
+  const autos     = r.automaticos  || 0;
+  const ambos     = r.ambos        || 0;
+  const fecha     = r.fecha        || new Date().toLocaleDateString('es');
+
+  /* stat box */
+  statEl.textContent = total;
+
+  /* banner */
+  idsCountEl.textContent = total;
+  subTxtEl.textContent = total > 0
+    ? `${totalLk.toLocaleString('es')} likes enviados · ${fecha}`
+    : `Ningún ID ha recibido likes hoy · ${fecha}`;
+
+  /* pills resumen tipo */
+  pillsEl.innerHTML = '';
+  if (total > 0) {
+    if (autos    > 0) pillsEl.innerHTML += `<span class="badge bauto">🤖 Auto: ${autos}</span>`;
+    if (manuales > 0) pillsEl.innerHTML += `<span class="badge bmanual">✋ Manual: ${manuales}</span>`;
+    if (ambos    > 0) pillsEl.innerHTML += `<span class="badge bambos">🔀 Ambos: ${ambos}</span>`;
+  }
+
+  /* encabezado tarjeta */
+  document.getElementById('lh-fecha-tag').textContent = fecha;
+  const totalTag = document.getElementById('lh-total-tag');
+  if (total > 0) {
+    document.getElementById('lh-total-lk').textContent = totalLk.toLocaleString('es');
+    totalTag.style.display = 'flex';
+  } else {
+    totalTag.style.display = 'none';
+  }
+
+  /* mostrar filtros solo si hay datos */
+  document.getElementById('lh-filter-wrap').style.display = total > 0 ? 'flex' : 'none';
+
+  /* resetear filtro activo */
+  document.querySelectorAll('.lh-filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('lhf-todos').classList.add('active');
+
+  /* renderizar tabla con todos los registros */
+  renderLikesHoyTabla(_likesHoyData);
+}
+
+/* ── Renderiza la tabla de likes hoy con el array recibido ── */
+function renderLikesHoyTabla(registros) {
+  const tbody = document.getElementById('tb-likes-hoy');
+  if (!registros || registros.length === 0) {
+    tbody.innerHTML =
+      '<tr><td colspan="6" style="text-align:center;color:var(--mut);padding:1.8rem">Sin actividad de likes hoy</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = registros.map((reg, i) => {
+    /* badge de tipo */
+    const tipoBadge = reg.tipo === 'auto'
+      ? '<span class="badge bauto">🤖 Auto</span>'
+      : reg.tipo === 'manual'
+        ? '<span class="badge bmanual">✋ Manual</span>'
+        : '<span class="badge bambos">🔀 Ambos</span>';
+
+    /* hora del último envío (solo hora local) */
+    const horaUltimo = reg.ultimo_envio
+      ? new Date(reg.ultimo_envio).toLocaleTimeString('es', { hour:'2-digit', minute:'2-digit' })
+      : '—';
+    const fechaUltimo = reg.ultimo_envio
+      ? new Date(reg.ultimo_envio).toLocaleDateString('es')
+      : '—';
+
+    return `<tr>
+      <td style="color:var(--mut);font-size:.76rem">${i + 1}</td>
+      <td>
+        <code style="color:var(--blue);font-weight:700;letter-spacing:1px;font-size:.82rem">${reg.target_id}</code>
+      </td>
+      <td style="font-size:.8rem">${reg.usuario || '—'}</td>
+      <td>
+        <span style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:var(--g)">
+          ${(reg.likes_hoy || 0).toLocaleString('es')}
+        </span>
+        <span style="color:var(--mut);font-size:.7rem;margin-left:.2rem">lk</span>
+      </td>
+      <td>${tipoBadge}</td>
+      <td style="color:var(--mut);font-size:.76rem" title="${fechaUltimo}">${horaUltimo}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── Filtrado local (sin llamada extra al servidor) ── */
+function filtrarLikesHoy(tipo) {
+  document.querySelectorAll('.lh-filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('lhf-' + tipo).classList.add('active');
+
+  const filtrado = tipo === 'todos'
+    ? _likesHoyData
+    : _likesHoyData.filter(r => r.tipo === tipo || (tipo !== 'todos' && r.tipo === 'ambos'));
+
+  renderLikesHoyTabla(filtrado);
+}
+
+/* ─────────────── Resto de funciones sin cambios ─────────────── */
+
+async function crearCod() {
+  let body = { tipo: tipoPlan };
+  if (tipoPlan === 'ilimitado') {
+    body.ilimitado = true;
+    body.custom = document.getElementById('c-cust-ilim').value.trim();
+  } else if (tipoPlan === 'dias') {
+    body.dias      = parseInt(document.getElementById('c-dias').value);
+    body.envios_dia = parseInt(document.getElementById('c-env-dias').value);
+    body.custom    = document.getElementById('c-cust-dias').value.trim();
+  } else {
+    body.likes      = parseInt(document.getElementById('c-lktotal').value);
+    body.envios_dia = parseInt(document.getElementById('c-env-likes').value);
+    body.custom     = document.getElementById('c-cust-likes').value.trim();
+  }
+  const r = await API.postAdmin('/api/admin/codigos', body, admTok);
+  if (!r.ok) return showMsg('msg-cod', r.error, 'err');
+  showMsg('msg-cod', '✓ Código creado exitosamente', 'ok');
+
+  const c    = r.codigo;
+  const cbox = document.getElementById('ncbox');
+  if (c.ilimitado) {
+    cbox.className = 'cbox ilim-box';
+    document.getElementById('nc-tipo-lbl').textContent = '🚀 Código ILIMITADO generado';
+    document.getElementById('nc-det').textContent = 'Sin límite de likes · Sin límite de días · Envíos ilimitados';
+  } else {
+    cbox.className = 'cbox';
+    document.getElementById('nc-tipo-lbl').textContent = 'Código generado';
+    document.getElementById('nc-det').textContent = c.tipo === 'likes'
+      ? `${(c.likes||0).toLocaleString('es')} likes · ${c.envios_dia} envíos/día`
+      : `${c.dias} días · ${c.envios_dia} envíos/día`;
+  }
+  document.getElementById('nc-val').textContent = c.codigo;
+  cbox.style.display = 'block';
+  ['c-cust-dias','c-cust-likes','c-cust-ilim'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  loadCods();
+}
+
+function copiarCod() {
+  navigator.clipboard.writeText(document.getElementById('nc-val').textContent);
+}
+
+async function loadCods() {
+  const r = await API.getAdmin('/api/admin/codigos', admTok);
+  if (!r.ok) return;
+  document.getElementById('tb-cod').innerHTML = r.codigos.length
+    ? r.codigos.map(c => {
+        const tipo = c.ilimitado ? 'ilimitado' : (c.tipo || 'dias');
+        const tipoBadge = c.ilimitado
+          ? '<span class="badge bilim">🚀 Ilimitado</span>'
+          : tipo === 'likes'
+            ? '<span class="badge blikes">Likes</span>'
+            : '<span class="badge bdias">Días</span>';
+        const detalle = c.ilimitado ? '∞'
+          : tipo === 'likes' ? `${(c.likes||0).toLocaleString('es')} lk`
+          : `${c.dias||0}d`;
+        const envDia = c.ilimitado ? '∞' : c.envios_dia;
+        return `<tr>
+          <td><code style="color:var(--g);font-weight:700;letter-spacing:2px;font-size:.82rem">${c.codigo}</code></td>
+          <td>${tipoBadge}</td>
+          <td style="font-size:.78rem">${detalle}</td>
+          <td>${envDia}</td>
+          <td><span class="badge ${c.usado ? 'boff' : 'bok'}">${c.usado ? 'Usado' : 'Disponible'}</span></td>
+          <td style="color:var(--mut);font-size:.76rem">${c.usado_por || '—'}</td>
+          <td style="color:var(--mut);font-size:.76rem">${new Date(c.creado_en).toLocaleDateString('es')}</td>
+          <td><button style="background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.2);color:var(--red);font-weight:700;font-family:'Exo 2',sans-serif;border-radius:5px;cursor:pointer;padding:.24rem .5rem;font-size:.72rem" onclick="delCod('${c.codigo}')">Eliminar</button></td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="8" style="text-align:center;color:var(--mut);padding:1.8rem">Sin códigos</td></tr>';
+}
+
+async function delCod(cod) {
+  if (!confirm(`¿Eliminar código ${cod}?`)) return;
+  await API.deleteAdmin('/api/admin/codigos/' + cod, admTok);
+  loadCods();
+}
+
+async function buscarUsr() {
+  const q = document.getElementById('q-usr').value.trim();
+  if (!q) return;
+  const r = await API.getAdmin('/api/admin/usuarios/buscar?q=' + encodeURIComponent(q), admTok);
+  if (!r.ok || !r.usuarios.length) {
+    showMsg('msg-edit', 'Usuario no encontrado', 'err');
+    document.getElementById('usr-det-card').style.display = 'none';
+    return;
+  }
+  mostrarDetUsr(r.usuarios[0]);
+}
+
+function selEditTipo(tipo) {
+  editTipo = tipo;
+  ['dias','likes','ilimitado'].forEach(t => {
+    document.getElementById('etopt-' + t).classList.toggle('sel', t === tipo);
+    document.getElementById('edit-campos-' + t).style.display = t === tipo ? 'block' : 'none';
+  });
+}
+
+function mostrarDetUsr(u) {
+  editUID = u.id;
+  document.getElementById('usr-det-card').style.display = 'block';
+
+  const diasR = (u.plan_vence && !u.ilimitado)
+    ? Math.max(0, Math.ceil((new Date(u.plan_vence) - Date.now()) / 86400000))
+    : 0;
+  const vence = u.ilimitado
+    ? '∞ (Ilimitado)'
+    : (u.plan_vence
+        ? new Date(u.plan_vence).toLocaleDateString('es')
+        : (u.plan_tipo === 'likes' ? '(por likes)' : '—'));
+
+  let planInfo = '';
+  if (u.ilimitado) {
+    planInfo = `<div class="ir"><span class="ik">Plan</span><span class="iv" style="color:#a78bfa">🚀 Ilimitado</span></div>`;
+  } else if (u.plan_tipo === 'likes') {
+    const lenv = u.likes_enviados_plan || 0;
+    const ltot = u.likes_limite_plan   || 0;
+    planInfo = `
+      <div class="ir"><span class="ik">Likes enviados</span><span class="iv">${lenv.toLocaleString('es')} / ${ltot.toLocaleString('es')}</span></div>
+      <div class="ir"><span class="ik">Likes restantes</span><span class="iv" style="color:var(--g)">${(u.likes_disponibles||0).toLocaleString('es')}</span></div>`;
+  } else {
+    planInfo = `
+      <div class="ir"><span class="ik">Días restantes</span><span class="iv" style="color:var(--g)">${diasR}</span></div>
+      <div class="ir"><span class="ik">Likes enviados</span><span class="iv">${(u.likes_enviados_plan||0).toLocaleString('es')}</span></div>`;
+  }
+
+  document.getElementById('usr-det').innerHTML = `
+    <div class="ir"><span class="ik">ID único</span><span class="iv"><code style="color:var(--g)">${u.uid}</code></span></div>
+    <div class="ir"><span class="ik">Usuario</span><span class="iv">${u.username}</span></div>
+    <div class="ir"><span class="ik">Contacto</span><span class="iv">${u.contact}</span></div>
+    <div class="ir"><span class="ik">Plan</span><span class="iv"><span class="badge ${u.plan_activo?'bok':'bnone'}">${u.plan_activo?u.plan_nombre:'Sin plan'}</span></span></div>
+    <div class="ir"><span class="ik">Tipo</span><span class="iv"><span class="badge ${u.ilimitado?'bilim':u.plan_tipo==='likes'?'blikes':'bdias'}">${u.ilimitado?'🚀 Ilimitado':u.plan_tipo||'días'}</span></span></div>
+    ${planInfo}
+    <div class="ir"><span class="ik">Envíos por día</span><span class="iv">${u.ilimitado?'∞':u.envios_por_dia}</span></div>
+    <div class="ir"><span class="ik">Envíos hoy</span><span class="iv">${u.envios_hoy}</span></div>
+    <div class="ir"><span class="ik">Vence</span><span class="iv">${vence}</span></div>
+    <div class="ir"><span class="ik">Registrado</span><span class="iv">${new Date(u.creado_en).toLocaleDateString('es')}</span></div>
+  `;
+
+  const tipo = u.ilimitado ? 'ilimitado' : (u.plan_tipo || 'dias');
+  selEditTipo(tipo);
+
+  if (tipo === 'dias') {
+    document.getElementById('e-dias').value     = diasR || '';
+    document.getElementById('e-env-dias').value = u.envios_por_dia || 3;
+    document.getElementById('e-stat-dias').value = u.plan_activo ? 'true' : 'false';
+  } else if (tipo === 'likes') {
+    document.getElementById('e-lk').value        = u.likes_disponibles || '';
+    document.getElementById('e-env-likes').value = u.envios_por_dia || 3;
+    document.getElementById('e-stat-likes').value = u.plan_activo ? 'true' : 'false';
+  }
+  document.getElementById('msg-edit').style.display = 'none';
+  document.getElementById('usr-det-card').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function pedirConfirmarGuardar() {
+  if (!editUID) return;
+  let detalle = '';
+
+  if (editTipo === 'ilimitado') {
+    detalle = `<strong>Tipo:</strong> 🚀 Ilimitado<br><strong>Sin límite</strong> de días, likes ni envíos.`;
+  } else if (editTipo === 'dias') {
+    const dias   = parseInt(document.getElementById('e-dias').value) || 0;
+    const envDia = parseInt(document.getElementById('e-env-dias').value) || 3;
+    const activo = document.getElementById('e-stat-dias').value === 'true';
+    detalle = `<strong>Tipo:</strong> 📅 Por días<br>`
+            + `<strong>Días del plan:</strong> ${dias} días<br>`
+            + `<strong>Envíos por día:</strong> ${envDia}<br>`
+            + `<strong>Estado:</strong> ${activo ? '✅ Activo' : '❌ Inactivo'}`;
+  } else {
+    const lk     = parseInt(document.getElementById('e-lk').value) || 0;
+    const envDia = parseInt(document.getElementById('e-env-likes').value) || 3;
+    const activo = document.getElementById('e-stat-likes').value === 'true';
+    detalle = `<strong>Tipo:</strong> ❤️ Por likes<br>`
+            + `<strong>Likes (nuevo total):</strong> ${lk.toLocaleString('es')}<br>`
+            + `<strong>Envíos por día:</strong> ${envDia}<br>`
+            + `<strong>Estado:</strong> ${activo ? '✅ Activo' : '❌ Inactivo'}`;
+  }
+
+  document.getElementById('confirm-detail').innerHTML = detalle;
+  document.getElementById('ov-confirm').classList.add('open');
+}
+
+function cerrarConfirm() {
+  document.getElementById('ov-confirm').classList.remove('open');
+}
+
+async function confirmarGuardar() {
+  cerrarConfirm();
+  if (!editUID) return;
+  let r;
+  if (editTipo === 'ilimitado') {
+    r = await API.putAdmin('/api/admin/usuarios/' + editUID + '/ilimitado', {}, admTok);
+  } else if (editTipo === 'dias') {
+    r = await API.putAdmin('/api/admin/usuarios/' + editUID, {
+      plan_tipo: 'dias',
+      dias_plan: parseInt(document.getElementById('e-dias').value) || 0,
+      envios_por_dia: parseInt(document.getElementById('e-env-dias').value) || 3,
+      plan_activo: document.getElementById('e-stat-dias').value === 'true',
+    }, admTok);
+  } else {
+    r = await API.putAdmin('/api/admin/usuarios/' + editUID, {
+      plan_tipo: 'likes',
+      likes_plan: parseInt(document.getElementById('e-lk').value) || 0,
+      envios_por_dia: parseInt(document.getElementById('e-env-likes').value) || 3,
+      plan_activo: document.getElementById('e-stat-likes').value === 'true',
+    }, admTok);
+  }
+  if (!r.ok) return showMsg('msg-edit', r.error, 'err');
+  showMsg('msg-edit', '✓ Plan actualizado correctamente', 'ok');
+  mostrarDetUsr(r.usuario);
+  loadDash();
+  loadUsrs();
+}
+
+function pedirEliminar() {
+  if (!editUID) return;
+  document.getElementById('del-p').value = '';
+  document.getElementById('msg-del').style.display = 'none';
+  document.getElementById('ov-del').classList.add('open');
+  setTimeout(() => document.getElementById('del-p').focus(), 300);
+}
+
+function cerrarDel() {
+  document.getElementById('ov-del').classList.remove('open');
+}
+
+async function confirmarDel() {
+  const pass = document.getElementById('del-p').value;
+  if (!pass) return showMsg('msg-del', 'Ingresa tu contraseña', 'err');
+  const verif = await API.post('/api/admin/login', { username:admUser, password:pass });
+  if (!verif.ok) return showMsg('msg-del', 'Contraseña incorrecta', 'err');
+  await API.deleteAdmin('/api/admin/usuarios/' + editUID, admTok);
+  cerrarDel();
+  cerrarDetUsr();
+  loadUsrs();
+  loadDash();
+}
+
+document.getElementById('ov-del').addEventListener('click', e => {
+  if (e.target === document.getElementById('ov-del')) cerrarDel();
+});
+document.getElementById('ov-confirm').addEventListener('click', e => {
+  if (e.target === document.getElementById('ov-confirm')) cerrarConfirm();
+});
+
+async function loadUsrs() {
+  const r = await API.getAdmin('/api/admin/usuarios', admTok);
+  if (!r.ok) return;
+  document.getElementById('tb-usr').innerHTML = r.usuarios.length
+    ? r.usuarios.map(u => {
+        const planInfo = u.ilimitado ? '∞ Ilimitado'
+          : u.plan_tipo === 'likes'
+            ? `${(u.likes_disponibles||0).toLocaleString('es')} lk restantes`
+            : u.plan_vence
+              ? `${Math.max(0, Math.ceil((new Date(u.plan_vence) - Date.now()) / 86400000))}d restantes`
+              : '—';
+        return `<tr>
+          <td><code style="color:var(--g);font-size:.74rem">${u.uid}</code></td>
+          <td>${u.username}</td>
+          <td style="color:var(--mut);font-size:.78rem;max-width:120px;overflow:hidden;text-overflow:ellipsis">${u.contact}</td>
+          <td><span class="badge ${u.plan_activo?'bok':'bnone'}">${u.plan_activo?'Activo':'Sin plan'}</span></td>
+          <td><span class="badge ${u.ilimitado?'bilim':u.plan_tipo==='likes'?'blikes':'bdias'}">${u.ilimitado?'🚀 Ilim.':u.plan_tipo||'días'}</span></td>
+          <td style="font-size:.78rem">${planInfo}</td>
+          <td style="color:var(--mut);font-size:.78rem">${new Date(u.creado_en).toLocaleDateString('es')}</td>
+          <td><button class="btn bo bsm" onclick='mostrarDetUsr(${JSON.stringify(u).replace(/'/g,"&#39;")})'>Ver</button></td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="8" style="text-align:center;color:var(--mut);padding:1.8rem">Sin usuarios</td></tr>';
+}
+
+async function buscarRec() {
+  const q = document.getElementById('rec-q').value.trim();
+  if (!q) return;
+  const r = await API.getAdmin('/api/admin/usuarios/buscar?q=' + encodeURIComponent(q), admTok);
+  if (!r.ok || !r.usuarios.length) {
+    showMsg('msg-rec-a', 'Usuario no encontrado', 'err');
+    document.getElementById('rec-found').style.display = 'none';
+    return;
+  }
+  const u = r.usuarios[0];
+  recUID = u.id;
+  document.getElementById('rec-uname').textContent = u.username;
+  document.getElementById('rec-uid-s').textContent = u.uid;
+  document.getElementById('rec-found').style.display = 'block';
+  document.getElementById('rec-cbox').style.display  = 'none';
+}
+
+async function genRecCod() {
+  if (!recUID) return;
+  const cc = document.getElementById('rec-cc').value.trim();
+  const r = await API.postAdmin('/api/admin/codigos-recuperacion', { usuario_id:recUID, codigo_custom:cc||null }, admTok);
+  if (!r.ok) return showMsg('msg-rec-a', r.error, 'err');
+  document.getElementById('rec-cv').textContent = r.codigo;
+  document.getElementById('rec-cbox').style.display = 'block';
+  showMsg('msg-rec-a', '✓ Código generado. Compártelo con el usuario.', 'ok');
+}
+
+function copiarRecCod() {
+  navigator.clipboard.writeText(document.getElementById('rec-cv').textContent);
+}
+
+function showMsg(id, txt, tipo) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = txt;
+  el.className   = 'msg ' + tipo;
+  el.style.display = txt ? 'block' : 'none';
+  if (txt) setTimeout(() => { if (el.textContent === txt) el.style.display = 'none'; }, 5500);
+}
+</script>
+</body>
+</html>
