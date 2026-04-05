@@ -221,18 +221,22 @@ async function llamarApiFF(uid, server = 'BR') {
   if (!apiBase) throw new Error('FF_API_URL no configurada');
 
   const targets = [];
-  // Escenario 1: URL base pura (dominio) -> Probar ambas rutas comunes
-  if (!apiBase.includes('/like') && !apiBase.includes('/send_likes') && !apiBase.includes('?')) {
-    targets.push(`${apiBase}/send_likes`); // Prioridad a la nueva API
-    targets.push(`${apiBase}/like`);       // Retrocompatibilidad
+  const urlObj = new URL(apiBase);
+  const path = urlObj.pathname;
+
+  // Escenario 1: URL base pura (dominio solo o con path raíz /)
+  if (path === '/' || path === '' || (!path.includes('like') && !path.includes('send_likes'))) {
+    const cleanBase = apiBase.replace(/\/+$/, '');
+    targets.push(`${cleanBase}/send_likes`); // Prioridad a la nueva API
+    targets.push(`${cleanBase}/like`);       // Retrocompatibilidad
   } else {
     // Escenario 2: El usuario ya puso una ruta específica
     targets.push(apiBase);
-    // Como salvavidas, si la que puso falla, intentamos la ruta hermana
-    if (apiBase.includes('/like')) {
-        targets.push(apiBase.replace('/like', '/send_likes'));
-    } else if (apiBase.includes('/send_likes')) {
-        targets.push(apiBase.replace('/send_likes', '/like'));
+    // Como salvavidas, si la que puso falla, intentamos la ruta hermana (solo en el path)
+    if (path.includes('/like')) {
+        targets.push(apiBase.replace(/\/like$/, '/send_likes'));
+    } else if (path.includes('/send_likes')) {
+        targets.push(apiBase.replace(/\/send_likes$/, '/like'));
     }
   }
 
