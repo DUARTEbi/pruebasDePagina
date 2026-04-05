@@ -543,10 +543,13 @@ async function cargarAutoIDs(manual=false){
     _autoIds=res.ids||[];const maxSlots=res.max_slots||2;const used=_autoIds.length;
     document.getElementById('auto-slots-used').textContent=used;
     document.getElementById('auto-slots-total').textContent=maxSlots>=999?`/ ∞ IDs`:`/ ${maxSlots} IDs`;
-    let limitVal = document.getElementById('auto-limit-val');
-    let limitFill = document.getElementById('auto-limit-fill');
-    if(limitVal) limitVal.textContent = maxSlots>=999?`${used}/∞ IDs`:`${used}/${maxSlots} IDs`;
-    if(limitFill) limitFill.style.width = maxSlots>=999?'20%':`${Math.min(100,(used/maxSlots)*100)}%`;
+    
+    // Nueva lógica para las dos barras en AUTO
+    let slotsVal = document.getElementById('auto-slots-val');
+    let slotsFill = document.getElementById('auto-slots-fill');
+    if(slotsVal) slotsVal.textContent = maxSlots>=999?`${used}/∞ IDs`:`${used}/${maxSlots} IDs`;
+    if(slotsFill) slotsFill.style.width = maxSlots>=999?'20%':`${Math.min(100,(used/maxSlots)*100)}%`;
+    
     let likesManualDisp = document.getElementById('likes-manual-disponibles');
     if(likesManualDisp){
         let manualDisp = Math.max(0, maxSlots - used);
