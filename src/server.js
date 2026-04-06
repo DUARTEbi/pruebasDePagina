@@ -215,6 +215,29 @@ function adminMiddleware(req, res, next) {
   }
 }
 
+async function consultarInfoFF(uid) {
+  const apiKey = (process.env.FF_API_KEY || '').trim();
+  let apiBase = (process.env.FF_API_URL || '').trim();
+  if (!apiBase.includes('mitsuri.online')) return null;
+
+  // Derivamos la URL de info (cambiamos /likes-220 o similar por /info)
+  const infoUrl = apiBase.replace('/likes-220', '/info').replace('/send_likes', '/info').replace('/like', '/info');
+  
+  try {
+    const res = await ejecutarPeticion(infoUrl, uid, apiKey, 'BR');
+    if (res && res.AccountInfo) {
+      return {
+        likes: parseInt(res.AccountInfo.AccountLikes || 0, 10),
+        name: res.AccountInfo.AccountName || '',
+        level: res.AccountInfo.AccountLevel || 0
+      };
+    }
+  } catch (e) {
+    console.warn(`[API INFO] No se pudo obtener la info para ${uid}:`, e.message);
+  }
+  return null;
+}
+
 async function llamarApiFF(uid, server = 'BR') {
   const apiKey = (process.env.FF_API_KEY || '').trim();
   let apiBase = (process.env.FF_API_URL || '').trim().replace(/\/+$/, '');
@@ -222,43 +245,73 @@ async function llamarApiFF(uid, server = 'BR') {
   if (!apiKey) throw new Error('FF_API_KEY no configurada en las variables de Railway');
   if (!apiBase) throw new Error('FF_API_URL no configurada en las variables de Railway');
 
-  const targets = [];
-  const urlObj = new URL(apiBase);
-  const path = urlObj.pathname;
+  // PASO 1: Consultar info inicial (Antes)
+  console.log(`[CYCLE] Consultando likes antes para ID: ${uid}`);
+  const infoPre = await consultarInfoFF(uid);
 
-  // Escenario 1: URL base pura (dominio solo o con path raíz /)
-  if (path === '/' || path === '' || (!path.includes('like') && !path.includes('send_likes'))) {
-    const cleanBase = apiBase.replace(/\/+$/, '');
-    targets.push(`${cleanBase}/send_likes`); // Prioridad a la nueva API
-    targets.push(`${cleanBase}/like`);       // Retrocompatibilidad
-  } else {
-    // Escenario 2: El usuario ya puso una ruta específica
-    targets.push(apiBase);
-    // Como salvavidas, si la que puso falla, intentamos la ruta hermana (solo en el path)
-    if (path.includes('/like')) {
-        targets.push(apiBase.replace(/\/like$/, '/send_likes'));
-    } else if (path.includes('/send_likes')) {
-        targets.push(apiBase.replace(/\/send_likes$/, '/like'));
+  const targets = [];
+  try {
+    const urlObj = new URL(apiBase);
+    const path = urlObj.pathname;
+    if (path === '/' || path === '' || (!path.includes('like') && !path.includes('send_likes'))) {
+      const cleanBase = apiBase.replace(/\/+$/, '');
+      targets.push(`${cleanBase}/send_likes`);
+      targets.push(`${cleanBase}/like`);
+    } else {
+      targets.push(apiBase);
+      if (path.includes('/like')) targets.push(apiBase.replace(/\/like$/, '/send_likes'));
+      else if (path.includes('/send_likes')) targets.push(apiBase.replace(/\/send_likes$/, '/like'));
     }
+  } catch (e) {
+    targets.push(apiBase);
   }
 
   let lastError = null;
+  let apiRes = null;
+
   for (const baseUrl of targets) {
     try {
-      const result = await ejecutarPeticion(baseUrl, uid, apiKey, server);
-      return result; // Éxito: JSON recibido
+      // PASO 2: Realizar el Envío
+      apiRes = await ejecutarPeticion(baseUrl, uid, apiKey, server);
+      if (apiRes) break;
     } catch (err) {
-      if (err.message.includes('HTML_RESPONSE') || err.message.includes('Unexpected token <')) {
+      lastError = err;
+      if (err.message.includes('HTML_RESPONSE')) {
         console.log(`[API FF] Falló endpoint ${baseUrl.split('?')[0]} con respuesta HTML. Probando siguiente...`);
-        lastError = err;
         continue;
       }
-      // Si el error es de red o tiempo de espera real, abortamos el bucle para no esperar 60s
       throw err;
     }
   }
 
-  throw new Error(`La API no respondió con un JSON válido en ninguna de las rutas intentadas. Revisa tu FF_API_URL en Railway. (Recibido: ${lastError ? lastError.message : 'N/A'})`);
+  if (!apiRes) {
+    throw new Error(`La API no respondió con un JSON válido en ninguna de las rutas intentadas. Revisa tu FF_API_URL en Railway. (Recibido: ${lastError ? lastError.message : 'N/A'})`);
+  }
+
+  // PASO 3: Esperar 2 segundos para que los likes se reflejen en la base de datos de FF
+  await new Promise(r => setTimeout(r, 2000));
+
+  // PASO 4: Consultar info final (Después)
+  console.log(`[CYCLE] Consultando likes después para ID: ${uid}`);
+  const infoPost = await consultarInfoFF(uid);
+  
+  // Fusionar datos reales en la respuesta para que el dashboard los reciba
+  if (infoPre) {
+    apiRes.likes_antes = infoPre.likes;
+    apiRes.nickname = infoPre.name;
+    apiRes.level = infoPre.level;
+    apiRes.playerName = infoPre.name;
+  }
+  if (infoPost) {
+    apiRes.likes_depois = infoPost.likes;
+    // Si la API reportó 0 o nada de likes_enviados, calculamos la diferencia real
+    const diff = infoPost.likes - (infoPre ? infoPre.likes : 0);
+    if ((!apiRes.likes_enviados || parseInt(apiRes.likes_enviados,10) === 0) && diff > 0) {
+      apiRes.likes_enviados = diff;
+    }
+  }
+
+  return apiRes;
 }
 
 function ejecutarPeticion(baseUrl, uid, apiKey, server) {
