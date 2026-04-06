@@ -711,19 +711,19 @@ app.post('/api/cambiar-pass', authMiddleware, async (req, res) => {
   } catch (err) { res.status(500).json({ error: 'Error interno' }); }
 });
 
-const SLOTS_UTC = [5, 10, 17, 22];
+const SLOTS_UTC = [[10, 0], [13, 30], [15, 0], [17, 0]];
 function nextSlot(desde, skipCurrent = false) {
   const utcH = desde.getUTCHours();
   const utcM = desde.getUTCMinutes();
-  for (const h of SLOTS_UTC) {
-    const pasado = h < utcH || (h === utcH && utcM > 0);
+  for (const [h, m] of SLOTS_UTC) {
+    const pasado = h < utcH || (h === utcH && utcM >= m);
     if (!pasado) {
-      const t = new Date(Date.UTC(desde.getUTCFullYear(), desde.getUTCMonth(), desde.getUTCDate(), h, 0, 0, 0));
+      const t = new Date(Date.UTC(desde.getUTCFullYear(), desde.getUTCMonth(), desde.getUTCDate(), h, m, 0, 0));
       if (skipCurrent && t.getTime() <= desde.getTime()) continue;
       if (t.getTime() > desde.getTime()) return t;
     }
   }
-  return new Date(Date.UTC(desde.getUTCFullYear(), desde.getUTCMonth(), desde.getUTCDate() + 1, SLOTS_UTC[0], 0, 0, 0));
+  return new Date(Date.UTC(desde.getUTCFullYear(), desde.getUTCMonth(), desde.getUTCDate() + 1, SLOTS_UTC[0][0], SLOTS_UTC[0][1], 0, 0));
 }
 
 function calcularSlots(usuario) {
@@ -837,7 +837,7 @@ app.post('/api/auto/ids', authMiddleware, async (req, res) => {
     const today = new Date().toISOString().slice(0, 10);
     const fechaUltimo = usuario.fecha_ultimo_envio ? new Date(usuario.fecha_ultimo_envio).toISOString().slice(0, 10) : null;
     const enviosHoyActual = fechaUltimo === today ? (usuario.envios_hoy || 0) : 0;
-    let proximoEnvio = (!usuario.ilimitado && enviosHoyActual >= usuario.envios_por_dia) ? nextSlot(new Date(), true).toISOString() : new Date().toISOString();
+    let proximoEnvio = nextSlot(new Date(), false).toISOString();
 
     const result = await pool.query(`INSERT INTO auto_ids (usuario_id, ff_uid, likes_meta, dias_meta, proximo_envio) VALUES ($1, $2, $3, $4, $5) RETURNING *`, [req.user.id, ff_uid.trim(), likes_meta, dias_meta, proximoEnvio]);
     const autoId = result.rows[0];
