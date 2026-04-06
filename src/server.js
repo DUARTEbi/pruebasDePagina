@@ -274,7 +274,7 @@ function ejecutarPeticion(baseUrl, uid, apiKey, server) {
        const keyStr = String(apiKey).trim();
        if (keyStr.length > 3) safeLogUrl = fullUrl.split(keyStr).join('***');
     }
-    console.log(`[API FF V3] Intentando: ${safeLogUrl}`);
+    console.log(`[API FF] Intentando: ${safeLogUrl}`);
 
     const options = {
       timeout: 15000,
@@ -315,7 +315,7 @@ function ejecutarPeticion(baseUrl, uid, apiKey, server) {
 function interpretarRespuestaFF(apiData) {
   const sentMatch = String(apiData.sent || '').match(/\d+/);
   const fromSentStr = sentMatch ? parseInt(sentMatch[0], 10) : 0;
-  const added  = parseInt(apiData.likes_added || fromSentStr || 0, 10);
+  const added  = parseInt(apiData.likes_added || apiData.likes_enviados || apiData.sucessos || fromSentStr || 0, 10);
   const before = parseInt(apiData.likes_before || apiData.likes_antes || apiData.Likes_Iniciais || 0, 10);
   const after  = parseInt(apiData.likes_after || apiData.likes_depois || apiData.Likes_Atuais || 0, 10);
   const msgRaw = String((apiData.message || '') + (apiData.error || '') + (apiData.msg_sistema || '')).toLowerCase();
@@ -324,7 +324,7 @@ function interpretarRespuestaFF(apiData) {
   const level = apiData.level || apiData.Level || 0;
   const region = apiData.region || apiData.Region || 'BR';
 
-  if (apiData.status_envio === 'SUCESSO' || apiData.status === 'success' || (apiData.res === 'SUCCESS' && !apiData.error)) {
+  if (apiData.status_envio === 'SUCESSO' || apiData.status === 'success' || apiData.status === 'ok' || (apiData.res === 'SUCCESS' && !apiData.error)) {
     return { tipo: 'ok', added, before, after, playerName, level, region };
   }
   
