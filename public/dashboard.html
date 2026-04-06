@@ -696,11 +696,14 @@ function renderIDCard(id){
   const nivelDisplay=id.nivel?`Nv.${id.nivel}`:'—';
   const regionDisplay=id.region||'BR';
 
-  const statusChip=noSabemos
-    ?`<span class="id-status-chip status-waiting"><span class="status-dot-anim"></span>Pronto</span>`
-    :esSending
-      ?`<span class="id-status-chip status-sending"><span class="status-dot-anim"></span>Enviando</span>`
-      :`<span class="id-status-chip status-waiting"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>En espera</span>`;
+  const statusChip=id.motivo_error
+    ?`<span class="id-status-chip status-error"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Fallo 3d</span>`
+    :noSabemos
+      ?`<span class="id-status-chip status-waiting"><span class="status-dot-anim"></span>Pronto</span>`
+      :esSending
+        ?`<span class="id-status-chip status-sending"><span class="status-dot-anim"></span>Enviando</span>`
+        :`<span class="id-status-chip status-waiting"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>En espera</span>`;
+
 
   let progressHtml='';
   if(id.likes_meta>0){
@@ -713,8 +716,15 @@ function renderIDCard(id){
     progressHtml=`<div class="id-card-progress"><div class="id-prog-header"><span class="id-prog-lbl">Progreso · días</span><span class="id-prog-val">${diasTranscurridos} / ${id.dias_meta} días</span></div><div class="id-prog-bar"><div class="id-prog-fill" style="width:${pct}%"></div></div></div>`;
   }
 
-  const footerLabel=noSabemos?'Estado':esSending?'Enviando ahora':'Próximo envío en';
-  const footerColor=noSabemos?'var(--mut)':esSending?'var(--g)':'var(--warn)';
+  const footerLabel=id.motivo_error?'Acción':noSabemos?'Estado':esSending?'Enviando ahora':'Próximo envío en';
+  const footerColor=id.motivo_error?'var(--err, #ff4444)':noSabemos?'var(--mut)':esSending?'var(--g)':'var(--warn)';
+  const displayTiempo=id.motivo_error?'Manual':tiempoStr;
+
+  let errorHtml='';
+  if(id.motivo_error){
+    errorHtml=`<div class="id-card-error" style="background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.2);color:#ff9999;padding:.5rem;border-radius:.5rem;font-size:.7rem;margin-bottom:.5rem;line-height:1.2">⚠️ ${id.motivo_error}</div>`;
+  }
+
 
   return `<div class="id-card" data-auto-id="${id.id}" data-proximo="${id.proximo_envio||''}" data-ultimo="${id.ultimo_envio||''}" data-reintentando="${id.reintentando?'true':'false'}">
 
@@ -727,9 +737,10 @@ function renderIDCard(id){
       </div>
     </div>
     ${progressHtml}
+    ${errorHtml}
     <div class="id-card-footer">
-      <span class="id-next-lbl"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${footerLabel}</span>
-      <span class="id-next-val" style="color:${footerColor}">${tiempoStr}</span>
+      <span class="id-next-lbl"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${footerLabel}</span>
+      <span class="id-next-val" style="color:${footerColor}">${displayTiempo}</span>
     </div>
   </div>`;
 }

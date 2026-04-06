@@ -153,7 +153,13 @@ async function initDB() {
       ALTER TABLE auto_ids  ADD COLUMN IF NOT EXISTS likes_meta INTEGER DEFAULT 0;
       ALTER TABLE auto_ids  ADD COLUMN IF NOT EXISTS dias_meta  INTEGER DEFAULT 0;
       ALTER TABLE auto_ids  ADD COLUMN IF NOT EXISTS reintentando BOOLEAN DEFAULT false;
+      ALTER TABLE auto_ids  ADD COLUMN IF NOT EXISTS falla_desde TIMESTAMP;
+      ALTER TABLE auto_ids  ADD COLUMN IF NOT EXISTS motivo_error TEXT;
     `);
+
+    // RESET GLOBAL AL ARRANCAR: Todos los activos intentan ahora
+    await client.query(`UPDATE auto_ids SET proximo_envio = NOW(), reintentando = true WHERE activo = true`);
+
 
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_auto_ids_usuario ON auto_ids(usuario_id);
@@ -836,12 +842,8 @@ async function procesarAutoID(autoId) {
   if (interpretado.tipo === 'auth_error') return;
 
   if (interpretado.tipo === 'ya_recibio' || interpretado.tipo === 'limite') {
-    // FALLO/LÍMITE: Reintento en 5 horas
-    const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
-    await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, proximo_envio=$4, reintentando=true WHERE id=$5`, [player, level, region, proximo5h, autoId]);
-    return;
+    return await registrarFalloID(autoId, row.falla_desde, player, level, region);
   }
-
 
   if (interpretado.tipo === 'ok') {
     const before = parseInt(apiData.likes_before || apiData.likes_antes || 0, 10);
@@ -849,7 +851,8 @@ async function procesarAutoID(autoId) {
     const fromDiff   = (after > 0 && before >= 0 && after > before) ? (after - before) : 0;
     const sentMatch  = String(apiData.sent || '').match(/\d+/);
     const fromSentStr= sentMatch ? parseInt(sentMatch[0], 10) : 0;
-    const likesAdded = fromDiff > 0 ? fromDiff : Math.max(parseInt(apiData.likes_added || fromSentStr || 0, 10), parseInt(apiData.successful_likes || 0, 10));
+    const fromAdded  = parseInt(apiData.likes_added || apiData.likes_enviados || 0, 10);
+    const likesAdded = fromDiff > 0 ? fromDiff : Math.max(fromAdded, fromSentStr, parseInt(apiData.successful_likes || 0, 10));
 
     if (likesAdded > 0) {
       if (!row.ilimitado && row.plan_tipo === 'likes') {
@@ -861,20 +864,31 @@ async function procesarAutoID(autoId) {
       }
       await pool.query(`INSERT INTO historial (usuario_id,ff_uid,player_name,likes_antes,likes_despues,likes_agregados,nivel,region,auto_envio) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,true)`, [row.usuario_id, row.ff_uid, player, before, after, likesAdded, level, region]);
       
-      // ÉXITO: Siguiente envío en 24 horas y reintentando = false
+      // ÉXITO: Siguiente envío en 24 horas y resetear contadores de fallos
       const proximo24  = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-      await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, likes_enviados=likes_enviados+$4, ultimo_envio=$5, proximo_envio=$6, reintentando=false WHERE id=$7`, [player, level, region, likesAdded, new Date().toISOString(), proximo24, autoId]);
+      await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, likes_enviados=likes_enviados+$4, ultimo_envio=$5, proximo_envio=$6, reintentando=false, falla_desde=NULL, motivo_error=NULL WHERE id=$7`, [player, level, region, likesAdded, new Date().toISOString(), proximo24, autoId]);
       pool.query(`INSERT INTO notificaciones_likes (username,ff_uid,player_name,likes_agregados) VALUES ($1,$2,$3,$4)`, [row.username, row.ff_uid, player, likesAdded]).catch(() => {});
     } else {
-      // Éxito de API pero 0 likes añadidos (posible "ya recibió" no detectado o API con retardo)
-      const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
-      await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, proximo_envio=$4, reintentando=true WHERE id=$5`, [player, level, region, proximo5h, autoId]);
+      return await registrarFalloID(autoId, row.falla_desde, player, level, region);
     }
     return;
   }
-  // CUALQUIER OTRO ERROR: Reintento en 5 horas
-  const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
-  await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=true WHERE id=$2', [proximo5h, autoId]);
+  return await registrarFalloID(autoId, row.falla_desde, player, level, region);
+}
+
+// Helper para gestionar reintentos de 5h y desactivación tras 3 días de fallos
+async function registrarFalloID(autoId, fallaDesdeOrig, player, level, region) {
+  const fallandoDesde = fallaDesdeOrig || new Date();
+  const diffMs = Date.now() - new Date(fallandoDesde).getTime();
+  const tresDiasMs = 3 * 24 * 60 * 60 * 1000;
+
+  if (diffMs >= tresDiasMs) {
+    console.log(`[AUTO] Desactivando ID ${autoId} por 3 días de fallos.`);
+    await pool.query(`UPDATE auto_ids SET activo=false, reintentando=false, motivo_error='No se pudieron enviar likes durante 3 días. Por favor, intenta un envío manual.' WHERE id=$1`, [autoId]);
+  } else {
+    const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
+    await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, proximo_envio=$4, reintentando=true, falla_desde=$5 WHERE id=$6`, [player, level, region, proximo5h, fallandoDesde, autoId]);
+  }
 }
 
 app.get('/api/auto/ids', authMiddleware, async (req, res) => {
@@ -884,9 +898,10 @@ app.get('/api/auto/ids', authMiddleware, async (req, res) => {
     const usuario = uRes.rows[0];
     const maxSlots = calcularSlots(usuario);
     const [ids, log] = await Promise.all([
-      pool.query('SELECT * FROM auto_ids WHERE usuario_id=$1 AND activo=true ORDER BY creado_en ASC', [req.user.id]),
+      pool.query('SELECT * FROM auto_ids WHERE usuario_id=$1 AND (activo=true OR motivo_error IS NOT NULL) ORDER BY creado_en ASC', [req.user.id]),
       pool.query(`SELECT ff_uid, player_name, likes_agregados, nivel, region, fecha FROM historial WHERE usuario_id=$1 AND auto_envio=true ORDER BY fecha DESC LIMIT 10`, [req.user.id]),
     ]);
+
     res.json({ ok: true, ids: ids.rows, log: log.rows, max_slots: maxSlots });
   } catch (err) { res.status(500).json({ error: 'Error interno' }); }
 });
