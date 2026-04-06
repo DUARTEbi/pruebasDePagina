@@ -356,7 +356,8 @@ app.get('/api/top-usuarios', async (req, res) => {
     const r = await pool.query(`
       SELECT u.username, COALESCE(SUM(h.likes_agregados), 0) AS total_likes
       FROM usuarios u LEFT JOIN historial h ON h.usuario_id = u.id
-      WHERE u.ilimitado = false GROUP BY u.id, u.username
+      WHERE u.ilimitado = false AND u.plan_tipo != 'revendedor'
+      GROUP BY u.id, u.username
       HAVING COALESCE(SUM(h.likes_agregados), 0) > 0
       ORDER BY total_likes DESC LIMIT 10
     `);
@@ -1069,16 +1070,7 @@ app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../public', 'index
 initDB().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 BoostSpeed corriendo en puerto ${PORT}`);
-    setTimeout(async () => { 
-      try {
-        const nextSlotUTC = new Date();
-        nextSlotUTC.setUTCHours(13, 30, 0, 0); // 8:30 AM COT
-        console.log(`[EMERGENCY RESET] Sincronizando IDs al slot de las 8:30 AM COT...`);
-        await pool.query(`UPDATE auto_ids SET proximo_envio = $1 WHERE activo = true`, [nextSlotUTC.toISOString()]);
-        console.log(`[EMERGENCY RESET] Hecho.`);
-      } catch(e) { console.error('[RESET ERROR]', e.message); }
-      ejecutarAutoLikes(); 
-    }, 5000);
+    setTimeout(() => { ejecutarAutoLikes(); }, 5000);
     setInterval(ejecutarAutoLikes, 2 * 60 * 1000);
   });
 }).catch(err => {
