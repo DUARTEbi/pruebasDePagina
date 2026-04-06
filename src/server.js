@@ -152,6 +152,7 @@ async function initDB() {
       ALTER TABLE historial ADD COLUMN IF NOT EXISTS auto_envio BOOLEAN DEFAULT false;
       ALTER TABLE auto_ids  ADD COLUMN IF NOT EXISTS likes_meta INTEGER DEFAULT 0;
       ALTER TABLE auto_ids  ADD COLUMN IF NOT EXISTS dias_meta  INTEGER DEFAULT 0;
+      ALTER TABLE auto_ids  ADD COLUMN IF NOT EXISTS reintentando BOOLEAN DEFAULT false;
     `);
 
     await client.query(`
@@ -780,20 +781,8 @@ app.post('/api/cambiar-pass', authMiddleware, async (req, res) => {
   } catch (err) { res.status(500).json({ error: 'Error interno' }); }
 });
 
-const SLOTS_UTC = [[10, 0], [13, 30], [15, 0], [17, 0]];
-function nextSlot(desde, skipCurrent = false) {
-  const utcH = desde.getUTCHours();
-  const utcM = desde.getUTCMinutes();
-  for (const [h, m] of SLOTS_UTC) {
-    const pasado = h < utcH || (h === utcH && utcM >= m);
-    if (!pasado) {
-      const t = new Date(Date.UTC(desde.getUTCFullYear(), desde.getUTCMonth(), desde.getUTCDate(), h, m, 0, 0));
-      if (skipCurrent && t.getTime() <= desde.getTime()) continue;
-      if (t.getTime() > desde.getTime()) return t;
-    }
-  }
-  return new Date(Date.UTC(desde.getUTCFullYear(), desde.getUTCMonth(), desde.getUTCDate() + 1, SLOTS_UTC[0][0], SLOTS_UTC[0][1], 0, 0));
-}
+// Lógica de envíos automáticos dinámicos (Sin slots fijos)
+
 
 function calcularSlots(usuario) {
   if (usuario.ilimitado) return 9999;
@@ -820,18 +809,26 @@ async function procesarAutoID(autoId) {
     const fechaUltimo = row.fecha_ultimo_envio ? new Date(row.fecha_ultimo_envio).toISOString().slice(0, 10) : null;
     const enviosHoyActual = fechaUltimo === today ? (row.envios_hoy || 0) : 0;
     if (enviosHoyActual >= row.envios_por_dia) {
-      const siguiente = nextSlot(new Date(), true);
-      await pool.query('UPDATE auto_ids SET proximo_envio=$1 WHERE id=$2', [siguiente.toISOString(), autoId]); return;
+      // Límite diario: Reintento en 5 horas
+      const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
+      await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=true WHERE id=$2', [proximo5h, autoId]); 
+      return;
     }
   }
 
   let apiData;
-  try { apiData = await llamarApiFF(row.ff_uid, row.region || 'BR'); } catch (apiErr) {
-    const siguiente = nextSlot(new Date(), true);
-    await pool.query('UPDATE auto_ids SET proximo_envio=$1 WHERE id=$2', [siguiente.toISOString(), autoId]); return;
+  try { 
+    apiData = await llamarApiFF(row.ff_uid, row.region || 'BR'); 
+  } catch (apiErr) {
+    // FALLO: Reintento en 5 horas
+    const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
+    await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=true WHERE id=$2', [proximo5h, autoId]); 
+    return;
   }
 
+
   const interpretado = interpretarRespuestaFF(apiData);
+
   const player = apiData.player || apiData.nickname || row.player_name || row.ff_uid;
   const level  = apiData.level  || row.nivel || null;
   const region = apiData.region || row.region || 'BR';
@@ -839,10 +836,12 @@ async function procesarAutoID(autoId) {
   if (interpretado.tipo === 'auth_error') return;
 
   if (interpretado.tipo === 'ya_recibio' || interpretado.tipo === 'limite') {
-    const siguiente = nextSlot(new Date(), true);
-    await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, proximo_envio=$4 WHERE id=$5`, [player, level, region, siguiente.toISOString(), autoId]);
+    // FALLO/LÍMITE: Reintento en 5 horas
+    const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
+    await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, proximo_envio=$4, reintentando=true WHERE id=$5`, [player, level, region, proximo5h, autoId]);
     return;
   }
+
 
   if (interpretado.tipo === 'ok') {
     const before = parseInt(apiData.likes_before || apiData.likes_antes || 0, 10);
@@ -861,17 +860,21 @@ async function procesarAutoID(autoId) {
         await pool.query(`UPDATE usuarios SET likes_enviados_plan=likes_enviados_plan+$1, envios_hoy=CASE WHEN ilimitado THEN envios_hoy ELSE envios_hoy+1 END, fecha_ultimo_envio=CASE WHEN ilimitado THEN fecha_ultimo_envio ELSE $2 END WHERE id=$3`, [likesAdded, today, row.usuario_id]);
       }
       await pool.query(`INSERT INTO historial (usuario_id,ff_uid,player_name,likes_antes,likes_despues,likes_agregados,nivel,region,auto_envio) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,true)`, [row.usuario_id, row.ff_uid, player, before, after, likesAdded, level, region]);
+      
+      // ÉXITO: Siguiente envío en 24 horas y reintentando = false
       const proximo24  = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-      await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, likes_enviados=likes_enviados+$4, ultimo_envio=$5, proximo_envio=$6 WHERE id=$7`, [player, level, region, likesAdded, new Date().toISOString(), proximo24, autoId]);
+      await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, likes_enviados=likes_enviados+$4, ultimo_envio=$5, proximo_envio=$6, reintentando=false WHERE id=$7`, [player, level, region, likesAdded, new Date().toISOString(), proximo24, autoId]);
       pool.query(`INSERT INTO notificaciones_likes (username,ff_uid,player_name,likes_agregados) VALUES ($1,$2,$3,$4)`, [row.username, row.ff_uid, player, likesAdded]).catch(() => {});
     } else {
-      const siguiente = nextSlot(new Date(), true);
-      await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, proximo_envio=$4 WHERE id=$5`, [player, level, region, siguiente.toISOString(), autoId]);
+      // Éxito de API pero 0 likes añadidos (posible "ya recibió" no detectado o API con retardo)
+      const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
+      await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, proximo_envio=$4, reintentando=true WHERE id=$5`, [player, level, region, proximo5h, autoId]);
     }
     return;
   }
-  const siguiente = nextSlot(new Date(), true);
-  await pool.query('UPDATE auto_ids SET proximo_envio=$1 WHERE id=$2', [siguiente.toISOString(), autoId]);
+  // CUALQUIER OTRO ERROR: Reintento en 5 horas
+  const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
+  await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=true WHERE id=$2', [proximo5h, autoId]);
 }
 
 app.get('/api/auto/ids', authMiddleware, async (req, res) => {
@@ -906,9 +909,10 @@ app.post('/api/auto/ids', authMiddleware, async (req, res) => {
     const today = new Date().toISOString().slice(0, 10);
     const fechaUltimo = usuario.fecha_ultimo_envio ? new Date(usuario.fecha_ultimo_envio).toISOString().slice(0, 10) : null;
     const enviosHoyActual = fechaUltimo === today ? (usuario.envios_hoy || 0) : 0;
-    let proximoEnvio = nextSlot(new Date(), false).toISOString();
+    const proximoEnvio = new Date().toISOString(); 
 
-    const result = await pool.query(`INSERT INTO auto_ids (usuario_id, ff_uid, likes_meta, dias_meta, proximo_envio) VALUES ($1, $2, $3, $4, $5) RETURNING *`, [req.user.id, ff_uid.trim(), likes_meta, dias_meta, proximoEnvio]);
+    const result = await pool.query(`INSERT INTO auto_ids (usuario_id, ff_uid, likes_meta, dias_meta, proximo_envio, reintentando) VALUES ($1, $2, $3, $4, $5, false) RETURNING *`, [req.user.id, ff_uid.trim(), likes_meta, dias_meta, proximoEnvio]);
+
     const autoId = result.rows[0];
     const puedeEnviarAhora = !(!usuario.ilimitado && enviosHoyActual >= usuario.envios_por_dia);
     res.json({ ok: true, id: autoId, message: `✅ ID agregado.` + (puedeEnviarAhora ? ' Enviando likes ahora...' : ' Límite diario alcanzado, próximo envío programado.') });

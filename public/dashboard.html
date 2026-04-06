@@ -685,11 +685,12 @@ function renderIDCard(id){
   const proximo=id.proximo_envio?new Date(id.proximo_envio):null;
   const diffMs=proximo?(proximo-ahora):0;
 
-  const noSabemos=!id.ultimo_envio;
+  const noSabemos=!id.ultimo_envio || id.reintentando;
   const esSending=!noSabemos&&diffMs<=0;
   const horas=diffMs>0?Math.floor(diffMs/3600000):0;
   const mins=diffMs>0?Math.floor((diffMs%3600000)/60000):0;
   const tiempoStr=noSabemos?'Pronto':esSending?'Enviando':horas>0?`${horas}h ${mins}m`:mins>0?`${mins}m`:'Enviando';
+
 
   const nombreDisplay=id.player_name||'—';
   const nivelDisplay=id.nivel?`Nv.${id.nivel}`:'—';
@@ -715,7 +716,8 @@ function renderIDCard(id){
   const footerLabel=noSabemos?'Estado':esSending?'Enviando ahora':'Próximo envío en';
   const footerColor=noSabemos?'var(--mut)':esSending?'var(--g)':'var(--warn)';
 
-  return `<div class="id-card" data-auto-id="${id.id}" data-proximo="${id.proximo_envio||''}" data-ultimo="${id.ultimo_envio||''}">
+  return `<div class="id-card" data-auto-id="${id.id}" data-proximo="${id.proximo_envio||''}" data-ultimo="${id.ultimo_envio||''}" data-reintentando="${id.reintentando?'true':'false'}">
+
     <div class="id-card-top">
       <div class="id-card-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
       <div class="id-card-info"><div class="id-card-uid">${id.ff_uid}</div><div class="id-card-name">${nombreDisplay} · ${nivelDisplay} · ${regionDisplay}</div></div>
@@ -740,7 +742,9 @@ function actualizarCountdowns(){
   document.querySelectorAll('.id-card[data-auto-id]').forEach(card=>{
     const proxStr=card.getAttribute('data-proximo');
     const ultStr=card.getAttribute('data-ultimo');
-    if(!ultStr) return; // "Pronto" fijo hasta que el auto logre enviar
+    const reinStr=card.getAttribute('data-reintentando');
+    if(!ultStr || reinStr==='true') return; // "Pronto" fijo hasta que el auto logre enviar o si está reintentando
+
     if(!proxStr) return;
     const diffMs=new Date(proxStr)-Date.now();
     const esSending=diffMs<=0;
