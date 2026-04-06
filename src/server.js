@@ -261,52 +261,55 @@ async function llamarApiFF(uid, server = 'BR') {
   throw new Error(`La API no respondió con un JSON válido en ninguna de las rutas intentadas. Revisa tu FF_API_URL en Railway. (Recibido: ${lastError ? lastError.message : 'N/A'})`);
 }
 
-async function ejecutarPeticion(baseUrl, uid, apiKey, server) {
-  const start = Date.now();
-  const separator = baseUrl.includes('?') ? '&' : '?';
-  const params = `uid=${encodeURIComponent(uid)}&apikey=${encodeURIComponent(apiKey)}&server=${encodeURIComponent(server)}&id=${encodeURIComponent(uid)}&key=${encodeURIComponent(apiKey)}`;
-  const fullUrl = `${baseUrl}${separator}${params}`;
+function ejecutarPeticion(baseUrl, uid, apiKey, server) {
+  return new Promise((resolve, reject) => {
+    const start = Date.now();
+    const separator = baseUrl.includes('?') ? '&' : '?';
+    const params = `uid=${encodeURIComponent(uid)}&apikey=${encodeURIComponent(apiKey)}&server=${encodeURIComponent(server)}&id=${encodeURIComponent(uid)}&key=${encodeURIComponent(apiKey)}`;
+    const fullUrl = `${baseUrl}${separator}${params}`;
 
-  const safeLogUrl = fullUrl.replace(new RegExp(encodeURIComponent(apiKey), 'g'), '***');
-  console.log(`[API FF] Intentando con FETCH: ${safeLogUrl}`);
+    // Log de seguridad robusto
+    let safeLogUrl = fullUrl;
+    if (apiKey) {
+       const keyStr = String(apiKey).trim();
+       if (keyStr.length > 3) safeLogUrl = fullUrl.split(keyStr).join('***');
+    }
+    console.log(`[API FF V3] Intentando: ${safeLogUrl}`);
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-  try {
-    const res = await fetch(fullUrl, {
-      method: 'GET',
+    const options = {
+      timeout: 15000,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'application/json',
-        'Authorization': apiKey.trim()
-      },
-      signal: controller.signal
+        'Authorization': String(apiKey || '').trim()
+      }
+    };
+
+    const client = fullUrl.startsWith('https') ? https : http;
+    const req = client.get(fullUrl, options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        const duration = ((Date.now() - start) / 1000).toFixed(2);
+        const trimmed = data.trim();
+        if (trimmed.startsWith('<!doctype') || trimmed.startsWith('<html') || trimmed.toLowerCase().includes('<body')) {
+          return reject(new Error(`HTML_RESPONSE (Error 404 o hosting)`));
+        }
+        try {
+          const parsed = JSON.parse(trimmed);
+          parsed._httpStatus = res.statusCode;
+          parsed._local_time = duration; 
+          if (parsed.key_usage) lastKeyUsage = String(parsed.key_usage);
+          resolve(parsed);
+        } catch (e) {
+          reject(new Error(`RESP_NO_JSON: ${trimmed.slice(0, 50)}`));
+        }
+      });
     });
 
-    clearTimeout(timeoutId);
-    const duration = ((Date.now() - start) / 1000).toFixed(2);
-    const text = await res.text();
-    const trimmed = text.trim();
-
-    if (trimmed.startsWith('<!doctype') || trimmed.startsWith('<html') || trimmed.toLowerCase().includes('<body')) {
-      throw new Error(`HTML_RESPONSE: ${trimmed.slice(0, 50)}...`);
-    }
-
-    try {
-      const parsed = JSON.parse(trimmed);
-      parsed._httpStatus = res.status;
-      parsed._local_time = duration;
-      if (parsed.key_usage) lastKeyUsage = String(parsed.key_usage);
-      return parsed;
-    } catch (e) {
-      throw new Error(`Respuesta no es JSON: ${trimmed.slice(0, 50)}...`);
-    }
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err.name === 'AbortError') throw new Error('Timeout (15s)');
-    throw err;
-  }
+    req.on('error', (err) => reject(err));
+    req.on('timeout', () => { req.destroy(); reject(new Error('Timeout (15s)')); });
+  });
 }
 
 function interpretarRespuestaFF(apiData) {
