@@ -313,9 +313,20 @@ function ejecutarPeticion(baseUrl, uid, apiKey, server) {
 }
 
 function interpretarRespuestaFF(apiData) {
+  console.log('[DEBUG API RESPONSE]', JSON.stringify(apiData));
+  
   const sentMatch = String(apiData.sent || '').match(/\d+/);
   const fromSentStr = sentMatch ? parseInt(sentMatch[0], 10) : 0;
-  const added  = parseInt(apiData.likes_added || apiData.likes_enviados || apiData.sucessos || fromSentStr || 0, 10);
+  
+  // Detección robusta de likes agregados
+  let added = parseInt(apiData.likes_added || apiData.likes_enviados || apiData.sucessos || apiData.sucesso || apiData.Likes_Enviados || fromSentStr || 0, 10);
+  
+  // Fallback si sigue siendo 0 pero hay campos prometedores
+  if (!added || added === 0) {
+    if (apiData.sucessos && !isNaN(parseInt(apiData.sucessos, 10))) added = parseInt(apiData.sucessos, 10);
+    else if (apiData.likes_enviados && !isNaN(parseInt(apiData.likes_enviados, 10))) added = parseInt(apiData.likes_enviados, 10);
+  }
+
   const before = parseInt(apiData.likes_before || apiData.likes_antes || apiData.Likes_Iniciais || 0, 10);
   const after  = parseInt(apiData.likes_after || apiData.likes_depois || apiData.Likes_Atuais || 0, 10);
   const msgRaw = String((apiData.message || '') + (apiData.error || '') + (apiData.msg_sistema || '')).toLowerCase();
@@ -325,7 +336,7 @@ function interpretarRespuestaFF(apiData) {
   const region = apiData.region || apiData.Region || 'BR';
 
   if (apiData.status_envio === 'SUCESSO' || apiData.status === 'success' || apiData.status === 'ok' || (apiData.res === 'SUCCESS' && !apiData.error)) {
-    return { tipo: 'ok', added, before, after, playerName, level, region };
+    return { tipo: 'ok', added: added || 0, before, after, playerName, level, region };
   }
   
   if (apiData.res === 'LIMIT_EXCEEDED' || msgRaw.includes('limite di') || msgRaw.includes('limit reached')) return { tipo: 'limite' };
