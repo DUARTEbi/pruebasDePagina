@@ -478,7 +478,7 @@ main{padding:1.4rem 1.4rem 6.5rem;max-width:960px;margin:0 auto;width:100%}
   <!-- EXTRA (AJUSTES MASIVOS) -->
   <div class="pane" id="pane-extra">
     <div class="card">
-      <div class="ctit">
+      <div class="ctit" style="font-family:'Rajdhani',sans-serif;font-size:1.08rem;font-weight:700;margin-bottom:.95rem;display:flex;align-items:center;gap:.45rem">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2.5"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="10"/></svg>
         Ajustes masivos de usuarios
       </div>
@@ -499,6 +499,19 @@ main{padding:1.4rem 1.4rem 6.5rem;max-width:960px;margin:0 auto;width:100%}
         </div>
         <p style="font-size:.65rem; color:var(--warn); margin-top:.5rem">Nota: Usa números negativos para restar días. Solo afecta a usuarios en el grupo seleccionado con plan activo.</p>
       </div>
+    </div>
+    
+    <div class="card">
+      <div class="ctit" style="font-family:'Rajdhani',sans-serif;font-size:1.08rem;font-weight:700;margin-bottom:.95rem;display:flex;align-items:center;gap:.45rem;color:var(--warn)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        Limpiador de Envíos Falsos y Devoluciones
+      </div>
+      <p style="color:var(--mut); font-size:.85rem; margin-bottom:1.5rem">Busca registros donde los likes Antes y Después sean exactamente iguales. Borra los likes falsos del historial y <strong>devuelve la misma cantidad</strong> descontada a las estadísticas del plan del cliente, reactivándolos si se quedaron sin saldo.</p>
+      <div class="msg" id="msg-fix-fakes"></div>
+      <button class="btn bo" onclick="limpiarFalsos(event)" style="border-color:var(--warn); color:var(--warn)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Lanzar Limpiador Ahora
+      </button>
     </div>
   </div>
 
@@ -677,6 +690,16 @@ function mostrarPanel() {
     setTimeout(() => el.classList.add('vis'), i * 80)
   );
   loadDash();
+}
+
+async function limpiarFalsos(e) {
+  if (!confirm("¿Estás 100% seguro de aplicar este arreglo masivo a la base de datos?")) return;
+  const btn = e ? e.currentTarget : null;
+  if(btn) { btn.disabled = true; btn.style.opacity = 0.5; }
+  const r = await API.post('/api/admin/fix-fakes', {}, admTok);
+  if (!r.ok) showMsg('msg-fix-fakes', r.error, 'err');
+  else { showMsg('msg-fix-fakes', r.message, 'ok'); loadDash(); }
+  if(btn) { btn.disabled = false; btn.style.opacity = 1; }
 }
 
 function aSalir() {

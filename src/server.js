@@ -758,6 +758,10 @@ app.post('/api/enviar-likes', authMiddleware, async (req, res) => {
     const fromSuccessful = parseInt(d.successful_likes || 0, 10);
     let likesAdded = fromDiff > 0 ? fromDiff : Math.max(fromAdded, fromSuccessful);
 
+    if (before > 0 && after > 0 && before === after) {
+      likesAdded = 0;
+    }
+
     if (likesAdded > 0) {
       if (u.ilimitado) {
         await pool.query(`UPDATE usuarios SET envios_hoy=envios_hoy+1, likes_enviados_plan=likes_enviados_plan+$1, fecha_ultimo_envio=$2 WHERE id=$3`, [likesAdded, today, req.user.id]);
@@ -851,8 +855,13 @@ async function procesarAutoID(autoId) {
     const fromDiff   = (after > 0 && before >= 0 && after > before) ? (after - before) : 0;
     const sentMatch  = String(apiData.sent || '').match(/\d+/);
     const fromSentStr= sentMatch ? parseInt(sentMatch[0], 10) : 0;
-    const fromAdded  = parseInt(apiData.likes_added || apiData.likes_enviados || 0, 10);
-    const likesAdded = fromDiff > 0 ? fromDiff : Math.max(fromAdded, fromSentStr, parseInt(apiData.successful_likes || 0, 10));
+    const fromAdded  = parseInt(apiData.likes_added || fromSentStr || 0, 10);
+    const fromSuccessful = parseInt(apiData.successful_likes || 0, 10);
+    let likesAdded = fromDiff > 0 ? fromDiff : Math.max(fromAdded, fromSuccessful);
+
+    if (before > 0 && after > 0 && before === after) {
+      likesAdded = 0;
+    }
 
     if (likesAdded > 0) {
       if (!row.ilimitado && row.plan_tipo === 'likes') {
@@ -1122,6 +1131,53 @@ app.post('/api/admin/codigos-recuperacion', adminMiddleware, async (req, res) =>
     await pool.query(`INSERT INTO codigos_recuperacion (usuario_id, codigo) VALUES ($1, $2)`, [usuario_id, codigo]);
     res.json({ ok: true, codigo });
   } catch (err) { res.status(500).json({ error: 'Error interno' }); }
+});
+
+app.post('/api/admin/fix-fakes', adminMiddleware, async (req, res) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const falsos = await client.query(`
+      SELECT h.id, h.usuario_id, h.likes_agregados, u.plan_tipo, u.likes_disponibles, u.likes_enviados_plan 
+      FROM historial h 
+      JOIN usuarios u ON u.id = h.usuario_id 
+      WHERE h.likes_antes > 0 AND h.likes_despues > 0 
+      AND h.likes_antes = h.likes_despues 
+      AND h.likes_agregados > 0
+    `);
+
+    let usuariosAfectados = {};
+    let totalLikesResta = 0;
+
+    for (let row of falsos.rows) {
+      await client.query(`UPDATE historial SET likes_agregados = 0 WHERE id = $1`, [row.id]);
+      if (!usuariosAfectados[row.usuario_id]) {
+        usuariosAfectados[row.usuario_id] = { id: row.usuario_id, tipo: row.plan_tipo, disp: row.likes_disponibles || 0, env: row.likes_enviados_plan || 0, sum: 0 };
+      }
+      usuariosAfectados[row.usuario_id].sum += row.likes_agregados;
+      totalLikesResta += row.likes_agregados;
+    }
+
+    for (let uid in usuariosAfectados) {
+      let u = usuariosAfectados[uid];
+      let newEnv = Math.max(0, u.env - u.sum);
+      if (u.tipo === 'likes') {
+        let newDisp = u.disp + u.sum;
+        await client.query(`UPDATE usuarios SET likes_enviados_plan = $1, likes_disponibles = $2, plan_activo = true WHERE id = $3`, [newEnv, newDisp, u.id]);
+        await client.query(`UPDATE auto_ids SET activo=true WHERE usuario_id=$1`, [u.id]);
+      } else {
+        await client.query(`UPDATE usuarios SET likes_enviados_plan = $1 WHERE id = $2`, [newEnv, u.id]);
+      }
+    }
+
+    await client.query('COMMIT');
+    res.json({ ok: true, message: `Se limpiaron ${falsos.rows.length} envíos falsos y se devolvieron ${totalLikesResta} likes a ${Object.keys(usuariosAfectados).length} usuarios.` });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    res.status(500).json({ error: err.message });
+  } finally {
+    client.release();
+  }
 });
 
 app.post('/api/admin/auto/reset', adminMiddleware, async (req, res) => {
