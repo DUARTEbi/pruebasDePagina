@@ -819,6 +819,29 @@ function calcularSlots(usuario) {
   return Math.max(1, usuario.envios_por_dia);
 }
 
+function calcularProximoIntento() {
+  const ahora = new Date();
+  const h = ahora.getHours();
+  let prox = new Date(ahora);
+  
+  if (h < 5) prox.setHours(5, 0, 0, 0);
+  else if (h < 7) prox.setHours(7, 0, 0, 0);
+  else if (h < 10) prox.setHours(10, 0, 0, 0);
+  else if (h < 12) prox.setHours(12, 0, 0, 0);
+  else {
+    prox.setDate(prox.getDate() + 1);
+    prox.setHours(7, 0, 0, 0);
+  }
+  return prox.toISOString();
+}
+
+function calcularProximoExito() {
+  const ahora = new Date();
+  ahora.setDate(ahora.getDate() + 1);
+  ahora.setHours(5, 0, 0, 0);
+  return ahora.toISOString();
+}
+
 async function procesarAutoID(autoId) {
   const today = new Date().toISOString().slice(0, 10);
   const aiRes = await pool.query(`SELECT ai.*, u.username, u.ilimitado, u.plan_activo, u.plan_tipo, u.plan_vence, u.likes_disponibles, u.likes_enviados_plan, u.envios_hoy, u.envios_por_dia, u.fecha_ultimo_envio FROM auto_ids ai JOIN usuarios u ON u.id = ai.usuario_id WHERE ai.id = $1`, [autoId]);
@@ -838,9 +861,9 @@ async function procesarAutoID(autoId) {
     const fechaUltimo = row.fecha_ultimo_envio ? new Date(row.fecha_ultimo_envio).toISOString().slice(0, 10) : null;
     const enviosHoyActual = fechaUltimo === today ? (row.envios_hoy || 0) : 0;
     if (enviosHoyActual >= row.envios_por_dia) {
-      // Límite diario: Reintento en 5 horas
-      const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
-      await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=true WHERE id=$2', [proximo5h, autoId]); 
+      // Límite diario: Esperamos hasta el próximo ciclo (5 AM)
+      const prox = calcularProximoExito();
+      await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=false WHERE id=$2', [prox, autoId]); 
       return;
     }
   }
@@ -849,9 +872,9 @@ async function procesarAutoID(autoId) {
   try { 
     apiData = await llamarApiFF(row.ff_uid, row.region || 'BR'); 
   } catch (apiErr) {
-    // FALLO: Reintento en 5 horas
-    const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
-    await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=true WHERE id=$2', [proximo5h, autoId]); 
+    // FALLO: Usamos el sistema de horarios escalonados
+    const prox = calcularProximoIntento();
+    await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=true WHERE id=$2', [prox, autoId]); 
     return;
   }
 
@@ -892,10 +915,11 @@ async function procesarAutoID(autoId) {
       }
       await pool.query(`INSERT INTO historial (usuario_id,ff_uid,player_name,likes_antes,likes_despues,likes_agregados,nivel,region,auto_envio) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,true)`, [row.usuario_id, row.ff_uid, player, before, after, likesAdded, level, region]);
       
-      // ÉXITO: Siguiente envío en 24 horas y resetear contadores de fallos
-      const proximo24  = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-      await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, likes_enviados=likes_enviados+$4, ultimo_envio=$5, proximo_envio=$6, reintentando=false, falla_desde=NULL, motivo_error=NULL WHERE id=$7`, [player, level, region, likesAdded, new Date().toISOString(), proximo24, autoId]);
+      // ÉXITO: Siguiente envío en el próximo ciclo regular (5 AM) y resetear contadores de fallos
+      const proximo  = calcularProximoExito();
+      await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, likes_enviados=likes_enviados+$4, ultimo_envio=$5, proximo_envio=$6, reintentando=false, falla_desde=NULL, motivo_error=NULL WHERE id=$7`, [player, level, region, likesAdded, new Date().toISOString(), proximo, autoId]);
       pool.query(`INSERT INTO notificaciones_likes (username,ff_uid,player_name,likes_agregados) VALUES ($1,$2,$3,$4)`, [row.username, row.ff_uid, player, likesAdded]).catch(() => {});
+
     } else {
       return await registrarFalloID(autoId, row.falla_desde, player, level, region);
     }
@@ -914,8 +938,8 @@ async function registrarFalloID(autoId, fallaDesdeOrig, player, level, region) {
     console.log(`[AUTO] Desactivando ID ${autoId} por 3 días de fallos.`);
     await pool.query(`UPDATE auto_ids SET activo=false, reintentando=false, motivo_error='No se pudieron enviar likes durante 3 días. Por favor, intenta un envío manual.' WHERE id=$1`, [autoId]);
   } else {
-    const proximo5h = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
-    await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, proximo_envio=$4, reintentando=true, falla_desde=$5 WHERE id=$6`, [player, level, region, proximo5h, fallandoDesde, autoId]);
+    const prox = calcularProximoIntento();
+    await pool.query(`UPDATE auto_ids SET player_name=$1, nivel=$2, region=$3, proximo_envio=$4, reintentando=true, falla_desde=$5 WHERE id=$6`, [player, level, region, prox, fallandoDesde, autoId]);
   }
 }
 
