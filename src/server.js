@@ -723,6 +723,7 @@ app.post('/api/canjear', authMiddleware, async (req, res) => {
 
 app.post('/api/enviar-likes', authMiddleware, async (req, res) => {
   try {
+    if (modoMantenimiento) return res.status(503).json({ error: '🔧 La página está en mantenimiento. Intenta más tarde.' });
     const { ff_uid, server = 'BR' } = req.body;
     if (!ff_uid) return res.status(400).json({ error: 'Ingresa el UID de Free Fire' });
     if (!/^\d+$/.test(ff_uid.trim())) return res.status(400).json({ error: 'El UID solo debe contener números' });

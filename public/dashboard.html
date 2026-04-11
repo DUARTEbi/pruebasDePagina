@@ -563,9 +563,9 @@ window.addEventListener('DOMContentLoaded',async()=>{
   if(_ct==='hist') cargarHistFull();
   setInterval(()=>{if(document.getElementById('pane-inicio').classList.contains('active')){cargarTop();}},30000);
   setInterval(actualizarCountdowns,60000);
-  // Verificar estado de mantenimiento al cargar y cada 30s
-  verificarMantenimiento();
-  setInterval(verificarMantenimiento, 30000);
+  // Verificar estado de mantenimiento: inmediatamente y cada 15s
+  setTimeout(verificarMantenimiento, 500);
+  setInterval(verificarMantenimiento, 15000);
 });
 
 async function cargarPerfil(){const res=await API.get('/api/perfil');if(!res.ok){if(res.status===401)salir();return;}userData=res.user;pintarUI(res.user,res.historial);}
@@ -975,6 +975,23 @@ window.checkGoogleLink = function(u) {
     }
   }
 };
+
+/* ─── MANTENIMIENTO ─── */
+async function verificarMantenimiento() {
+  try {
+    const r = await fetch('/api/mantenimiento');
+    const data = await r.json();
+    const overlay = document.getElementById('mant-overlay');
+    if (!overlay) return;
+    if (data.activo) {
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    } else {
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  } catch(e) { console.warn('Mantenimiento check failed:', e); }
+}
 </script>
 
 <script type="module">
@@ -1032,23 +1049,6 @@ window.checkGoogleLink = function(u) {
       msg.className = 'msg err'; msg.style.display = 'block';
     }
   };
-
-/* ─── MANTENIMIENTO ─── */
-async function verificarMantenimiento() {
-  try {
-    const r = await fetch('/api/mantenimiento');
-    const data = await r.json();
-    const overlay = document.getElementById('mant-overlay');
-    if (!overlay) return;
-    if (data.activo) {
-      overlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    } else {
-      overlay.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-  } catch(e) { console.warn('Mantenimiento check failed:', e); }
-}
 </script>
 
 </body>
