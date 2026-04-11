@@ -312,12 +312,15 @@ async function llamarApiFF(uid, server = 'BR') {
     return null;
   };
 
-  // PASO 2: Realizar el Envío en Secuencia (Para maximizar entrega)
-  let api2Res = null;
-  try { api2Res = await intentarEndpoints(apiBase2, apiKey2, false); } catch (e) {}
+  // PASO 2: Realizar el Envío en PARALELO (Simultáneo para máximo impacto)
+  // Lanzamos ambas peticiones al mismo tiempo para evitar bloqueos por delay
+  const [api1Result, api2Result] = await Promise.allSettled([
+    intentarEndpoints(apiBase1, apiKey1, true),
+    intentarEndpoints(apiBase2, apiKey2, false)
+  ]);
 
-  let api1Res = null;
-  try { api1Res = await intentarEndpoints(apiBase1, apiKey1, true); } catch (e) {}
+  const api1Res = api1Result.status === 'fulfilled' ? api1Result.value : null;
+  const api2Res = api2Result.status === 'fulfilled' ? api2Result.value : null;
 
   const parseAdded = (res) => {
     if (!res) return 0;
@@ -329,28 +332,28 @@ async function llamarApiFF(uid, server = 'BR') {
   const a2Added = parseAdded(api2Res);
 
   if (!api1Res && !api2Res) {
-    throw new Error(`Ambas APIs fallaron.`);
+    throw new Error(`Ambas APIs fallaron en la conexión.`);
   }
 
-  // Si ambas fallaron en enviar likes (aunque devolvieron JSON), tiramos error
+  // Si ninguna API reportó envío de likes, informamos el error
   if (a1Added === 0 && a2Added === 0) {
-    // Si alguna tiene un mensaje de error útil, lo usamos
     const errRes = api1Res || api2Res;
     const msg = errRes.message || errRes.error || "No se pudieron enviar likes (Límite alcanzado en ambas APIs)";
     throw new Error(msg);
   }
 
-  // Fusionamos resultados: Priorizamos la que SÍ envió likes
+  // Fusionamos resultados: Priorizamos el objeto que sí tenga datos del jugador
   let apiRes = (a1Added > 0) ? api1Res : api2Res;
   
+  // EL PUNTO CLAVE: Sumamos ambos resultados sin fijar límites
   const totalSentRaw = a1Added + a2Added;
   apiRes.likes_enviados = totalSentRaw;
 
-  // Los campos before y after los sacamos de la respuesta que usamos como base
+  // Metadata del jugador (Antes/Después/Nombre/Nivel)
   apiRes.likes_antes = parseInt(apiRes.likes_before || apiRes.likes_antes || apiRes.Likes_Iniciais || 0, 10);
   apiRes.likes_depois = parseInt(apiRes.likes_after || apiRes.likes_depois || apiRes.Likes_Atuais || 0, 10);
   
-  // Si likes_depois no se actualizó, lo estimamos
+  // Ajuste visual del 'después' basado en la suma total reportada
   if (apiRes.likes_depois <= apiRes.likes_antes) {
     apiRes.likes_depois = apiRes.likes_antes + totalSentRaw;
   }
