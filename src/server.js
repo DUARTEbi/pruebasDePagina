@@ -312,15 +312,24 @@ async function llamarApiFF(uid, server = 'BR') {
     return null;
   };
 
-  // PASO 2: Realizar el Envío en PARALELO (Simultáneo para máximo impacto)
-  // Lanzamos ambas peticiones al mismo tiempo para evitar bloqueos por delay
-  const [api1Result, api2Result] = await Promise.allSettled([
-    intentarEndpoints(apiBase1, apiKey1, true),
-    intentarEndpoints(apiBase2, apiKey2, false)
-  ]);
+  // PASO 2: Realizar el Envío en SECUENCIA (API 2 Primero)
+  // DESCUBRIMIENTO CRÍTICO: Si van en paralelo, la API 1 (RTPY) responde más rápido (ej. 74 likes)
+  // y bloquea la cuenta en Garena, dejando a la API 2 (BLNHub) bloqueada cuando intenta entregar los 220.
+  // La solución es correr la poderosa API 2 primero, esperar a que termine, y luego "rematar" con la API 1.
+  let api2Res = null;
+  let api1Res = null;
 
-  const api1Res = api1Result.status === 'fulfilled' ? api1Result.value : null;
-  const api2Res = api2Result.status === 'fulfilled' ? api2Result.value : null;
+  try { 
+    api2Res = await intentarEndpoints(apiBase2, apiKey2, false); 
+  } catch (e) {
+    console.error('[API 2 ERROR]', e.message);
+  }
+
+  try { 
+    api1Res = await intentarEndpoints(apiBase1, apiKey1, true); 
+  } catch (e) {
+    console.error('[API 1 ERROR]', e.message);
+  }
 
   const parseAdded = (res) => {
     if (!res) return 0;
