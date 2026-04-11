@@ -256,7 +256,7 @@ main{padding:1.4rem 1.4rem 6.5rem;max-width:960px;margin:0 auto;width:100%}
   <!-- DASHBOARD -->
   <div class="pane active" id="pane-dash">
 
-    <!-- WIDGET API KEY (REINTEGRADO) -->
+    <!-- WIDGET API 1 (RTPY) -->
     <div class="card" id="card-api-usage" style="margin-bottom:1.2rem; background:rgba(20,20,20,0.4)">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
         <div style="display:flex; align-items:center; gap:.8rem;">
@@ -264,7 +264,7 @@ main{padding:1.4rem 1.4rem 6.5rem;max-width:960px;margin:0 auto;width:100%}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
           <div>
-            <div style="font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem; color:#fff">Uso de la API key hoy</div>
+            <div style="font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem; color:#fff">API Key 1 (RTPY)</div>
             <div style="color:var(--mut); font-size:.7rem" id="api-usage-txt">Consultando límites...</div>
           </div>
         </div>
@@ -279,8 +279,36 @@ main{padding:1.4rem 1.4rem 6.5rem;max-width:960px;margin:0 auto;width:100%}
         </div>
       </div>
       <div style="margin-top:.85rem; padding-top:.75rem; border-top:1px solid rgba(255,193,7,.1); display:flex; align-items:center; justify-content:space-between;">
-        <span style="color:var(--mut); font-size:.72rem;">[#] Días restantes de la API key</span>
+        <span style="color:var(--mut); font-size:.72rem;">[#] Expiración de API Key 1</span>
         <span style="font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.92rem; color:var(--warn);" id="api-expiry-val">—</span>
+      </div>
+    </div>
+
+    <!-- WIDGET API 2 (BLNHub) -->
+    <div class="card" id="card-api2-usage" style="margin-bottom:1.2rem; background:rgba(20,20,20,0.4)">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+        <div style="display:flex; align-items:center; gap:.8rem;">
+          <div style="width:40px; height:40px; border-radius:10px; background:rgba(0,170,255,0.1); display:flex; align-items:center; justify-content:center; color:var(--blue)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          </div>
+          <div>
+            <div style="font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem; color:#fff">API Key 2 (BLNHub)</div>
+            <div style="color:var(--mut); font-size:.7rem" id="api2-usage-txt">Consultando límites...</div>
+          </div>
+        </div>
+        <div style="flex:1; max-width:200px">
+          <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:100px; overflow:hidden;">
+            <div id="api2-usage-fill" style="height:100%; width:0%; background:var(--blue); transition:width .8s ease; box-shadow:0 0 10px var(--blue)"></div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Rajdhani',sans-serif; font-size:1.2rem; font-weight:700; color:var(--blue);" id="api2-usage-val">0 / 0</div>
+          <div style="color:var(--mut); font-size:.6rem; text-transform:uppercase; letter-spacing:1px;">Usos hoy</div>
+        </div>
+      </div>
+      <div style="margin-top:.85rem; padding-top:.75rem; border-top:1px solid rgba(0,170,255,.1); display:flex; align-items:center; justify-content:space-between;">
+        <span style="color:var(--mut); font-size:.72rem;">[#] Expiración de API Key 2</span>
+        <span style="font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.92rem; color:var(--blue);" id="api2-expiry-val">—</span>
       </div>
     </div>
     <div class="card" id="card-api3-usage" style="margin-bottom:1.2rem; background:rgba(20,20,20,0.4)">
@@ -795,9 +823,24 @@ async function loadDash() {
     }
   }
 
-  // Días restantes de la API
   if (r.keyExpiry) {
     document.getElementById('api-expiry-val').textContent = r.keyExpiry;
+  }
+
+  // Widget API 2 (BLNHub)
+  if (r.key2Usage) {
+    document.getElementById('api2-usage-val').textContent = r.key2Usage;
+    const p2 = String(r.key2Usage).split('/');
+    if (p2.length === 2) {
+      const u2 = parseInt(p2[0].trim());
+      const l2 = parseInt(p2[1].trim());
+      const pct2 = Math.min((u2 / l2) * 100, 100);
+      document.getElementById('api2-usage-fill').style.width = pct2 + '%';
+      document.getElementById('api2-usage-txt').textContent = u2 > 0 ? `Uso de API 2 hoy` : `Sin uso de API 2 hoy`;
+    }
+  }
+  if (r.key2Expiry) {
+    document.getElementById('api2-expiry-val').textContent = r.key2Expiry;
   }
 
   // Widget API 3 Hoy

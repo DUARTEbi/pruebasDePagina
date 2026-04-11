@@ -41,7 +41,9 @@ setInterval(() => { const now = Date.now(); for (const [ip, e] of rateLimitMap) 
 
 const cooldowns = new Map();
 let lastKeyUsage = null;
-let lastKeyExpiry = null; // ← Días restantes de la API key
+let lastKeyExpiry = null;
+let lastKey2Usage = null; // ← Uso de la API key 2
+let lastKey2Expiry = null; // ← Expiración de la API key 2
 let modoMantenimiento = false; // ← Flag global de mantenimiento
 function getCooldown(uid) { const exp = cooldowns.get(uid); if (!exp) return 0; if (Date.now() > exp) { cooldowns.delete(uid); return 0; } return exp; }
 function setCooldown(uid, ms) { cooldowns.set(uid, Date.now() + ms); }
@@ -239,18 +241,30 @@ function adminMiddleware(req, res, next) {
 async function consultarInfoFF(uid) {
   const apiKey = (process.env.FF_API_KEY || '').trim();
   let apiBase = (process.env.FF_API_URL || '').trim();
-  if (!apiBase.includes('mitsuri.online')) return null;
+  
+  // Si no hay URL, no podemos consultar
+  if (!apiBase) return null;
 
-  // Derivamos la URL de info (cambiamos /likes-220 o similar por /info)
-  const infoUrl = apiBase.replace('/likes-220', '/info').replace('/send_likes', '/info').replace('/like', '/info');
+  // Derivamos la URL de info (buscamos cambiar el endpoint de envío por /info)
+  // Muchos proveedores usan /info para datos del perfil
+  let infoUrl = apiBase;
+  if (infoUrl.includes('/likes-220')) infoUrl = infoUrl.replace('/likes-220', '/info');
+  else if (infoUrl.includes('/send_likes')) infoUrl = infoUrl.replace('/send_likes', '/info');
+  else if (infoUrl.includes('/like')) infoUrl = infoUrl.replace('/like', '/info');
+  else {
+    // Si no tiene ruta conocida, intentamos añadir /info a la base
+    infoUrl = infoUrl.replace(/\/$/, '') + '/info';
+  }
   
   try {
     const res = await ejecutarPeticion(infoUrl, uid, apiKey, 'BR');
-    if (res && res.AccountInfo) {
+    // Soporte para múltiples formatos de respuesta de info
+    const info = res?.AccountInfo || res?.info || res;
+    if (info) {
       return {
-        likes: parseInt(res.AccountInfo.AccountLikes || 0, 10),
-        name: res.AccountInfo.AccountName || '',
-        level: res.AccountInfo.AccountLevel || 0
+        likes: parseInt(info.AccountLikes || info.likes || info.likes_antes || info.likes_before || 0, 10),
+        name: info.AccountName || info.nickname || info.player || info.playerName || '',
+        level: info.AccountLevel || info.level || 0
       };
     }
   } catch (e) {
@@ -260,31 +274,32 @@ async function consultarInfoFF(uid) {
 }
 
 async function llamarApiFF(uid, server = 'BR') {
-  const apiKey = (process.env.FF_API_KEY || '').trim();
-  let apiBase = (process.env.FF_API_URL || '').trim().replace(/\/+$/, '');
+  const apiKey1 = (process.env.FF_API_KEY || '').trim();
+  let apiBase1 = (process.env.FF_API_URL || '').trim().replace(/\/+$/, '');
 
   const apiKey2 = (process.env.FF_API2_KEY || '').trim();
   let apiBase2 = (process.env.FF_API2_URL || '').trim().replace(/\/+$/, '');
 
-  if (!apiKey) throw new Error('FF_API_KEY no configurada en las variables de Railway');
-  if (!apiBase) throw new Error('FF_API_URL no configurada en las variables de Railway');
+  if (!apiKey1 && !apiKey2) throw new Error('No hay API Keys configuradas en las variables de entorno.');
 
   // PASO 1: Consultar info inicial (Antes)
   console.log(`[CYCLE] Consultando likes antes para ID: ${uid}`);
   const infoPre = await consultarInfoFF(uid);
 
-  const intentarEndpoints = async (base, key) => {
+  const intentarEndpoints = async (base, key, isKey1 = true) => {
     if (!base || !key) return null;
     const targets = [];
     try {
       const urlObj = new URL(base);
       const path = urlObj.pathname;
+      // Probamos varias rutas comunes si el usuario solo puso el dominio
       if (path === '/' || path === '' || (!path.includes('like') && !path.includes('send_likes'))) {
         const cleanBase = base.replace(/\/+$/, '');
         targets.push(`${cleanBase}/send_likes`);
         targets.push(`${cleanBase}/like`);
       } else {
         targets.push(base);
+        // Intentar alternar entre /like y /send_likes si uno falla
         if (path.includes('/like')) targets.push(base.replace(/\/like$/, '/send_likes'));
         else if (path.includes('/send_likes')) targets.push(base.replace(/\/send_likes$/, '/like'));
       }
@@ -292,89 +307,96 @@ async function llamarApiFF(uid, server = 'BR') {
       targets.push(base);
     }
 
-    let lastError = null;
     for (const baseUrl of targets) {
       try {
-        const res = await ejecutarPeticion(baseUrl, uid, key, server);
+        const res = await ejecutarPeticion(baseUrl, uid, key, server, isKey1);
         if (res) return res;
       } catch (err) {
-        lastError = err;
-        if (err.message.includes('HTML_RESPONSE')) {
-          console.log(`[API FF] Falló endpoint ${baseUrl.split('?')[0]} con respuesta HTML. Probando siguiente...`);
-          continue;
-        }
+        if (err.message.includes('HTML_RESPONSE')) continue;
       }
     }
     return null;
   };
 
-  // PASO 2: Realizar el Envío Dual
-  const [api1Res, api2Res] = await Promise.all([
-    intentarEndpoints(apiBase, apiKey),
-    intentarEndpoints(apiBase2, apiKey2)
-  ]);
-
-  if (!api1Res && !api2Res) {
-    throw new Error(`Ambas APIs fallaron o no respondieron con JSON válido. Revisa tus variables FF_API_URL y FF_API2_URL en Railway.`);
+  // PASO 2: Realizar el Envío Secuencial (API 2 primero, luego API 1)
+  // Esto permite que si uno falla, el otro continúe
+  console.log(`[CYCLE] Iniciando envío secuencial: API 2 -> API 1`);
+  
+  let api2Res = null;
+  try {
+    api2Res = await intentarEndpoints(apiBase2, apiKey2, false);
+  } catch (e) {
+    console.error(`[API 2] Error crítico:`, e.message);
   }
 
-  // Tomamos como base la respuesta de la que haya funcionado (priorizando la 1)
+  let api1Res = null;
+  try {
+    api1Res = await intentarEndpoints(apiBase1, apiKey1, true);
+  } catch (e) {
+    console.error(`[API 1] Error crítico:`, e.message);
+  }
+
+  if (!api1Res && !api2Res) {
+    throw new Error(`Ambas APIs fallaron. Revisa el estado de tus proveedores.`);
+  }
+
+  // Combinamos resultados (Priorizamos la respuesta exitosa para la metadata del jugador)
   let apiRes = api1Res || api2Res;
 
-  // PASO 3: Esperar 2 segundos para que los likes se reflejen en la base de datos de FF
+  // PASO 3: Esperar 2 segundos para propagación
   await new Promise(r => setTimeout(r, 2000));
 
   // PASO 4: Consultar info final (Después)
   console.log(`[CYCLE] Consultando likes después para ID: ${uid}`);
   const infoPost = await consultarInfoFF(uid);
   
-  // Fusionar datos reales en la respuesta para que el dashboard los reciba
+  // Fusionar datos reales en la respuesta
   if (infoPre) {
     apiRes.likes_antes = infoPre.likes;
+    apiRes.playerName = infoPre.name;
     apiRes.nickname = infoPre.name;
     apiRes.level = infoPre.level;
-    apiRes.playerName = infoPre.name;
   }
+  
+  // Lógica de suma de likes enviados
+  const parseAdded = (res) => {
+    if (!res) return 0;
+    const val = parseInt(res.likes_added || res.likes_enviados || res.sent_likes || String(res.sent || '').match(/\d+/)?.[0] || 0, 10);
+    return isNaN(val) ? 0 : val;
+  };
+  
+  const totalSentRaw = parseAdded(api1Res) + parseAdded(api2Res);
+
   if (infoPost) {
     apiRes.likes_depois = infoPost.likes;
+    apiRes.likes_after = infoPost.likes;
     const diff = infoPost.likes - (infoPre ? infoPre.likes : 0);
     
-    // Calcular suma de likes reportados por ambas APIs
-    const parseAdded = (res) => parseInt(res?.likes_added || res?.successful_likes || res?.likes_enviados || String(res?.sent||'').match(/\d+/)?.[0] || 0);
-    const totalSentRaw = parseAdded(api1Res) + parseAdded(api2Res);
-    
-    // Si la diferencia real es mayor a lo reportado en apiRes o el API reportó 0, actualizamos
+    // Si la diferencia real es detectable, usamos esa. Si no, usamos lo reportado.
     if (diff > 0) {
       apiRes.likes_enviados = diff;
-    } else if (totalSentRaw > 0) {
+    } else {
       apiRes.likes_enviados = totalSentRaw;
     }
+  } else {
+    apiRes.likes_enviados = totalSentRaw;
   }
 
   return apiRes;
 }
 
-function ejecutarPeticion(baseUrl, uid, apiKey, server) {
+function ejecutarPeticion(baseUrl, uid, apiKey, server, isKey1 = true) {
   return new Promise((resolve, reject) => {
     const start = Date.now();
     const separator = baseUrl.includes('?') ? '&' : '?';
     const params = `uid=${encodeURIComponent(uid)}&apikey=${encodeURIComponent(apiKey)}&server=${encodeURIComponent(server)}&id=${encodeURIComponent(uid)}&key=${encodeURIComponent(apiKey)}`;
     const fullUrl = `${baseUrl}${separator}${params}`;
 
-    // Log de seguridad robusto
-    let safeLogUrl = fullUrl;
-    if (apiKey) {
-       const keyStr = String(apiKey).trim();
-       if (keyStr.length > 3) safeLogUrl = fullUrl.split(keyStr).join('***');
-    }
-    console.log(`[API FF] Intentando: ${safeLogUrl}`);
-
     const options = {
       timeout: 15000,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'application/json',
-        'Authorization': String(apiKey || '').trim()
+        'Accept': 'application/json'
       }
     };
 
@@ -386,59 +408,78 @@ function ejecutarPeticion(baseUrl, uid, apiKey, server) {
         const duration = ((Date.now() - start) / 1000).toFixed(2);
         const trimmed = data.trim();
         if (trimmed.startsWith('<!doctype') || trimmed.startsWith('<html') || trimmed.toLowerCase().includes('<body')) {
-          return reject(new Error(`HTML_RESPONSE (Error 404 o hosting)`));
+          return reject(new Error(`HTML_RESPONSE`));
         }
         try {
           const parsed = JSON.parse(trimmed);
           parsed._httpStatus = res.statusCode;
           parsed._local_time = duration; 
-          if (parsed.key_usage) lastKeyUsage = String(parsed.key_usage);
-          if (parsed.key_expiry) lastKeyExpiry = String(parsed.key_expiry);
+          
+          if (isKey1) {
+            if (parsed.key_usage) lastKeyUsage = String(parsed.key_usage);
+            if (parsed.key_expiry) lastKeyExpiry = String(parsed.key_expiry);
+          } else {
+            if (parsed.key_usage) lastKey2Usage = String(parsed.key_usage);
+            if (parsed.key_expiry) lastKey2Expiry = String(parsed.key_expiry);
+          }
+          
           resolve(parsed);
         } catch (e) {
-          reject(new Error(`RESP_NO_JSON: ${trimmed.slice(0, 50)}`));
+          reject(new Error(`RESP_NO_JSON`));
         }
       });
     });
 
     req.on('error', (err) => reject(err));
-    req.on('timeout', () => { req.destroy(); reject(new Error('Timeout (15s)')); });
+    req.on('timeout', () => { req.destroy(); reject(new Error('Timeout')); });
   });
 }
 
 function interpretarRespuestaFF(apiData) {
   console.log('[DEBUG API RESPONSE]', JSON.stringify(apiData));
   
+  // Detección de Likes Enviados
   const sentMatch = String(apiData.sent || '').match(/\d+/);
   const fromSentStr = sentMatch ? parseInt(sentMatch[0], 10) : 0;
   
-  // Detección robusta de likes agregados
-  let added = parseInt(apiData.likes_added || apiData.likes_enviados || apiData.sucessos || apiData.sucesso || apiData.Likes_Enviados || fromSentStr || 0, 10);
+  let added = parseInt(apiData.likes_added || apiData.likes_enviados || apiData.sent_likes || apiData.sucessos || apiData.sucesso || apiData.Likes_Enviados || fromSentStr || 0, 10);
   
-  // Fallback si sigue siendo 0 pero hay campos prometedores
-  if (!added || added === 0) {
-    if (apiData.sucessos && !isNaN(parseInt(apiData.sucessos, 10))) added = parseInt(apiData.sucessos, 10);
-    else if (apiData.likes_enviados && !isNaN(parseInt(apiData.likes_enviados, 10))) added = parseInt(apiData.likes_enviados, 10);
-  }
-
+  // Fallback para mensajes de éxito sin campo numérico directo
+  const msgRaw = String((apiData.message || '') + (apiData.error || '') + (apiData.msg_sistema || '') + (apiData.sent || '')).toLowerCase();
+  const statusEnvio = String(apiData.status_envio || '').toUpperCase();
+  
   const before = parseInt(apiData.likes_before || apiData.likes_antes || apiData.Likes_Iniciais || 0, 10);
   const after  = parseInt(apiData.likes_after || apiData.likes_depois || apiData.Likes_Atuais || 0, 10);
-  const msgRaw = String((apiData.message || '') + (apiData.error || '') + (apiData.msg_sistema || '')).toLowerCase();
 
-  const playerName = apiData.nickname || apiData.Nickname || apiData.player_name || apiData.PlayerName || '';
+  const playerName = apiData.nickname || apiData.Nickname || apiData.player_name || apiData.PlayerName || apiData.player || '';
   const level = apiData.level || apiData.Level || 0;
   const region = apiData.region || apiData.Region || 'BR';
 
-  if (added > 0 || apiData.status_envio === 'SUCESSO' || apiData.status === 'success' || apiData.status === 'ok' || (apiData.res === 'SUCCESS' && !apiData.error)) {
-    return { tipo: 'ok', added: added || 0, before, after, playerName, level, region };
+  // CRITERIOS DE ÉXITO
+  const esExito = (
+    added > 0 || 
+    statusEnvio === 'SUCESSO' || 
+    apiData.status === 1 || 
+    apiData.status === 'success' || 
+    apiData.status === 'ok' || 
+    (apiData.res === 'SUCCESS' && !apiData.error)
+  );
+
+  if (esExito) {
+    return { tipo: 'ok', added: added || (after > before ? after - before : 0), before, after, playerName, level, region };
   }
   
+  // CRITERIOS DE ERROR
   if (apiData.res === 'LIMIT_EXCEEDED' || msgRaw.includes('limite di') || msgRaw.includes('limit reached')) return { tipo: 'limite' };
   if (apiData.res === 'KEY_NOT_FOUND' || msgRaw.includes('chave inv') || msgRaw.includes('key not found') || apiData.status_code === 401) return { tipo: 'auth_error' };
   if (apiData.res === 'TOO_MANY_REQUESTS' || msgRaw.includes('6hrs') || msgRaw.includes('recibio likes') || apiData._httpStatus === 429) return { tipo: 'ya_recibio' };
+  
+  // Tratamiento para status 2 (ya recibió likes hoy en RTPY)
+  if (apiData.status === 2 || apiData.status === '2' || (added === 0 && before > 0 && after === before)) return { tipo: 'ya_recibio' };
 
-  if (added === 0 && (apiData.status === 2 || apiData.status === '2')) return { tipo: 'ya_recibio' };
-  if (added === 0 && before > 0 && after === before) return { tipo: 'ya_recibio' };
+  return { tipo: 'error', error: apiData.error || apiData.message || 'Error del proveedor' };
+}
+
 
   return { tipo: 'error', error: apiData.error || apiData.message || 'Error desconocido' };
 }
@@ -781,22 +822,13 @@ app.post('/api/enviar-likes', authMiddleware, async (req, res) => {
 
     const d      = apiData;
     const player = d.player || d.nickname || ff_uid.trim();
-    // Parsear el nivel a 0 si la API retorna falsy para evitar crash en BD (campo tipo INTEGER)
     const level  = parseInt(d.level !== undefined ? d.level : (d.Level || 0), 10) || 0;
     const region = d.region || serverFinal;
-    const before = parseInt(d.likes_before || d.likes_antes || 0, 10);
-    const after  = parseInt(d.likes_after || d.likes_depois || 0, 10);
+    const before = interpretado.before;
+    const after  = interpretado.after;
     const tiempo = (d.processing_time_seconds || d._local_time || '—') + (d.processing_time_seconds || d._local_time ? 's' : '');
-    const fromDiff       = (after > 0 && before >= 0 && after > before) ? (after - before) : 0;
-    const sentMatch = String(d.sent || '').match(/\d+/);
-    const fromSentStr = sentMatch ? parseInt(sentMatch[0], 10) : 0;
-    const fromAdded      = parseInt(d.likes_added || fromSentStr || 0, 10);
-    const fromSuccessful = parseInt(d.successful_likes || 0, 10);
-    let likesAdded = fromDiff > 0 ? fromDiff : Math.max(fromAdded, fromSuccessful);
-
-    if (before > 0 && after > 0 && before === after) {
-      likesAdded = 0;
-    }
+    
+    let likesAdded = interpretado.added;
 
     if (likesAdded > 0) {
       if (u.ilimitado) {
@@ -906,18 +938,9 @@ async function procesarAutoID(autoId) {
   }
 
   if (interpretado.tipo === 'ok') {
-    const before = parseInt(apiData.likes_before || apiData.likes_antes || 0, 10);
-    const after  = parseInt(apiData.likes_after || apiData.likes_depois || 0, 10);
-    const fromDiff   = (after > 0 && before >= 0 && after > before) ? (after - before) : 0;
-    const sentMatch  = String(apiData.sent || '').match(/\d+/);
-    const fromSentStr= sentMatch ? parseInt(sentMatch[0], 10) : 0;
-    const fromAdded  = parseInt(apiData.likes_added || fromSentStr || 0, 10);
-    const fromSuccessful = parseInt(apiData.successful_likes || 0, 10);
-    let likesAdded = fromDiff > 0 ? fromDiff : Math.max(fromAdded, fromSuccessful);
-
-    if (before > 0 && after > 0 && before === after) {
-      likesAdded = 0;
-    }
+    let likesAdded = interpretado.added;
+    const before = interpretado.before;
+    const after  = interpretado.after;
 
     if (likesAdded > 0) {
       if (!row.ilimitado && row.plan_tipo === 'likes') {
@@ -1059,7 +1082,7 @@ app.get('/api/admin/stats', adminMiddleware, async (req, res) => {
       pool.query(`SELECT COUNT(*) AS total FROM historial WHERE fecha::date = $1`, [today]),
       pool.query(`SELECT COUNT(DISTINCT ff_uid) AS total FROM historial WHERE fecha::date = $1 AND likes_agregados > 0`, [today]),
     ]);
-    res.json({ ok: true, totalUsuarios: parseInt(tu.rows[0].count, 10), totalCodigos: parseInt(tc.rows[0].count, 10), codigosUsados: parseInt(uc.rows[0].count, 10), planesActivos: parseInt(ap.rows[0].count, 10), enviosHoy: parseInt(envHoy.rows[0].total, 10), idsHoy: parseInt(idsHoy.rows[0].total, 10), keyUsage: lastKeyUsage, keyExpiry: lastKeyExpiry, usuariosRecientes: ru.rows });
+    res.json({ ok: true, totalUsuarios: parseInt(tu.rows[0].count, 10), totalCodigos: parseInt(tc.rows[0].count, 10), codigosUsados: parseInt(uc.rows[0].count, 10), planesActivos: parseInt(ap.rows[0].count, 10), enviosHoy: parseInt(envHoy.rows[0].total, 10), idsHoy: parseInt(idsHoy.rows[0].total, 10), keyUsage: lastKeyUsage, keyExpiry: lastKeyExpiry, key2Usage: lastKey2Usage, key2Expiry: lastKey2Expiry, usuariosRecientes: ru.rows });
 
   } catch (err) { res.status(500).json({ error: 'Error interno' }); }
 });
