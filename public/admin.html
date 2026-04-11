@@ -275,6 +275,11 @@ main{padding:1.4rem 1.4rem 6.5rem;max-width:960px;margin:0 auto;width:100%}
           <div style="color:var(--mut); font-size:.6rem; text-transform:uppercase; letter-spacing:1px;">Usos hoy</div>
         </div>
       </div>
+      <!-- Días restantes de la API -->
+      <div style="margin-top:.85rem; padding-top:.75rem; border-top:1px solid rgba(255,193,7,.1); display:flex; align-items:center; justify-content:space-between;">
+        <span style="color:var(--mut); font-size:.72rem;">⏳ Días restantes de la API key</span>
+        <span style="font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.92rem; color:var(--warn);" id="api-expiry-val">—</span>
+      </div>
     </div>
     <div class="card" id="card-api3-usage" style="margin-bottom:1.2rem; background:rgba(20,20,20,0.4)">
 
@@ -295,6 +300,28 @@ main{padding:1.4rem 1.4rem 6.5rem;max-width:960px;margin:0 auto;width:100%}
       </div>
     </div>
 
+
+    <!-- CARD MANTENIMIENTO -->
+    <div class="card" id="card-mantenimiento" style="margin-bottom:1.2rem; background:rgba(20,20,20,0.4)">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+        <div style="display:flex; align-items:center; gap:.8rem;">
+          <div style="width:40px; height:40px; border-radius:10px; background:rgba(255,71,87,0.1); display:flex; align-items:center; justify-content:center; color:var(--red)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div>
+            <div style="font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem; color:#fff">Modo Mantenimiento</div>
+            <div style="color:var(--mut); font-size:.7rem" id="mant-status-txt">Desactivado — el sistema funciona normalmente</div>
+          </div>
+        </div>
+        <!-- Toggle switch -->
+        <label style="position:relative; display:inline-block; width:52px; height:28px; cursor:pointer; flex-shrink:0;">
+          <input type="checkbox" id="mant-toggle" onchange="toggleMantenimiento(this.checked)" style="opacity:0;width:0;height:0;">
+          <span id="mant-slider" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#333;border-radius:28px;transition:.35s;">
+            <span style="position:absolute;content:'';height:20px;width:20px;left:4px;bottom:4px;background:white;border-radius:50%;transition:.35s;display:block;" id="mant-knob"></span>
+          </span>
+        </label>
+      </div>
+    </div>
 
     <!-- ID Summary Stats Grid -->
     <div class="sg">
@@ -766,13 +793,20 @@ async function loadDash() {
     }
   }
 
+  // Días restantes de la API
+  if (r.keyExpiry) {
+    document.getElementById('api-expiry-val').textContent = r.keyExpiry;
+  }
+
   // Widget API 3 Hoy
   const api3ValEl = document.getElementById('api3-usage-val');
   if (api3ValEl) api3ValEl.textContent = (r.idsHoy || 0).toLocaleString();
 
-
   // Ocultar widget viejo
   if(document.querySelector('.api-stats')) document.querySelector('.api-stats').style.display = 'none';
+
+  // Cargar estado de mantenimiento
+  cargarEstadoMantenimiento();
 
   const tbody = document.getElementById('dash-rec');
   tbody.innerHTML = r.usuariosRecientes.length
@@ -1156,6 +1190,41 @@ async function confirmarAplicarExtra() {
   if (!r.ok) return showMsg('msg-extra', r.error, 'err');
   showMsg('msg-extra', `Ajuste completado: ${r.message}`, 'ok');
   loadDash();
+}
+
+/* ─── MANTENIMIENTO ─────────────────────────────── */
+async function cargarEstadoMantenimiento() {
+  try {
+    const r = await fetch('/api/mantenimiento');
+    const data = await r.json();
+    aplicarEstadoMant(data.activo);
+  } catch(e) {}
+}
+
+function aplicarEstadoMant(activo) {
+  const toggle = document.getElementById('mant-toggle');
+  const slider = document.getElementById('mant-slider');
+  const knob   = document.getElementById('mant-knob');
+  const txt    = document.getElementById('mant-status-txt');
+  if (!toggle) return;
+  toggle.checked = activo;
+  if (activo) {
+    slider.style.background = '#00FF1E';
+    knob.style.transform    = 'translateX(24px)';
+    txt.textContent         = '⚠️ ACTIVO — La página está en mantenimiento para todos';
+    txt.style.color         = 'var(--g)';
+  } else {
+    slider.style.background = '#333';
+    knob.style.transform    = 'translateX(0)';
+    txt.textContent         = 'Desactivado — el sistema funciona normalmente';
+    txt.style.color         = 'var(--mut)';
+  }
+}
+
+async function toggleMantenimiento(activo) {
+  const r = await API.postAdmin('/api/admin/mantenimiento', { activo }, admTok);
+  if (!r.ok) { alert('Error al cambiar estado: ' + r.error); return; }
+  aplicarEstadoMant(r.activo);
 }
 </script>
 

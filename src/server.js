@@ -41,6 +41,8 @@ setInterval(() => { const now = Date.now(); for (const [ip, e] of rateLimitMap) 
 
 const cooldowns = new Map();
 let lastKeyUsage = null;
+let lastKeyExpiry = null; // ← Días restantes de la API key
+let modoMantenimiento = false; // ← Flag global de mantenimiento
 function getCooldown(uid) { const exp = cooldowns.get(uid); if (!exp) return 0; if (Date.now() > exp) { cooldowns.delete(uid); return 0; } return exp; }
 function setCooldown(uid, ms) { cooldowns.set(uid, Date.now() + ms); }
 setInterval(() => { const now = Date.now(); for (const [uid, exp] of cooldowns) if (now > exp) cooldowns.delete(uid); }, 10*60*1000);
@@ -376,6 +378,7 @@ function ejecutarPeticion(baseUrl, uid, apiKey, server) {
           parsed._httpStatus = res.statusCode;
           parsed._local_time = duration; 
           if (parsed.key_usage) lastKeyUsage = String(parsed.key_usage);
+          if (parsed.key_expiry) lastKeyExpiry = String(parsed.key_expiry);
           resolve(parsed);
         } catch (e) {
           reject(new Error(`RESP_NO_JSON: ${trimmed.slice(0, 50)}`));
@@ -994,6 +997,7 @@ app.delete('/api/auto/ids/:id', authMiddleware, async (req, res) => {
 let cronRunning = false, cronSafetyTimer = null;
 async function ejecutarAutoLikes() {
   if (cronRunning) return;
+  if (modoMantenimiento) { console.log('[AUTO] Cron pausado por modo mantenimiento.'); return; }
   cronRunning = true;
   cronSafetyTimer = setTimeout(() => { if (cronRunning) { cronRunning = false; cronSafetyTimer = null; } }, 8 * 60 * 1000);
   try {
@@ -1006,6 +1010,19 @@ async function ejecutarAutoLikes() {
     cronRunning = false;
   }
 }
+
+/* ─── MANTENIMIENTO ─────────────────────────────────── */
+app.get('/api/mantenimiento', (req, res) => {
+  res.json({ ok: true, activo: modoMantenimiento });
+});
+app.post('/api/admin/mantenimiento', adminMiddleware, (req, res) => {
+  const { activo } = req.body;
+  modoMantenimiento = !!activo;
+  console.log(`[ADMIN] Modo mantenimiento: ${modoMantenimiento ? 'ACTIVADO' : 'DESACTIVADO'}`);
+  // Si se desactiva, reanudar cron inmediatamente
+  if (!modoMantenimiento) setImmediate(ejecutarAutoLikes);
+  res.json({ ok: true, activo: modoMantenimiento });
+});
 
 app.post('/api/admin/login', rateLimit(5), async (req, res) => {
   const { username, password } = req.body;
@@ -1025,7 +1042,7 @@ app.get('/api/admin/stats', adminMiddleware, async (req, res) => {
       pool.query(`SELECT COUNT(*) AS total FROM historial WHERE fecha::date = $1`, [today]),
       pool.query(`SELECT COUNT(DISTINCT ff_uid) AS total FROM historial WHERE fecha::date = $1 AND likes_agregados > 0`, [today]),
     ]);
-    res.json({ ok: true, totalUsuarios: parseInt(tu.rows[0].count, 10), totalCodigos: parseInt(tc.rows[0].count, 10), codigosUsados: parseInt(uc.rows[0].count, 10), planesActivos: parseInt(ap.rows[0].count, 10), enviosHoy: parseInt(envHoy.rows[0].total, 10), idsHoy: parseInt(idsHoy.rows[0].total, 10), keyUsage: lastKeyUsage, usuariosRecientes: ru.rows });
+    res.json({ ok: true, totalUsuarios: parseInt(tu.rows[0].count, 10), totalCodigos: parseInt(tc.rows[0].count, 10), codigosUsados: parseInt(uc.rows[0].count, 10), planesActivos: parseInt(ap.rows[0].count, 10), enviosHoy: parseInt(envHoy.rows[0].total, 10), idsHoy: parseInt(idsHoy.rows[0].total, 10), keyUsage: lastKeyUsage, keyExpiry: lastKeyExpiry, usuariosRecientes: ru.rows });
 
   } catch (err) { res.status(500).json({ error: 'Error interno' }); }
 });
