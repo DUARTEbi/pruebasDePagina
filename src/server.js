@@ -823,31 +823,40 @@ app.post('/api/enviar-likes', authMiddleware, async (req, res) => {
 
     // 1. CHEQUEO LOCAL DE COOLDOWN (24 Horas Estrictas)
     let estado = null;
-    const cooldownRes = await pool.query(`SELECT * FROM ff_uids_estado WHERE ff_uid=$1`, [cleanUID]);
+    const cleanUID = ff_uid.trim();
+    
+    // Buscamos con TRIM por si acaso hay espacios en DB
+    const cooldownRes = await pool.query(`SELECT * FROM ff_uids_estado WHERE TRIM(ff_uid)=$1`, [cleanUID]);
     
     if (cooldownRes.rows.length) {
       estado = cooldownRes.rows[0];
+      console.log(`[COOLDOWN] Encontrado en ff_uids_estado para ${cleanUID}`);
     } else {
-      // FALLBACK: Consultar historial por si el ID recibió likes antes de implementar ff_uids_estado
+      // FALLBACK: Consultar historial
       const histRes = await pool.query(`SELECT player_name, nivel, likes_despues as likes_count, fecha as ultimo_exito 
                                         FROM historial 
-                                        WHERE ff_uid=$1 AND likes_agregados > 0 
+                                        WHERE TRIM(ff_uid)=$1 AND likes_agregados > 0 
                                         ORDER BY fecha DESC LIMIT 1`, [cleanUID]);
       if (histRes.rows.length) {
         estado = histRes.rows[0];
-        // Opcional: Migrarlo al estado nuevo para futuras consultas rápidas
+        console.log(`[COOLDOWN] Encontrado en historial para ${cleanUID}, migrando...`);
+        // Migrarlo al estado nuevo
         await pool.query(`INSERT INTO ff_uids_estado (ff_uid, player_name, nivel, likes_count, ultimo_exito) 
-                          VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`, 
+                          VALUES ($1, $2, $3, $4, $5) ON CONFLICT (ff_uid) DO UPDATE 
+                          SET ultimo_exito=EXCLUDED.ultimo_exito, likes_count=EXCLUDED.likes_count`, 
                           [cleanUID, estado.player_name, estado.nivel, estado.likes_count, estado.ultimo_exito]);
       }
     }
 
     if (estado) {
       const ultimaExito = new Date(estado.ultimo_exito);
-      const diffMs = Date.now() - ultimaExito.getTime();
+      const now = new Date();
+      const diffMs = now.getTime() - ultimaExito.getTime();
       const venticuatroHoras = 24 * 60 * 60 * 1000;
 
-      if (diffMs < venticuatroHoras) {
+      console.log(`[COOLDOWN DEBUG] ID: ${cleanUID}, Ultimo: ${ultimaExito.toISOString()}, Ahora: ${now.toISOString()}, Diff: ${Math.floor(diffMs/1000/60)} min`);
+
+      if (diffMs > 0 && diffMs < venticuatroHoras) {
         const restanteMs = venticuatroHoras - diffMs;
         const horas = Math.floor(restanteMs / 3600000);
         const mins = Math.floor((restanteMs % 3600000) / 60000);
@@ -876,21 +885,32 @@ app.post('/api/enviar-likes', authMiddleware, async (req, res) => {
     const interpretado = interpretarRespuestaFF(apiData);
     if (interpretado.tipo === 'auth_error') return res.status(500).json({ error: '❌ Error de autenticación con la API. Verifica que FF_API_KEY esté configurada.' });
     if (interpretado.tipo === 'ya_recibio' || interpretado.tipo === 'limite') {
-      const d      = apiData;
+      let d = apiData;
+      
+      // SI LA API NO DA INFO, INTENTAMOS OBTENERLA DE INFO-CHECK PARA QUE NO SALGA VACÍO
+      if (!d.player && !d.nickname) {
+        try {
+          const fresh = await consultarInfoFF(cleanUID);
+          if (fresh) {
+            d.nickname = fresh.name;
+            d.level = fresh.level;
+            interpretado.before = fresh.likes;
+          }
+        } catch (e) {}
+      }
+
       const player = d.player || d.nickname || cleanUID;
       const level  = d.level  || '—';
       const region = d.region || serverFinal;
       const before = parseInt(d.likes_before || interpretado.before || 0, 10);
       
       const ahora  = new Date();
-      const manana = new Date(Date.UTC(ahora.getUTCFullYear(), ahora.getUTCMonth(), ahora.getUTCDate() + 1, 0, 0, 0, 0));
-      const diffMs = manana - ahora;
-      const horas  = Math.floor(diffMs / 3600000);
-      const mins   = Math.floor((diffMs % 3600000) / 60000);
-      const tiempoRestante = horas > 0 ? `${horas}h ${mins}m` : `${mins}m`;
+      // Como no tenemos un registro local exacto de cuándo recibió los likes "fuera" del sitio,
+      // usamos un mensaje genérico como pidió el usuario.
+      const tiempoRestante = "Intenta más tarde";
 
       return res.status(400).json({ 
-        error: `Este UID ya recibió likes hoy. Disponible en ${tiempoRestante}.`, 
+        error: `Este UID ya recibió likes hoy. ${tiempoRestante}.`, 
         data: { jugador: player, uid: d.uid || cleanUID, nivel: level, region, likes_antes: before, likes_despues: before, likes_agregados: 0, tiempo_restante: tiempoRestante, ya_recibio: true } 
       });
     }
@@ -1027,12 +1047,22 @@ async function procesarAutoID(autoId) {
       }
     }
 
-  let apiData;
-  try { 
-    apiData = await llamarApiFF(row.ff_uid, row.region || 'BR'); 
-  } catch (apiErr) {
-    // FALLO: Usamos el sistema de horarios escalonados
-    const prox = calcularProximoIntento();
+    let apiData;
+    try { 
+      apiData = await llamarApiFF(row.ff_uid, row.region || 'BR'); 
+    } catch (apiErr) {
+      // ...
+    }
+
+    const interpretado = interpretarRespuestaFF(apiData);
+    if (interpretado.tipo === 'ya_recibio' || interpretado.tipo === 'limite') {
+      // Si la API dice que ya recibió pero no tenemos récord local, esperamos al próximo reset genérico (mañana)
+      const manana = new Date();
+      manana.setDate(manana.getDate() + 1);
+      manana.setHours(7, 0, 0, 0); // Reset a las 7 AM como en otros procesos
+      await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=false WHERE id=$2', [manana.toISOString(), autoId]);
+      return;
+    }
     await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=true WHERE id=$2', [prox, autoId]); 
     return;
   }
