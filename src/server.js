@@ -353,10 +353,19 @@ async function llamarApiFF(uid, server = 'BR') {
 
   // Si no se pudo enviar ningún like (debido a límite u otro error) devolvemos el error más relevante
   if (totalAdded === 0) {
-    // Prioridad: Si API 1 (RTPY) tiene el aviso de "ya recibió" (que suele traer el tiempo restante), lo usamos.
-    if (res1Int && (res1Int.tipo === 'ya_recibio' || res1Int.tipo === 'limite')) return api1Res;
-    if (res2Int && (res2Int.tipo === 'ya_recibio' || res2Int.tipo === 'limite')) return api2Res;
-    return api2Res || api1Res;
+    // Prioridad: API 1 (RTPY) para el estado "ya recibió" y el timer
+    let errorRes = (res1Int && (res1Int.tipo === 'ya_recibio' || res1Int.tipo === 'limite')) ? api1Res : (api2Res || api1Res);
+
+    // Inyectamos info del jugador de la API 2 (si existe) para que los datos mostrados (nombre/nivel) sean los de la API potente
+    if (api2Res && (api2Res.nickname || api2Res.Nickname || api2Res.player_name || api2Res.PlayerName || api2Res.player)) {
+      errorRes.nickname = api2Res.nickname || api2Res.Nickname || api2Res.player_name || api2Res.PlayerName || api2Res.player;
+      errorRes.level = api2Res.level || api2Res.Level;
+      // Mantenemos los likes_antes de la API 2 si están presentes, ya que el usuario prefiere su info
+      if (api2Res.likes_antes !== undefined || api2Res.likes_before !== undefined) {
+        errorRes.likes_antes = api2Res.likes_antes || api2Res.likes_before;
+      }
+    }
+    return errorRes;
   }
 
   // 1. Tomamos "Likes Antes" directo sacado de la base elegida:
