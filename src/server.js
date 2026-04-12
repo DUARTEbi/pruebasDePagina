@@ -331,24 +331,16 @@ async function llamarApiFF(uid, server = 'BR') {
     console.error('[API 1 ERROR]', e.message);
   }
 
-  const parseAdded = (res) => {
-    if (!res) return 0;
-    const val = parseInt(res.likes_added || res.likes_enviados || res.sent_likes || String(res.sent || '').match(/\d+/)?.[0] || 0, 10);
-    return isNaN(val) ? 0 : val;
-  };
+  const res1Int = api1Res ? interpretarRespuestaFF(api1Res) : null;
+  const res2Int = api2Res ? interpretarRespuestaFF(api2Res) : null;
 
-  const a1Added = parseAdded(api1Res);
-  const a2Added = parseAdded(api2Res);
+  const a1Added = res1Int && res1Int.tipo === 'ok' ? res1Int.added : 0;
+  const a2Added = res2Int && res2Int.tipo === 'ok' ? res2Int.added : 0;
 
   const totalAdded = a1Added + a2Added;
 
-  if (totalAdded === 0 && (!api1Res && !api2Res)) {
+  if (!api1Res && !api2Res) {
     throw new Error("Ambas APIs están caídas o no respondieron en absoluto.");
-  }
-  
-  if (totalAdded === 0) {
-    const errObj = api2Res || api1Res;
-    throw new Error(errObj.message || errObj.error || errObj.res || "Límite alcanzado, no se pudieron enviar likes.");
   }
 
   // --- LÓGICA BASE PROPUESTA: API 2 COMO FUENTE DE VERDAD ---
@@ -357,6 +349,13 @@ async function llamarApiFF(uid, server = 'BR') {
   // Si API 2 no sirvió para dar datos del jugador, rescatamos los datos de API 1 como plan B
   if (!baseData || (baseData.likes_antes === undefined && baseData.likes_before === undefined && api1Res)) {
     baseData = api1Res;
+  }
+
+  // Si no se pudo enviar ningún like (debido a límite u otro error) devolvemos el error más relevante
+  if (totalAdded === 0) {
+    if (res2Int && (res2Int.tipo === 'limite' || res2Int.tipo === 'ya_recibio')) return api2Res;
+    if (res1Int && (res1Int.tipo === 'limite' || res1Int.tipo === 'ya_recibio')) return api1Res;
+    return api2Res || api1Res;
   }
 
   // 1. Tomamos "Likes Antes" directo sacado de la base elegida:
