@@ -999,19 +999,8 @@ function calcularSlots(usuario) {
 }
 
 function calcularProximoIntento() {
-  const ahora = new Date();
-  const h = ahora.getHours();
-  let prox = new Date(ahora);
-  
-  if (h < 5) prox.setHours(5, 0, 0, 0);
-  else if (h < 7) prox.setHours(7, 0, 0, 0);
-  else if (h < 10) prox.setHours(10, 0, 0, 0);
-  else if (h < 12) prox.setHours(12, 0, 0, 0);
-  else {
-    prox.setDate(prox.getDate() + 1);
-    prox.setHours(7, 0, 0, 0);
-  }
-  return prox.toISOString();
+  // Reintentar en 1 hora en lugar de esperar a las 7 AM (evita el error de las "14h")
+  return new Date(Date.now() + 60 * 60 * 1000).toISOString();
 }
 
 function calcularProximoExito() {
@@ -1140,14 +1129,24 @@ app.get('/api/auto/ids', authMiddleware, async (req, res) => {
     const usuario = uRes.rows[0];
     const maxSlots = calcularSlots(usuario);
 
-    // [LIMPIEZA DE EMERGENCIA] Desactiva IDs que fueron resucitados por el bug hace unos minutos
+    // [ARREGLO FINAL] Sincronizar proximo_envio basado estrictamente en el historial real
     await pool.query(`
-      UPDATE auto_ids 
-      SET activo = false 
-      WHERE usuario_id = $1 
-      AND activo = true 
-      AND motivo_error IS NULL 
-      AND (ultimo_envio > NOW() - INTERVAL '30 minutes' OR proximo_envio > NOW() + INTERVAL '23 hours')
+      UPDATE auto_ids ai
+      SET ultimo_envio = h.reciente,
+          proximo_envio = h.reciente + INTERVAL '24 hours' + INTERVAL '2 minutes',
+          reintentando = false,
+          falla_desde = NULL,
+          motivo_error = NULL
+      FROM (
+        SELECT ff_uid, MAX(fecha) as reciente 
+        FROM historial 
+        WHERE usuario_id = $1 AND likes_agregados > 0
+        GROUP BY ff_uid
+      ) h
+      WHERE ai.usuario_id = $1 
+      AND ai.ff_uid = h.ff_uid 
+      AND (ai.ultimo_envio IS NULL OR ai.ultimo_envio < h.reciente OR ai.proximo_envio < h.reciente + INTERVAL '23 hours')
+      AND ai.activo = true
     `, [req.user.id]);
     
     const [ids, log] = await Promise.all([
