@@ -1085,7 +1085,8 @@ async function procesarAutoID(autoId) {
     const manana = new Date();
     manana.setDate(manana.getDate() + 1);
     manana.setHours(7, 0, 0, 0);
-    await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=false WHERE id=$2', [manana.toISOString(), autoId]);
+    // Limpiamos errores porque recibir este estado significa que el ID está operativo
+    await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=false, falla_desde=NULL, motivo_error=NULL, ultimo_envio=NOW() WHERE id=$2', [manana.toISOString(), autoId]);
     return;
   }
 
@@ -1140,6 +1141,29 @@ app.get('/api/auto/ids', authMiddleware, async (req, res) => {
     if (!uRes.rows.length) return res.status(404).json({ error: 'Usuario no encontrado' });
     const usuario = uRes.rows[0];
     const maxSlots = calcularSlots(usuario);
+
+    // [ARREGLO] Sincronizar con historial antes de devolver IDs para evitar estados "Pronto" o errores falsos
+    await pool.query(`
+      UPDATE auto_ids ai
+      SET ultimo_envio = h.reciente,
+          proximo_envio = CASE 
+            WHEN ai.proximo_envio < h.reciente THEN h.reciente + INTERVAL '24 hours'
+            ELSE ai.proximo_envio
+          END,
+          falla_desde = NULL,
+          motivo_error = NULL,
+          reintentando = false
+      FROM (
+        SELECT ff_uid, MAX(fecha) as reciente 
+        FROM historial 
+        WHERE usuario_id = $1 AND likes_agregados > 0
+        GROUP BY ff_uid
+      ) h
+      WHERE ai.usuario_id = $1 
+      AND ai.ff_uid = h.ff_uid 
+      AND (ai.ultimo_envio IS NULL OR ai.ultimo_envio < h.reciente OR ai.motivo_error IS NOT NULL)
+    `, [req.user.id]);
+
     const [ids, log] = await Promise.all([
       pool.query('SELECT * FROM auto_ids WHERE usuario_id=$1 AND (activo=true OR motivo_error IS NOT NULL) ORDER BY creado_en ASC', [req.user.id]),
       pool.query(`SELECT ff_uid, player_name, likes_agregados, nivel, region, fecha FROM historial WHERE usuario_id=$1 AND auto_envio=true ORDER BY fecha DESC LIMIT 10`, [req.user.id]),

@@ -729,11 +729,11 @@ function renderIDCard(id){
   const proximo=id.proximo_envio?new Date(id.proximo_envio):null;
   const diffMs=proximo?(proximo-ahora):0;
 
-  const noSabemos=!id.ultimo_envio || id.reintentando;
-  const esSending=!noSabemos&&diffMs<=0;
+  const noSabemos=(!id.ultimo_envio && !id.proximo_envio) || (id.reintentando && (!id.proximo_envio || diffMs <= 0));
+  const esSending=!id.reintentando && diffMs<=0;
   const horas=diffMs>0?Math.floor(diffMs/3600000):0;
   const mins=diffMs>0?Math.floor((diffMs%3600000)/60000):0;
-  const tiempoStr=noSabemos?'Pronto':esSending?'Enviando':horas>0?`${horas}h ${mins}m`:mins>0?`${mins}m`:'Enviando';
+  const tiempoStr=id.motivo_error?'Manual':(esSending?'Enviando':(diffMs>0?(horas>0?`${horas}h ${mins}m`:`${mins}m`):'Pronto'));
 
 
   const nombreDisplay=id.player_name||'—';
@@ -796,9 +796,9 @@ function renderIDCard(id){
 function actualizarCountdowns(){
   document.querySelectorAll('.id-card[data-auto-id]').forEach(card=>{
     const proxStr=card.getAttribute('data-proximo');
-    const ultStr=card.getAttribute('data-ultimo');
     const reinStr=card.getAttribute('data-reintentando');
-    if(!ultStr || reinStr==='true') return; // "Pronto" fijo hasta que el auto logre enviar o si está reintentando
+    const hasError=card.querySelector('.status-error');
+    if(hasError) return; // Si tiene error crítico (3 días), no mover el countdown manual
 
     if(!proxStr) return;
     const diffMs=new Date(proxStr)-Date.now();
