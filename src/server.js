@@ -1140,12 +1140,15 @@ app.get('/api/auto/ids', authMiddleware, async (req, res) => {
     const usuario = uRes.rows[0];
     const maxSlots = calcularSlots(usuario);
 
-    const uRes = await pool.query('SELECT * FROM usuarios WHERE id=$1', [req.user.id]);
-    if (!uRes.rows.length) return res.status(404).json({ error: 'Usuario no encontrado' });
-    const usuario = uRes.rows[0];
-    const maxSlots = calcularSlots(usuario);
-
-    // [LIMPIEZA] Eliminado bloque de sincronización automática que recuperaba IDs borrados
+    // [LIMPIEZA DE EMERGENCIA] Desactiva IDs que fueron resucitados por el bug hace unos minutos
+    await pool.query(`
+      UPDATE auto_ids 
+      SET activo = false 
+      WHERE usuario_id = $1 
+      AND activo = true 
+      AND motivo_error IS NULL 
+      AND (ultimo_envio > NOW() - INTERVAL '30 minutes' OR proximo_envio > NOW() + INTERVAL '23 hours')
+    `, [req.user.id]);
     
     const [ids, log] = await Promise.all([
       pool.query('SELECT * FROM auto_ids WHERE usuario_id=$1 AND (activo=true OR motivo_error IS NOT NULL) ORDER BY creado_en ASC', [req.user.id]),
