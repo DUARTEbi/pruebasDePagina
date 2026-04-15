@@ -1083,8 +1083,8 @@ async function procesarAutoID(autoId) {
 
   if (interpretado.tipo === 'ya_recibio' || interpretado.tipo === 'limite') {
     const proximo = calcularProximoExito();
-    // Limpiamos errores y reactivamos, asegurando 24h exactas
-    await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=false, falla_desde=NULL, motivo_error=NULL, ultimo_envio=NOW(), activo=true WHERE id=$2', [proximo, autoId]);
+    // Limpiamos errores si existen, y programamos para dentro de 24h exactas
+    await pool.query('UPDATE auto_ids SET proximo_envio=$1, reintentando=false, falla_desde=NULL, motivo_error=NULL, ultimo_envio=NOW() WHERE id=$2', [proximo, autoId]);
     return;
   }
 
@@ -1140,27 +1140,13 @@ app.get('/api/auto/ids', authMiddleware, async (req, res) => {
     const usuario = uRes.rows[0];
     const maxSlots = calcularSlots(usuario);
 
-    // [ARREGLO] Sincronizar con historial antes de devolver IDs para evitar estados "Pronto" o errores falsos
-    // Se agrega activo = true para recuperar IDs que fueron desactivados por error
-    await pool.query(`
-      UPDATE auto_ids ai
-      SET ultimo_envio = h.reciente,
-          proximo_envio = h.reciente + INTERVAL '24 hours' + INTERVAL '3 minutes',
-          falla_desde = NULL,
-          motivo_error = NULL,
-          reintentando = false,
-          activo = true
-      FROM (
-        SELECT ff_uid, MAX(fecha) as reciente 
-        FROM historial 
-        WHERE usuario_id = $1 AND likes_agregados > 0
-        GROUP BY ff_uid
-      ) h
-      WHERE ai.usuario_id = $1 
-      AND ai.ff_uid = h.ff_uid 
-      AND (ai.ultimo_envio IS NULL OR ai.ultimo_envio < h.reciente OR ai.motivo_error IS NOT NULL OR ai.activo = false)
-    `, [req.user.id]);
+    const uRes = await pool.query('SELECT * FROM usuarios WHERE id=$1', [req.user.id]);
+    if (!uRes.rows.length) return res.status(404).json({ error: 'Usuario no encontrado' });
+    const usuario = uRes.rows[0];
+    const maxSlots = calcularSlots(usuario);
 
+    // [LIMPIEZA] Eliminado bloque de sincronización automática que recuperaba IDs borrados
+    
     const [ids, log] = await Promise.all([
       pool.query('SELECT * FROM auto_ids WHERE usuario_id=$1 AND (activo=true OR motivo_error IS NOT NULL) ORDER BY creado_en ASC', [req.user.id]),
       pool.query(`SELECT ff_uid, player_name, likes_agregados, nivel, region, fecha FROM historial WHERE usuario_id=$1 AND auto_envio=true ORDER BY fecha DESC LIMIT 10`, [req.user.id]),
