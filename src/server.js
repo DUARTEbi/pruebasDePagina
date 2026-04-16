@@ -445,6 +445,7 @@ async function llamarApiFF(uid, server = 'BR') {
              await pool.query("UPDATE config SET valor = (valor::int + 1)::text WHERE clave='key3_usage'");
           }
           console.log(`[CASCADE] ${api.name} sumó ${intRes.added} likes. Total acumulado: ${totalAdded}`);
+          break; // Detenemos la cascada tras el primer éxito para ganar velocidad
         } else {
           console.log(`[CASCADE] ${api.name} no sumó likes: ${intRes.tipo}`);
           // Guardamos el error tipo "ya recibió" o "límite" para informar al usuario si nada funciona
