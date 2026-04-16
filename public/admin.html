@@ -808,7 +808,7 @@ async function loadDash() {
   const txtEl  = document.getElementById('api-usage-txt');
   const fillEl = document.getElementById('api-usage-fill');
 
-  document.getElementById('card-api-usage').style.display = 'block'; 
+  // Remover vieja referencia al ID inexistente que cortaba la ejecución
   if (r.keyUsage) {
     valEl.textContent = r.keyUsage;
     const parts = String(r.keyUsage).split('/');

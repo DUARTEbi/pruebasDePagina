@@ -512,15 +512,27 @@ function ejecutarPeticion(baseUrl, uid, apiKey, server, isKey1 = true) {
           parsed._local_time = duration; 
           
           if (isKey1) {
-            if (parsed.key_usage) lastKeyUsage = String(parsed.key_usage);
-            if (parsed.key_expiry) lastKeyExpiry = String(parsed.key_expiry);
+            if (parsed.key_usage) {
+              lastKeyUsage = String(parsed.key_usage);
+              pool.query("INSERT INTO config (clave, valor) VALUES ('key1_usage', $1) ON CONFLICT (clave) DO UPDATE SET valor=$1", [lastKeyUsage]).catch(()=>{});
+            }
+            if (parsed.key_expiry) {
+              lastKeyExpiry = String(parsed.key_expiry);
+              pool.query("INSERT INTO config (clave, valor) VALUES ('key1_expiry', $1) ON CONFLICT (clave) DO UPDATE SET valor=$1", [lastKeyExpiry]).catch(()=>{});
+            }
           } else {
             // Si es API 3 (HubsDev) intentamos guardar uso si lo responde
             if (fullUrl.includes('hubsdev')) {
               if (parsed.data && parsed.data.key_usage) lastKey3Usage = String(parsed.data.key_usage);
             } else {
-              if (parsed.key_usage) lastKey2Usage = String(parsed.key_usage);
-              if (parsed.key_expiry) lastKey2Expiry = String(parsed.key_expiry);
+              if (parsed.key_usage) {
+                lastKey2Usage = String(parsed.key_usage);
+                pool.query("INSERT INTO config (clave, valor) VALUES ('key2_usage', $1) ON CONFLICT (clave) DO UPDATE SET valor=$1", [lastKey2Usage]).catch(()=>{});
+              }
+              if (parsed.key_expiry) {
+                lastKey2Expiry = String(parsed.key_expiry);
+                pool.query("INSERT INTO config (clave, valor) VALUES ('key2_expiry', $1) ON CONFLICT (clave) DO UPDATE SET valor=$1", [lastKey2Expiry]).catch(()=>{});
+              }
             }
           }
           
@@ -1303,12 +1315,33 @@ app.get('/api/admin/stats', adminMiddleware, async (req, res) => {
       pool.query(`SELECT id,uid,username,contact,plan_activo,plan_nombre,plan_tipo,likes_disponibles,ilimitado,creado_en FROM usuarios ORDER BY creado_en DESC LIMIT 10`), 
       pool.query(`SELECT COUNT(*) AS total FROM historial WHERE fecha::date = $1`, [today]),
       pool.query(`SELECT COUNT(DISTINCT ff_uid) AS total FROM historial WHERE fecha::date = $1 AND likes_agregados > 0`, [today]),
-      pool.query(`SELECT clave, valor FROM config WHERE clave='key3_usage'`)
+      pool.query(`SELECT clave, valor FROM config WHERE clave IN ('key1_usage', 'key2_usage', 'key1_expiry', 'key2_expiry', 'key3_usage')`)
     ]);
 
-    const manualKey3Usage = cfg.rows.length ? `${cfg.rows[0].valor} / 500` : '0 / 500';
+    let k1u = lastKeyUsage, k1e = lastKeyExpiry, k2u = lastKey2Usage, k2e = lastKey2Expiry, k3u = '0 / 500';
+    for (let row of cfg.rows) {
+      if (row.clave === 'key1_usage' && !k1u) k1u = row.valor;
+      if (row.clave === 'key1_expiry' && !k1e) k1e = row.valor;
+      if (row.clave === 'key2_usage' && !k2u) k2u = row.valor;
+      if (row.clave === 'key2_expiry' && !k2e) k2e = row.valor;
+      if (row.clave === 'key3_usage') k3u = `${row.valor} / 500`;
+    }
 
-    res.json({ ok: true, totalUsuarios: parseInt(tu.rows[0].count, 10), totalCodigos: parseInt(tc.rows[0].count, 10), codigosUsados: parseInt(uc.rows[0].count, 10), planesActivos: parseInt(ap.rows[0].count, 10), enviosHoy: parseInt(envHoy.rows[0].total, 10), idsHoy: parseInt(idsHoy.rows[0].total, 10), keyUsage: lastKeyUsage, keyExpiry: lastKeyExpiry, key2Usage: lastKey2Usage, key2Expiry: lastKey2Expiry, key3Usage: manualKey3Usage, usuariosRecientes: ru.rows });
+    res.json({ 
+      ok: true, 
+      totalUsuarios: parseInt(tu.rows[0].count, 10), 
+      totalCodigos: parseInt(tc.rows[0].count, 10), 
+      codigosUsados: parseInt(uc.rows[0].count, 10), 
+      planesActivos: parseInt(ap.rows[0].count, 10), 
+      enviosHoy: parseInt(envHoy.rows[0].total, 10), 
+      idsHoy: parseInt(idsHoy.rows[0].total, 10), 
+      keyUsage: k1u, 
+      keyExpiry: k1e, 
+      key2Usage: k2u, 
+      key2Expiry: k2e, 
+      key3Usage: k3u, 
+      usuariosRecientes: ru.rows 
+    });
 
   } catch (err) { res.status(500).json({ error: 'Error interno' }); }
 });
