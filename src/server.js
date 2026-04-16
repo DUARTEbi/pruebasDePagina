@@ -572,18 +572,20 @@ function interpretarRespuestaFF(apiData) {
   const region = root.region || root.Region || 'BR';
 
   // CRITERIOS DE ÉXITO
-  const esExito = (
-    added > 0 || 
-    statusEnvio === 'SUCESSO' || 
-    apiData.status === 1 || 
-    apiData.status === 'success' || 
-    apiData.status === 'ok' || 
-    apiData.success === true ||
-    (apiData.res === 'SUCCESS' && !apiData.error)
+  const finalAdded = added || (after > before ? after - before : 0);
+  let esExito = (
+    finalAdded > 0 && (
+      statusEnvio === 'SUCESSO' || 
+      apiData.status === 1 || 
+      apiData.status === 'success' || 
+      apiData.status === 'ok' || 
+      apiData.success === true ||
+      (apiData.res === 'SUCCESS' && !apiData.error)
+    )
   );
 
   if (esExito) {
-    return { tipo: 'ok', added: added || (after > before ? after - before : 0), before, after, playerName, level, region };
+    return { tipo: 'ok', added: finalAdded, before, after, playerName, level, region };
   }
   
   // CRITERIOS DE ERROR
@@ -594,6 +596,11 @@ function interpretarRespuestaFF(apiData) {
     return { tipo: 'auth_error' };
   }
   if (apiData.res === 'TOO_MANY_REQUESTS' || msgRaw.includes('6hrs') || msgRaw.includes('recibio likes') || apiData._httpStatus === 429) {
+    return { tipo: 'ya_recibio' };
+  }
+  
+  // Caso especial: La API dice éxito pero mandó 0 likes (Típico cuando ya recibió)
+  if (finalAdded === 0 && (apiData.success === true || apiData.status === 1 || apiData.res === 'SUCCESS')) {
     return { tipo: 'ya_recibio' };
   }
   
