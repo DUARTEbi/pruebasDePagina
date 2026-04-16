@@ -220,18 +220,21 @@ setInterval(async () => {
 async function getApiPriority() {
   try {
     const res = await pool.query(`SELECT valor FROM config WHERE clave='prioridad_api'`);
-    return res.rows.length ? res.rows[0].valor : '2';
+    const val = res.rows.length ? res.rows[0].valor : '1';
+    return ['1', '2', '3'].includes(val) ? val : '1';
   } catch (e) {
-    return '2';
+    return '1';
   }
 }
 
 async function setApiPriority(apiNumber) {
   try {
-    await pool.query(`UPDATE config SET valor=$1 WHERE clave='prioridad_api'`, [String(apiNumber)]);
-    console.log(`[PRIORITY] Prioridad cambiada globalmente a API ${apiNumber}`);
+    // Aseguramos que el número esté entre 1 y 3
+    const nextPriority = String(((parseInt(apiNumber, 10) - 1) % 3) + 1);
+    await pool.query(`UPDATE config SET valor=$1 WHERE clave='prioridad_api'`, [nextPriority]);
+    console.log(`[PRIORITY] Rotación automática: Nueva prioridad global establecida en API ${nextPriority}`);
   } catch (e) {
-    console.error('[PRIORITY ERROR] No se pudo actualizar:', e.message);
+    console.error('[PRIORITY ERROR] No se pudo rotar:', e.message);
   }
 }
 
@@ -374,11 +377,30 @@ async function llamarApiFF(uid, server = 'BR') {
   };
 
   const prioridad = await getApiPriority();
-  const sequence = prioridad === '1' 
-    ? [{base: apiBase1, key: apiKey1, isKey1: true, name: 'API 1'}, {base: apiBase2, key: apiKey2, isKey1: false, name: 'API 2'}, {base: apiBase3, key: apiKey3, isKey1: false, name: 'API 3'}]
-    : [{base: apiBase2, key: apiKey2, isKey1: false, name: 'API 2'}, {base: apiBase1, key: apiKey1, isKey1: true, name: 'API 1'}, {base: apiBase3, key: apiKey3, isKey1: false, name: 'API 3'}];
+  let sequence = [];
+  
+  if (prioridad === '1') {
+    sequence = [
+      {base: apiBase1, key: apiKey1, isKey1: true, name: 'API 1'},
+      {base: apiBase2, key: apiKey2, isKey1: false, name: 'API 2'},
+      {base: apiBase3, key: apiKey3, isKey1: false, name: 'API 3'}
+    ];
+  } else if (prioridad === '2') {
+    sequence = [
+      {base: apiBase2, key: apiKey2, isKey1: false, name: 'API 2'},
+      {base: apiBase3, key: apiKey3, isKey1: false, name: 'API 3'},
+      {base: apiBase1, key: apiKey1, isKey1: true, name: 'API 1'}
+    ];
+  } else {
+    sequence = [
+      {base: apiBase3, key: apiKey3, isKey1: false, name: 'API 3'},
+      {base: apiBase1, key: apiKey1, isKey1: true, name: 'API 1'},
+      {base: apiBase2, key: apiKey2, isKey1: false, name: 'API 2'}
+    ];
+  }
 
   let totalAdded = 0;
+  let firstApiAdded = 0; // Para medir rendimiento de la API principal
   let firstValidProfile = null;
   let firstValidResponse = null;
   let errorFallback = null;
@@ -405,17 +427,27 @@ async function llamarApiFF(uid, server = 'BR') {
         const intRes = interpretarRespuestaFF(apiRes);
         if (intRes.tipo === 'ok') {
           totalAdded += intRes.added;
-          if (!firstValidResponse) firstValidResponse = apiRes;
+          
+          // Medimos cuánto envió la PRIMERA API de la secuencia
+          if (api.name === sequence[0].name) {
+            firstApiAdded = intRes.added;
+          }
+          
+          // Si esta API nos dio nombre o nivel, lo guardamos para el resultado final
           if (!firstValidProfile && (intRes.playerName || intRes.level)) {
             firstValidProfile = intRes;
           }
+          
+          // Guardamos la respuesta base para el formato de salida
+          if (!firstValidResponse) firstValidResponse = apiRes;
+
           if (api.base.includes('hubsdev')) {
              await pool.query("UPDATE config SET valor = (valor::int + 1)::text WHERE clave='key3_usage'");
           }
           console.log(`[CASCADE] ${api.name} sumó ${intRes.added} likes. Total acumulado: ${totalAdded}`);
         } else {
           console.log(`[CASCADE] ${api.name} no sumó likes: ${intRes.tipo}`);
-          // Guardamos el error de "Ya recibió" como prioridad para mostrar al usuario final si nadie suma
+          // Guardamos el error tipo "ya recibió" o "límite" para informar al usuario si nada funciona
           if (!errorFallback || intRes.tipo === 'ya_recibio' || intRes.tipo === 'limite') {
             errorFallback = apiRes;
           }
@@ -427,18 +459,24 @@ async function llamarApiFF(uid, server = 'BR') {
   }
 
   if (totalAdded > 0) {
-    const finalData = firstValidResponse;
-    const finalInt  = interpretarRespuestaFF(finalData);
+    const finalData = firstValidResponse || {};
     
-    // Si la respuesta base no tiene metadatos, intentamos parcharlos para que el mensaje no salga vacío
-    if (!finalInt.playerName) {
+    // Parcheamos los metadatos finales con lo mejor que hayamos encontrado
+    if (firstValidProfile) {
+      finalData.player_nickname = firstValidProfile.playerName || finalData.player_nickname;
+      finalData.nickname = firstValidProfile.playerName || finalData.nickname;
+      finalData.level = firstValidProfile.level || finalData.level;
+    }
+    
+    // Si no tenemos nombre aún, hacemos una consulta rápida de info
+    if (!finalData.player_nickname && !finalData.nickname) {
       try {
         const fresh = await consultarInfoFF(uid);
         if (fresh) {
            finalData.player_nickname = fresh.name;
-           finalData.nickname = fresh.name; // redundancia
+           finalData.nickname = fresh.name;
            finalData.level = fresh.level;
-           if (finalInt.before === 0) finalData.likes_before = fresh.likes;
+           if (!finalData.likes_before) finalData.likes_before = fresh.likes;
         }
       } catch(e) {}
     }
@@ -447,6 +485,14 @@ async function llamarApiFF(uid, server = 'BR') {
     finalData.likes_antes = parseInt(finalData.likes_before || finalData.likes_antes || 0, 10);
     finalData.likes_depois = finalData.likes_antes + totalAdded;
     
+    // ROTACIÓN DE PRIORIDAD: Si la API principal mandó menos de 180, rotamos para el siguiente envío
+    if (firstApiAdded < 180) {
+      console.log(`[ROTATE] API Ppal ${sequence[0].name} mandó pocos (${firstApiAdded}). Rotando prioridad...`);
+      const currentVal = parseInt(prioridad, 10);
+      const nextVal = (currentVal % 3) + 1;
+      setApiPriority(nextVal).catch(() => {});
+    }
+
     return finalData;
   }
 
@@ -458,8 +504,16 @@ function ejecutarPeticion(baseUrl, uid, apiKey, server, isKey1 = true) {
   return new Promise((resolve, reject) => {
     const start = Date.now();
     const separator = baseUrl.includes('?') ? '&' : '?';
-    const params = `uid=${encodeURIComponent(uid)}&apikey=${encodeURIComponent(apiKey)}&server=${encodeURIComponent(server)}&id=${encodeURIComponent(uid)}&key=${encodeURIComponent(apiKey)}`;
-    const fullUrl = `${baseUrl}${separator}${params}`;
+    // Enviamos múltiples variantes de parámetros para asegurar compatibilidad con todos los proveedores
+    const queryParams = new URLSearchParams({
+      uid: uid,
+      id: uid,
+      key: apiKey,
+      apikey: apiKey,
+      server: server
+    }).toString();
+
+    const fullUrl = `${baseUrl}${separator}${queryParams}`;
 
     const options = {
       timeout: 15000,
@@ -552,17 +606,17 @@ function interpretarRespuestaFF(apiData) {
   // CRITERIOS DE ÉXITO
   const finalAdded = added || (after > before ? after - before : 0);
   let esExito = (
-    finalAdded > 0 && (
-      statusEnvio === 'SUCESSO' || 
-      apiData.status === 1 || 
-      apiData.status === 'success' || 
-      apiData.status === 'ok' || 
-      apiData.success === true ||
-      (apiData.res === 'SUCCESS' && !apiData.error)
-    )
+    finalAdded > 0 || // Prioridad absoluta: si se sumaron likes, es éxito
+    statusEnvio === 'SUCESSO' || 
+    apiData.status === 1 || 
+    apiData.status === 'success' || 
+    apiData.status === 'ok' || 
+    apiData.success === true ||
+    (apiData.res === 'SUCCESS' && !apiData.error)
   );
 
   if (esExito) {
+    // Caso especial para API 1 que devuelve status 2 incluso cuando suma likes
     return { tipo: 'ok', added: finalAdded, before, after, playerName, level, region };
   }
   
@@ -570,20 +624,20 @@ function interpretarRespuestaFF(apiData) {
   if (apiData.res === 'LIMIT_EXCEEDED' || msgRaw.includes('limite di') || msgRaw.includes('limit reached')) {
     return { tipo: 'limite' };
   }
-  if (apiData.res === 'KEY_NOT_FOUND' || msgRaw.includes('chave inv') || msgRaw.includes('key not found') || apiData.status_code === 401) {
+  if (apiData.res === 'KEY_NOT_FOUND' || msgRaw.includes('chave inv') || msgRaw.includes('key not found') || msgRaw.includes('chave inválida') || apiData.status_code === 401) {
     return { tipo: 'auth_error' };
   }
-  if (apiData.res === 'TOO_MANY_REQUESTS' || msgRaw.includes('6hrs') || msgRaw.includes('recibio likes') || apiData._httpStatus === 429) {
+  if (apiData.res === 'TOO_MANY_REQUESTS' || msgRaw.includes('6hrs') || msgRaw.includes('recibio likes') || msgRaw.includes('a cada 24 horas') || apiData._httpStatus === 429) {
     return { tipo: 'ya_recibio' };
   }
   
   // Caso especial: La API dice éxito pero mandó 0 likes (Típico cuando ya recibió)
-  if (finalAdded === 0 && (apiData.success === true || apiData.status === 1 || apiData.res === 'SUCCESS')) {
+  if (finalAdded === 0 && (apiData.success === true || apiData.status === 1 || apiData.res === 'SUCCESS' || statusEnvio === 'SUCESSO')) {
     return { tipo: 'ya_recibio' };
   }
   
-  // Tratamiento para status 2 (ya recibió likes hoy en RTPY)
-  if (apiData.status === 2 || apiData.status === '2' || (added === 0 && before > 0 && after === before)) {
+  // Tratamiento para status 2 o similar (ya recibió)
+  if ((apiData.status === 2 || apiData.status === '2') && finalAdded === 0) {
     return { tipo: 'ya_recibio' };
   }
 
