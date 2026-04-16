@@ -374,106 +374,84 @@ async function llamarApiFF(uid, server = 'BR') {
   };
 
   const prioridad = await getApiPriority();
-  let api1Res = null;
-  let api2Res = null;
-  let api3Res = null;
+  const sequence = prioridad === '1' 
+    ? [{base: apiBase1, key: apiKey1, isKey1: true, name: 'API 1'}, {base: apiBase2, key: apiKey2, isKey1: false, name: 'API 2'}, {base: apiBase3, key: apiKey3, isKey1: false, name: 'API 3'}]
+    : [{base: apiBase2, key: apiKey2, isKey1: false, name: 'API 2'}, {base: apiBase1, key: apiKey1, isKey1: true, name: 'API 1'}, {base: apiBase3, key: apiKey3, isKey1: false, name: 'API 3'}];
 
-  console.log(`[PRIORITY] Iniciando envío con prioridad API ${prioridad}`);
+  let totalAdded = 0;
+  let firstValidProfile = null;
+  let firstValidResponse = null;
+  let errorFallback = null;
 
-  // Secuencia de Intento 1 y 2 según prioridad
-  if (prioridad === '1') {
-    try { api1Res = await intentarEndpoints(apiBase1, apiKey1, true); } catch (e) {}
-    const res1Int = api1Res ? interpretarRespuestaFF(api1Res) : null;
-    if (!res1Int || res1Int.tipo !== 'ok' || res1Int.added < 180) {
-      try { api2Res = await intentarEndpoints(apiBase2, apiKey2, false); } catch (e) {}
-    }
-  } else {
-    try { api2Res = await intentarEndpoints(apiBase2, apiKey2, false); } catch (e) {}
-    const res2Int = api2Res ? interpretarRespuestaFF(api2Res) : null;
-    if (!res2Int || res2Int.tipo !== 'ok' || res2Int.added < 180) {
-      try { api1Res = await intentarEndpoints(apiBase1, apiKey1, true); } catch (e) {}
-    }
-  }
+  console.log(`[PRIORITY] Iniciando envío en cascada (Prioridad: ${prioridad})`);
 
-  // Verificación de objetivo y fallback a API 3 (HubsDev)
-  const res1Int = api1Res ? interpretarRespuestaFF(api1Res) : null;
-  const res2Int = api2Res ? interpretarRespuestaFF(api2Res) : null;
-  const totalParcial = (res1Int?.added || 0) + (res2Int?.added || 0);
+  for (const api of sequence) {
+    if (!api.base || !api.key) continue;
+    if (totalAdded >= 180) break;
 
-  if (totalParcial < 180 && apiKey3 && apiBase3) {
-    // Verificar reset y límite de 500 antes de usar API 3
-    await verificarResetAPI3();
-    const usageRes = await pool.query(`SELECT valor FROM config WHERE clave='key3_usage'`);
-    const currentUsage = parseInt(usageRes.rows[0].valor || '0', 10);
-
-    if (currentUsage < 500) {
-      console.log(`[FALLBACK] Intentando con API 3 (HubsDev) - Acumulado: ${totalParcial} - Uso: ${currentUsage}/500`);
-      try { 
-        api3Res = await intentarEndpoints(apiBase3, apiKey3, false); 
-        const res3Int = api3Res ? interpretarRespuestaFF(api3Res) : null;
-        if (res3Int && res3Int.tipo === 'ok') {
-          await pool.query(`UPDATE config SET valor = (valor::int + 1)::text WHERE clave='key3_usage'`);
-        }
-      } catch (e) { console.error('[API 3 ERROR]', e.message); }
-    } else {
-      console.log(`[LIMIT] API 3 ha alcanzado el límite de 500 usos hoy.`);
-    }
-  }
-
-  const res3Int = api3Res ? interpretarRespuestaFF(api3Res) : null;
-  const a1Added = res1Int && res1Int.tipo === 'ok' ? res1Int.added : 0;
-  const a2Added = res2Int && res2Int.tipo === 'ok' ? res2Int.added : 0;
-  const a3Added = res3Int && res3Int.tipo === 'ok' ? res3Int.added : 0;
-  const totalAdded = a1Added + a2Added + a3Added;
-
-  if (!api1Res && !api2Res && !api3Res) {
-    throw new Error("Ninguna de las APIs configuradas respondió.");
-  }
-
-  let baseData = api3Res || api2Res || api1Res;
-  
-  // Si la base elegida no tiene datos de perfil pero la otra sí, intercambiamos
-  if (baseData === api2Res && (!baseData.likes_antes && !baseData.likes_before && api1Res)) {
-    baseData = api1Res;
-  }
-  if (!baseData.likes_antes && !baseData.likes_before && !baseData.data && api3Res) {
-    baseData = api3Res;
-  }
-
-  // Si no se pudo enviar ningún like, manejamos el error
-  if (totalAdded === 0) {
-    let errorRes = (res1Int && (res1Int.tipo === 'ya_recibio' || res1Int.tipo === 'limite')) ? api1Res : (api2Res || api1Res);
-
-    if (api2Res && (api2Res.nickname || api2Res.Nickname || api2Res.player_name || api2Res.PlayerName || api2Res.player)) {
-      errorRes.nickname = api2Res.nickname || api2Res.Nickname || api2Res.player_name || api2Res.PlayerName || api2Res.player;
-      errorRes.level = api2Res.level || api2Res.Level;
-      if (api2Res.likes_antes !== undefined || api2Res.likes_before !== undefined) {
-        errorRes.likes_antes = api2Res.likes_antes || api2Res.likes_before;
-      }
+    // Check HubsDev limit
+    if (api.base.includes('hubsdev')) {
+       await verificarResetAPI3();
+       const cfgU = await pool.query("SELECT valor FROM config WHERE clave='key3_usage'");
+       if (parseInt(cfgU.rows[0]?.valor || '0', 10) >= 500) {
+         console.log("[LIMIT] API 3 alcanzó el límite de 500/día, saltando.");
+         continue; 
+       }
     }
 
     try {
-      const fresh = await consultarInfoFF(uid);
-      if (fresh) {
-        errorRes.nickname = fresh.name || errorRes.nickname;
-        errorRes.level = fresh.level || errorRes.level;
-        errorRes.likes_antes = fresh.likes !== undefined ? fresh.likes : errorRes.likes_antes;
-        errorRes.region = fresh.region || errorRes.region;
-        errorRes.likes_depois = errorRes.likes_antes;
+      const apiRes = await intentarEndpoints(api.base, api.key, api.isKey1);
+      if (apiRes) {
+        const intRes = interpretarRespuestaFF(apiRes);
+        if (intRes.tipo === 'ok') {
+          totalAdded += intRes.added;
+          if (!firstValidResponse) firstValidResponse = apiRes;
+          if (!firstValidProfile && (intRes.playerName || intRes.level)) {
+            firstValidProfile = intRes;
+          }
+          if (api.base.includes('hubsdev')) {
+             await pool.query("UPDATE config SET valor = (valor::int + 1)::text WHERE clave='key3_usage'");
+          }
+          console.log(`[CASCADE] ${api.name} sumó ${intRes.added} likes. Total acumulado: ${totalAdded}`);
+        } else {
+          console.log(`[CASCADE] ${api.name} no sumó likes: ${intRes.tipo}`);
+          // Guardamos el error de "Ya recibió" como prioridad para mostrar al usuario final si nadie suma
+          if (!errorFallback || intRes.tipo === 'ya_recibio' || intRes.tipo === 'limite') {
+            errorFallback = apiRes;
+          }
+        }
       }
-    } catch (e) {}
-
-    return errorRes;
+    } catch (e) {
+      console.error(`[CASCADE ERROR] ${api.name}:`, e.message);
+    }
   }
 
-  const likesAntes = parseInt(baseData.likes_before || baseData.likes_antes || baseData.Likes_Iniciais || 0, 10);
-  const likesDespues = likesAntes + totalAdded;
+  if (totalAdded > 0) {
+    const finalData = firstValidResponse;
+    const finalInt  = interpretarRespuestaFF(finalData);
+    
+    // Si la respuesta base no tiene metadatos, intentamos parcharlos para que el mensaje no salga vacío
+    if (!finalInt.playerName) {
+      try {
+        const fresh = await consultarInfoFF(uid);
+        if (fresh) {
+           finalData.player_nickname = fresh.name;
+           finalData.nickname = fresh.name; // redundancia
+           finalData.level = fresh.level;
+           if (finalInt.before === 0) finalData.likes_before = fresh.likes;
+        }
+      } catch(e) {}
+    }
 
-  baseData.likes_enviados = totalAdded;
-  baseData.likes_antes = likesAntes;
-  baseData.likes_depois = likesDespues;
-  
-  return baseData;
+    finalData.likes_enviados = totalAdded;
+    finalData.likes_antes = parseInt(finalData.likes_before || finalData.likes_antes || 0, 10);
+    finalData.likes_depois = finalData.likes_antes + totalAdded;
+    
+    return finalData;
+  }
+
+  // Si nadie sumó nada, devolvemos el mejor error capturado o uno genérico
+  return errorFallback || { success: false, message: 'Ninguna API pudo procesar la solicitud' };
 }
 
 function ejecutarPeticion(baseUrl, uid, apiKey, server, isKey1 = true) {
