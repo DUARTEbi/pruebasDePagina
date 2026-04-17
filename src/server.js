@@ -1256,7 +1256,6 @@ app.get('/api/auto/ids', authMiddleware, async (req, res) => {
       WHERE ai.usuario_id = $1 
       AND ai.ff_uid = h.ff_uid 
       AND (ai.ultimo_envio IS NULL OR ai.ultimo_envio < h.reciente OR ai.proximo_envio < h.reciente + INTERVAL '23 hours')
-      AND ai.activo = true
     `, [req.user.id]);
     
     const [ids, log] = await Promise.all([
@@ -1301,7 +1300,9 @@ app.delete('/api/auto/ids/:id', authMiddleware, async (req, res) => {
   try {
     const check = await pool.query('SELECT id FROM auto_ids WHERE id=$1 AND usuario_id=$2', [req.params.id, req.user.id]);
     if (!check.rows.length) return res.status(404).json({ error: 'ID no encontrado' });
-    await pool.query('UPDATE auto_ids SET activo=false WHERE id=$1', [req.params.id]);
+    
+    // Eliminación física para evitar slots bugeados (Ghost IDs)
+    await pool.query('DELETE FROM auto_ids WHERE id=$1', [req.params.id]);
     res.json({ ok: true, message: 'ID eliminado del modo automático' });
   } catch (err) { res.status(500).json({ error: 'Error interno' }); }
 });
