@@ -1210,6 +1210,7 @@ async function procesarAutoID(autoId) {
                         VALUES ($1, $2, $3, $4, NOW()) ON CONFLICT (ff_uid) DO UPDATE 
                         SET player_name=EXCLUDED.player_name, nivel=EXCLUDED.nivel, likes_count=EXCLUDED.likes_count, ultimo_exito=NOW()`, 
                         [row.ff_uid, player, level, after]);
+      return;
     } else {
       return await registrarFalloID(autoId, row.falla_desde, player, level, region);
     }
@@ -1239,14 +1240,15 @@ app.get('/api/auto/ids', authMiddleware, async (req, res) => {
     const usuario = uRes.rows[0];
     const maxSlots = calcularSlots(usuario);
 
-    // [ARREGLO FINAL] Sincronizar proximo_envio basado estrictamente en el historial real
+    // [ARREGLO FINAL] Sincronizar y revivir IDs bugeados basado en el historial real
     await pool.query(`
       UPDATE auto_ids ai
       SET ultimo_envio = h.reciente,
           proximo_envio = h.reciente + INTERVAL '24 hours' + INTERVAL '2 minutes',
           reintentando = false,
           falla_desde = NULL,
-          motivo_error = NULL
+          motivo_error = NULL,
+          activo = CASE WHEN ai.motivo_error IS NOT NULL THEN true ELSE ai.activo END
       FROM (
         SELECT ff_uid, MAX(fecha) as reciente 
         FROM historial 
@@ -1256,6 +1258,7 @@ app.get('/api/auto/ids', authMiddleware, async (req, res) => {
       WHERE ai.usuario_id = $1 
       AND ai.ff_uid = h.ff_uid 
       AND (ai.ultimo_envio IS NULL OR ai.ultimo_envio < h.reciente OR ai.proximo_envio < h.reciente + INTERVAL '23 hours')
+      AND (ai.activo = true OR ai.motivo_error IS NOT NULL)
     `, [req.user.id]);
     
     const [ids, log] = await Promise.all([
