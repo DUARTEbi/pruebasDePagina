@@ -28,6 +28,14 @@
   --red:#ff4757;
   --warn:#ffc107;
   --g:var(--accent);
+  /* Variantes transparentes del acento (se actualizan via JS con setHue) */
+  --a05:rgba(57,255,20,.05);
+  --a08:rgba(57,255,20,.08);
+  --a10:rgba(57,255,20,.10);
+  --a12:rgba(57,255,20,.12);
+  --a20:rgba(57,255,20,.20);
+  --a30:rgba(57,255,20,.30);
+  --abdr:rgba(57,255,20,.13);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 *:focus{outline:none}
@@ -168,7 +176,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);height:100vh;display:fl
 .plan-btn.accent-btn{background:var(--accent);color:#111}
 
 /* ══ LIMITBAR ══ */
-.limitbar{height:6px;background:rgba(57,255,20,.1);border-radius:100px;overflow:hidden;margin-top:.35rem}
+.limitbar{height:6px;background:var(--a10);border-radius:100px;overflow:hidden;margin-top:.35rem}
 .limitfill{height:100%;background:linear-gradient(90deg,var(--accent),#00e5ff);border-radius:100px;transition:width .8s cubic-bezier(.23,1,.32,1)}
 
 /* ══ FORM INPUTS (LIKES) ══ */
@@ -201,12 +209,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);height:100vh;display:fl
 .rcl{color:var(--mut);font-size:.62rem;text-transform:uppercase;margin-bottom:.18rem}
 
 /* ══ AUTO BTN ══ */
-.auto-promote-btn{width:100%;padding:.85rem 1.2rem;border-radius:12px;border:1px solid rgba(57,255,20,.35);background:linear-gradient(135deg,rgba(57,255,20,.1) 0%,rgba(0,200,255,.07) 100%);display:flex;align-items:center;justify-content:space-between;color:var(--txt);cursor:pointer;position:relative;overflow:hidden;transition:all .3s cubic-bezier(.23,1,.32,1);margin-top:.75rem}
-.auto-promote-btn:hover{border-color:rgba(57,255,20,.7);transform:translateY(-2px);box-shadow:0 8px 32px rgba(57,255,20,.2)}
-.auto-promote-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(57,255,20,.06),transparent);transform:translateX(-100%);animation:autoShine 3s ease-in-out infinite}
+.auto-promote-btn{width:100%;padding:.85rem 1.2rem;border-radius:12px;border:1px solid var(--a30);background:linear-gradient(135deg,var(--a10) 0%,rgba(0,200,255,.07) 100%);display:flex;align-items:center;justify-content:space-between;color:var(--txt);cursor:pointer;position:relative;overflow:hidden;transition:all .3s cubic-bezier(.23,1,.32,1);margin-top:.75rem}
+.auto-promote-btn:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 32px var(--a20)}
+.auto-promote-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--a05),transparent);transform:translateX(-100%);animation:autoShine 3s ease-in-out infinite}
 @keyframes autoShine{0%,30%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
-.auto-btn-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(57,255,20,.2),rgba(0,200,255,.15));border:1px solid rgba(57,255,20,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.auto-badge{background:rgba(57,255,20,.12);border:1px solid rgba(57,255,20,.3);color:var(--accent);font-size:.65rem;font-weight:700;padding:.2rem .5rem;border-radius:100px;text-transform:uppercase;letter-spacing:.5px}
+.auto-btn-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--a20),rgba(0,200,255,.15));border:1px solid var(--a30);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.auto-badge{background:var(--a12);border:1px solid var(--a30);color:var(--accent);font-size:.65rem;font-weight:700;padding:.2rem .5rem;border-radius:100px;text-transform:uppercase;letter-spacing:.5px}
 
 /* ══ TOP USUARIOS ══ */
 .topu-card{background:var(--sur);border-radius:18px;padding:1.2rem;display:flex;flex-direction:column;gap:1rem}
@@ -228,7 +236,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);height:100vh;display:fl
 .hist-item{border-radius:11px;background:var(--sur2);margin-bottom:.45rem;overflow:hidden;animation:paneIn .35s cubic-bezier(.23,1,.32,1) both;transition:box-shadow .2s}
 .hist-item:hover{box-shadow:0 2px 12px rgba(57,255,20,.06)}
 .hist-top{display:flex;align-items:center;gap:.65rem;padding:.62rem .82rem .5rem}
-.hico{width:32px;height:32px;border-radius:8px;background:rgba(57,255,20,.08);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hico{width:32px;height:32px;border-radius:8px;background:var(--a08);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .hinfo{flex:1;min-width:0}
 .hname{font-weight:700;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}
 .huid{color:var(--mut);font-size:.68rem;font-family:monospace;margin-top:.06rem}
@@ -245,13 +253,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);height:100vh;display:fl
 .id-card{background:var(--sur2);border-radius:12px;overflow:hidden;transition:box-shadow .3s;margin-bottom:.55rem}
 .id-card:hover{box-shadow:0 4px 20px rgba(57,255,20,.07)}
 .id-card-top{display:flex;align-items:center;gap:.75rem;padding:.75rem .9rem .6rem}
-.id-card-icon{width:36px;height:36px;border-radius:9px;background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.id-card-icon{width:36px;height:36px;border-radius:9px;background:var(--a08);border:1px solid var(--a20);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .id-card-info{flex:1;min-width:0}
 .id-card-uid{font-size:1rem;font-weight:700;color:#fff;letter-spacing:.5px}
 .id-card-name{color:var(--mut);font-size:.72rem;margin-top:.08rem}
 .id-card-actions{display:flex;align-items:center;gap:.5rem}
 .id-status-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .6rem;border-radius:100px;font-size:.67rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase;flex-shrink:0}
-.status-sending{background:rgba(57,255,20,.1);border:1px solid rgba(57,255,20,.25);color:var(--accent)}
+.status-sending{background:var(--a10);border:1px solid var(--a30);color:var(--accent)}
 .status-waiting{background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.22);color:var(--warn)}
 .status-error{background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.22);color:var(--red)}
 .status-dot-anim{width:6px;height:6px;border-radius:50%;background:currentColor;animation:bl 1.2s ease-in-out infinite}
@@ -260,18 +268,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);height:100vh;display:fl
 .id-prog-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.38rem}
 .id-prog-lbl{font-size:.65rem;color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
 .id-prog-val{font-size:.82rem;font-weight:700;color:var(--accent)}
-.id-prog-bar{height:5px;background:rgba(57,255,20,.1);border-radius:100px;overflow:hidden}
+.id-prog-bar{height:5px;background:var(--a10);border-radius:100px;overflow:hidden}
 .id-prog-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),#00e5ff)}
 .id-card-footer{padding:.55rem .9rem .65rem;border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.15)}
 .id-next-lbl{color:var(--mut);font-size:.67rem;display:flex;align-items:center;gap:.3rem}
 .id-next-val{font-size:.85rem;font-weight:700}
 .id-delete-btn{background:none;border:none;color:var(--mut);display:flex;align-items:center;padding:.15rem;border-radius:5px;transition:color .2s,background .2s}
 .id-delete-btn:hover{color:var(--red);background:rgba(255,71,87,.1)}
-.id-empty{text-align:center;padding:2rem 1rem;border:1px dashed rgba(57,255,20,.15);border-radius:12px;margin-top:.5rem}
+.id-empty{text-align:center;padding:2rem 1rem;border:1px dashed var(--a12);border-radius:12px;margin-top:.5rem}
 .id-empty-title{font-weight:700;font-size:.92rem;margin-bottom:.3rem;color:var(--mut);opacity:.7}
 .id-empty-sub{color:var(--mut);font-size:.75rem;opacity:.5}
 .log-item{display:flex;align-items:center;gap:.65rem;padding:.5rem .65rem;border-radius:9px;background:var(--sur);margin-bottom:.38rem}
-.log-icon{width:28px;height:28px;border-radius:7px;background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.log-icon{width:28px;height:28px;border-radius:7px;background:var(--a08);border:1px solid var(--a20);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .log-info{flex:1;min-width:0}
 .log-name{font-size:.8rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .log-uid{color:var(--mut);font-size:.65rem;font-family:monospace}
@@ -547,7 +555,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);height:100vh;display:fl
         <div id="inicio-cargando" style="width:100%"><div class="ldg"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div></div>
 
         <!-- Con plan -->
-        <div id="inicio-con-plan" style="display:none;width:100%;align-items:center;gap:1rem;display:none">
+        <div id="inicio-con-plan" style="display:none;width:100%;align-items:center;gap:1rem;display:none;flex-wrap:wrap">
           <div class="plan-ico" style="background:var(--accent);color:#111">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
           </div>
@@ -558,9 +566,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);height:100vh;display:fl
             </div>
             <div class="plan-sub" id="inicio-plan-sub">Listo para enviar likes</div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:.5rem">
-            <button class="btn bp bsm" onclick="goTab('likes',document.getElementById('sb-likes'))">❤ Likes</button>
-            <button class="btn bo bsm" onclick="goTab('auto',document.getElementById('sb-auto'))">⚡ Auto</button>
+          <div style="display:flex;gap:.5rem;width:100%;margin-top:.4rem">
+            <button class="btn bsm" style="flex:1;border:none;background:var(--sur2);color:#fff;font-weight:700" onclick="goTab('likes',document.getElementById('sb-likes'))">Likes</button>
+            <button class="btn bsm" style="flex:1;border:none;background:var(--sur2);color:#fff;font-weight:700" onclick="goTab('auto',document.getElementById('sb-auto'))">Auto</button>
           </div>
         </div>
 
@@ -614,16 +622,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);height:100vh;display:fl
     <div id="pane-likes" class="pane">
 
       <!-- Plan status -->
-      <div class="plan-card">
-        <div class="plan-ico" id="lp-ico" style="background:rgba(255,71,87,.08);color:var(--red)">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </div>
-        <div class="plan-text">
-          <div style="display:flex;align-items:center;gap:.4rem">
-            <span class="plan-name" id="lp-nombre">Cargando...</span>
+      <div class="plan-card" style="padding:.9rem 1.1rem">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+            <span style="font-weight:700;font-size:.95rem" id="lp-nombre">Cargando...</span>
             <span class="pbadge poff" id="lp-badge">Sin plan</span>
           </div>
-          <div class="plan-sub" id="lp-sub">—</div>
+          <div style="color:var(--mut);font-size:.75rem;margin-top:.2rem" id="lp-sub">—</div>
         </div>
       </div>
 
@@ -855,14 +860,28 @@ function setAccent(color) {
   document.documentElement.style.setProperty('--accent', color);
   localStorage.setItem('bs_accent', color);
 }
+function syncAccentVars(hue) {
+  const r = document.documentElement;
+  r.style.setProperty('--a05', `hsla(${hue},100%,55%,.05)`);
+  r.style.setProperty('--a08', `hsla(${hue},100%,55%,.08)`);
+  r.style.setProperty('--a10', `hsla(${hue},100%,55%,.10)`);
+  r.style.setProperty('--a12', `hsla(${hue},100%,55%,.12)`);
+  r.style.setProperty('--a20', `hsla(${hue},100%,55%,.20)`);
+  r.style.setProperty('--a30', `hsla(${hue},100%,55%,.30)`);
+  r.style.setProperty('--abdr', `hsla(${hue},100%,55%,.13)`);
+}
 function setHue(hue) {
   const color = `hsl(${hue}, 100%, 55%)`;
   setAccent(color);
+  syncAccentVars(hue);
+  localStorage.setItem('bs_hue', hue);
 }
 // Restaurar color guardado
 (function(){
   const saved = localStorage.getItem('bs_accent');
+  const savedHue = localStorage.getItem('bs_hue');
   if (saved) document.documentElement.style.setProperty('--accent', saved);
+  if (savedHue) syncAccentVars(savedHue);
 })();
 
 /* ══════════════════════════════════════════════
@@ -1095,13 +1114,13 @@ function pintarAutoStats(u) {
 async function cargarTop() {
   const list = document.getElementById('top-list');
   try {
-    const res = await API.get('/api/top');
+    const res = await API.get('/api/top-usuarios');
     if (!res.ok || !res.top) { list.innerHTML = '<div class="empty"><p>Sin datos aún</p></div>'; return; }
     list.innerHTML = res.top.slice(0, 5).map((u, i) => `
       <div class="topu-item">
         <div class="topu-rank">${i + 1}</div>
         <div class="topu-name">${u.username}</div>
-        <div class="topu-likes">${(u.total_likes_enviados || 0).toLocaleString('es')}</div>
+        <div class="topu-likes">${parseInt(u.total_likes, 10).toLocaleString('es')}</div>
       </div>`).join('');
   } catch(e) { list.innerHTML = '<div class="empty"><p>Error cargando</p></div>'; }
 }
@@ -1405,9 +1424,89 @@ function arrancarAutoRefresh() {
   _autoRefreshTimer = setInterval(() => { if (_ct === 'auto') cargarAutoIDs(); }, 60000);
 }
 
+/* ══════════════════════════════════════════════
+   AUTO — FORMULARIO AGREGAR ID
+══════════════════════════════════════════════ */
+let _addFormOpen = false;
+let _autoTipo = 'likes';
+
+function toggleAddForm() {
+  _addFormOpen = !_addFormOpen;
+  const form = document.getElementById('auto-add-form');
+  const lbl = document.getElementById('add-form-btn-lbl');
+  if (form) form.style.display = _addFormOpen ? 'block' : 'none';
+  if (lbl) lbl.textContent = _addFormOpen ? 'Cerrar' : 'Agregar ID';
+}
+
+function setAutoTipo(tipo) {
+  _autoTipo = tipo;
+  const pL = document.getElementById('auto-panel-likes');
+  const pD = document.getElementById('auto-panel-dias');
+  const bL = document.getElementById('auto-toggle-likes');
+  const bD = document.getElementById('auto-toggle-dias');
+  if (pL) pL.style.display = tipo === 'likes' ? 'block' : 'none';
+  if (pD) pD.style.display = tipo === 'dias' ? 'block' : 'none';
+  const acOn  = 'rgba(57,255,20,.12)', acOnB = 'rgba(57,255,20,.35)';
+  const acOff = 'transparent',       acOffB = 'rgba(255,255,255,.07)';
+  if (bL) { bL.style.background=tipo==='likes'?acOn:acOff; bL.style.borderColor=tipo==='likes'?acOnB:acOffB; bL.style.color=tipo==='likes'?'var(--accent)':'var(--mut)'; }
+  if (bD) { bD.style.background=tipo==='dias'?acOn:acOff;  bD.style.borderColor=tipo==='dias'?acOnB:acOffB;  bD.style.color=tipo==='dias'?'var(--accent)':'var(--mut)'; }
+  actualizarResumen();
+}
+
+function setAutoLikes(val) {
+  const inp = document.getElementById('auto-likes-input');
+  if (inp) inp.value = val;
+  document.querySelectorAll('[id^="al-"]').forEach(b => b.classList.remove('preset-active'));
+  const btn = document.getElementById('al-' + val);
+  if (btn) btn.classList.add('preset-active');
+  actualizarResumen();
+}
+
+function setAutoDias(val) {
+  const inp = document.getElementById('auto-dias-input');
+  if (inp) inp.value = val;
+  document.querySelectorAll('[id^="ad-"]').forEach(b => b.classList.remove('preset-active'));
+  const btn = document.getElementById('ad-' + val);
+  if (btn) btn.classList.add('preset-active');
+  actualizarResumen();
+}
+
 function actualizarResumen() {
-  // Delegado al partial auto.html si existe
-  if (window._actualizarResumen) window._actualizarResumen();
+  const resText  = document.getElementById('auto-resumen-txt');
+  const resCosto = document.getElementById('auto-resumen-costo');
+  if (!resText || !resCosto) return;
+  if (_autoTipo === 'likes') {
+    const val = parseInt(document.getElementById('auto-likes-input')?.value) || 500;
+    resText.textContent  = `${val.toLocaleString('es')} likes para este ID`;
+    resCosto.textContent = `−${val.toLocaleString('es')} likes de tu plan`;
+  } else {
+    const val = parseInt(document.getElementById('auto-dias-input')?.value) || 30;
+    resText.textContent  = `Envío automático por ${val} día${val !== 1 ? 's' : ''}`;
+    resCosto.textContent = `${val} día${val !== 1 ? 's' : ''}`;
+  }
+}
+
+async function agregarAutoID() {
+  const uidEl = document.getElementById('auto-uid-input');
+  const uid = uidEl?.value?.trim();
+  if (!uid) return showMsg('msg-auto-add', 'Ingresa un UID válido', 'err');
+  const btn = document.getElementById('auto-add-btn');
+  if (btn) { btn.disabled = true; btn.style.opacity = '.5'; }
+  const payload = { ff_uid: uid, tipo: _autoTipo };
+  if (_autoTipo === 'likes') payload.likes_meta = parseInt(document.getElementById('auto-likes-input')?.value) || 500;
+  else payload.dias_meta = parseInt(document.getElementById('auto-dias-input')?.value) || 30;
+  try {
+    const res = await API.post('/api/auto/agregar', payload);
+    if (!res.ok) { showMsg('msg-auto-add', res.error || 'Error al agregar', 'err'); return; }
+    showMsg('msg-auto-add', '✓ ID agregado correctamente', 'ok');
+    if (uidEl) uidEl.value = '';
+    toggleAddForm();
+    await cargarAutoIDs();
+  } catch(e) {
+    showMsg('msg-auto-add', 'Error de conexión', 'err');
+  } finally {
+    if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+  }
 }
 
 /* ══════════════════════════════════════════════
