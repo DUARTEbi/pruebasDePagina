@@ -1238,48 +1238,46 @@ function salir() {
   location.href = '/';
 }
 
-��f u n c t i o n   t o g g l e A d d F o r m ( ) {  
-     _ a d d F o r m O p e n = ! _ a d d F o r m O p e n ; c o n s t   f o r m = d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - a d d - f o r m ' ) ; c o n s t   l b l = d o c u m e n t . g e t E l e m e n t B y I d ( ' a d d - f o r m - b t n - l b l ' ) ; c o n s t   b t n = d o c u m e n t . g e t E l e m e n t B y I d ( ' b t n - t o g g l e - a d d - f o r m ' ) ;  
-     i f ( _ a d d F o r m O p e n ) { f o r m . s t y l e . d i s p l a y = ' b l o c k ' ; i f ( l b l ) l b l . t e x t C o n t e n t = ' C e r r a r ' ; i f ( b t n ) { b t n . s t y l e . b a c k g r o u n d = ' v a r ( - - b g 3 ) ' ; b t n . s t y l e . c o l o r = ' v a r ( - - m u t ) ' ; b t n . s t y l e . b o r d e r = ' 1 p x   s o l i d   v a r ( - - b d r ) ' ; } }  
-     e l s e { f o r m . s t y l e . d i s p l a y = ' n o n e ' ; i f ( l b l ) l b l . t e x t C o n t e n t = ' A g r e g a r   I D ' ; i f ( b t n ) { b t n . s t y l e . b a c k g r o u n d = ' v a r ( - - g ) ' ; b t n . s t y l e . c o l o r = ' # 0 0 0 ' ; b t n . s t y l e . b o r d e r = ' n o n e ' ; } }  
- }  
-  
- l e t   _ a u t o T i p o = ' l i k e s ' ;  
- f u n c t i o n   s e t A u t o T i p o ( t ) {  
-     _ a u t o T i p o = t ; c o n s t   t l = d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - t o g g l e - l i k e s ' ) ; c o n s t   t d = d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - t o g g l e - d i a s ' ) ; c o n s t   p l = d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - p a n e l - l i k e s ' ) ; c o n s t   p d = d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - p a n e l - d i a s ' ) ;  
-     c o n s t   o n = ' f l e x : 1 ; p a d d i n g : . 3 8 r e m   . 5 r e m ; b o r d e r - r a d i u s : 8 p x ; b o r d e r : 1 p x   s o l i d   r g b a ( 0 , 2 5 5 , 3 0 , . 3 5 ) ; b a c k g r o u n d : r g b a ( 0 , 2 5 5 , 3 0 , . 1 ) ; c o l o r : v a r ( - - g ) ; f o n t - f a m i l y : \ ' E x o   2 \ ' , s a n s - s e r i f ; f o n t - s i z e : . 7 5 r e m ; f o n t - w e i g h t : 7 0 0 ; c u r s o r : p o i n t e r ; t r a n s i t i o n : a l l   . 2 s ' ;  
-     c o n s t   o f f = ' f l e x : 1 ; p a d d i n g : . 3 8 r e m   . 5 r e m ; b o r d e r - r a d i u s : 8 p x ; b o r d e r : 1 p x   s o l i d   v a r ( - - b d r ) ; b a c k g r o u n d : t r a n s p a r e n t ; c o l o r : v a r ( - - m u t ) ; f o n t - f a m i l y : \ ' E x o   2 \ ' , s a n s - s e r i f ; f o n t - s i z e : . 7 5 r e m ; f o n t - w e i g h t : 7 0 0 ; c u r s o r : p o i n t e r ; t r a n s i t i o n : a l l   . 2 s ' ;  
-     i f ( t = = = ' l i k e s ' ) { t l . s t y l e . c s s T e x t = o n ; t d . s t y l e . c s s T e x t = o f f ; p l . s t y l e . d i s p l a y = ' b l o c k ' ; p d . s t y l e . d i s p l a y = ' n o n e ' ; }  
-     e l s e { t d . s t y l e . c s s T e x t = o n ; t l . s t y l e . c s s T e x t = o f f ; p d . s t y l e . d i s p l a y = ' b l o c k ' ; p l . s t y l e . d i s p l a y = ' n o n e ' ; }  
-     a c t u a l i z a r R e s u m e n ( ) ;  
- }  
- f u n c t i o n   s e t A u t o L i k e s ( n ) { d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - l i k e s - i n p u t ' ) . v a l u e = n ; [ ' 5 0 0 ' , ' 1 0 0 0 ' , ' 2 0 0 0 ' , ' 3 0 0 0 ' ] . f o r E a c h ( v = > { c o n s t   b = d o c u m e n t . g e t E l e m e n t B y I d ( ' a l - ' + v ) ; i f ( b ) b . c l a s s L i s t . t o g g l e ( ' p r e s e t - a c t i v e ' , p a r s e I n t ( v ) = = = n ) ; } ) ; a c t u a l i z a r R e s u m e n ( ) ; }  
- f u n c t i o n   s e t A u t o D i a s ( n ) { d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - d i a s - i n p u t ' ) . v a l u e = n ; [ ' 7 ' , ' 1 5 ' , ' 3 0 ' ] . f o r E a c h ( v = > { c o n s t   b = d o c u m e n t . g e t E l e m e n t B y I d ( ' a d - ' + v ) ; i f ( b ) b . c l a s s L i s t . t o g g l e ( ' p r e s e t - a c t i v e ' , p a r s e I n t ( v ) = = = n ) ; } ) ; a c t u a l i z a r R e s u m e n ( ) ; }  
- f u n c t i o n   a c t u a l i z a r R e s u m e n ( ) {  
-     c o n s t   r t = d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - r e s u m e n - t x t ' ) ; c o n s t   r c = d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - r e s u m e n - c o s t o ' ) ; i f ( ! r t | | ! r c )   r e t u r n ;  
-     i f ( _ a u t o T i p o = = = ' l i k e s ' ) { c o n s t   v = p a r s e I n t ( d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - l i k e s - i n p u t ' ) . v a l u e ) | | 5 0 0 ; r t . t e x t C o n t e n t = v . t o L o c a l e S t r i n g ( ' e s ' ) + '   l i k e s   p a r a   e s t e   I D ' ; r c . t e x t C o n t e n t = ' � � � ' + v . t o L o c a l e S t r i n g ( ' e s ' ) + '   l i k e s   d e   t u   p l a n ' ; }  
-     e l s e { c o n s t   v = p a r s e I n t ( d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - d i a s - i n p u t ' ) . v a l u e ) | | 3 0 ; r t . t e x t C o n t e n t = v + '   d %� a ' + ( v ! = = 1 ? ' s ' : ' ' ) + '   d e   e n v %� o   a u t o m %� t i c o ' ; r c . t e x t C o n t e n t = ' E n v %� o s   d i a r i o s   p o r   ' + v + ' d ' ; }  
- }  
-  
- a s y n c   f u n c t i o n   a g r e g a r A u t o I D ( ) {  
-     c o n s t   u i d = d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - u i d - i n p u t ' ) . v a l u e . t r i m ( ) ;  
-     i f ( ! u i d )   r e t u r n   m o s t r a r M s g ( ' m s g - a u t o - a d d ' , ' I n g r e s a   e l   U I D   d e   F r e e   F i r e ' , ' e r r ' ) ;  
-     i f ( ! / ^ \ d + $ / . t e s t ( u i d ) )   r e t u r n   m o s t r a r M s g ( ' m s g - a u t o - a d d ' , ' E l   U I D   s o l o   d e b e   c o n t e n e r   n %Q%m e r o s ' , ' e r r ' ) ;  
-     c o n s t   l i k e s _ m e t a = _ a u t o T i p o = = = ' l i k e s ' ? ( p a r s e I n t ( d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - l i k e s - i n p u t ' ) . v a l u e ) | | 5 0 0 ) : 0 ;  
-     c o n s t   d i a s _ m e t a = _ a u t o T i p o = = = ' d i a s ' ? ( p a r s e I n t ( d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - d i a s - i n p u t ' ) . v a l u e ) | | 3 0 ) : 0 ;  
-     c o n s t   b t n = d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - a d d - b t n ' ) ; b t n . d i s a b l e d = t r u e ; b t n . t e x t C o n t e n t = ' A g r e g a n d o . . . ' ;  
-     c o n s t   r e s = a w a i t   A P I . p o s t ( ' / a p i / a u t o / i d s ' , { f f _ u i d : u i d , l i k e s _ m e t a , d i a s _ m e t a } ) ;  
-     b t n . d i s a b l e d = f a l s e ; b t n . i n n e r H T M L = ' < s v g   w i d t h = " 1 4 "   h e i g h t = " 1 4 "   v i e w B o x = " 0   0   2 4   2 4 "   f i l l = " n o n e "   s t r o k e = " c u r r e n t C o l o r "   s t r o k e - w i d t h = " 2 . 5 " > < l i n e   x 1 = " 1 2 "   y 1 = " 5 "   x 2 = " 1 2 "   y 2 = " 1 9 " / > < l i n e   x 1 = " 5 "   y 1 = " 1 2 "   x 2 = " 1 9 "   y 2 = " 1 2 " / > < / s v g >   C o n f i r m a r   y   a g r e g a r   I D ' ;  
-     i f ( ! r e s . o k )   r e t u r n   m o s t r a r M s g ( ' m s g - a u t o - a d d ' , r e s . e r r o r , ' e r r ' ) ;  
-     m o s t r a r M s g ( ' m s g - a u t o - a d d ' , ' � � �   I D   a g r e g a d o .   E n v i a n d o   l i k e s   a h o r a . . . ' , ' o k ' ) ;  
-     d o c u m e n t . g e t E l e m e n t B y I d ( ' a u t o - u i d - i n p u t ' ) . v a l u e = ' ' ; s e t A u t o L i k e s ( 5 0 0 ) ;  
-     _ a d d F o r m O p e n = t r u e ; t o g g l e A d d F o r m ( ) ; c a r g a r A u t o I D s ( ) ;  
-     s e t T i m e o u t ( ( ) = > { i f ( _ c t = = = ' a u t o ' )   c a r g a r A u t o I D s ( ) ; } , 6 0 0 0 ) ;  
-     s e t T i m e o u t ( ( ) = > { i f ( _ c t = = = ' a u t o ' )   c a r g a r A u t o I D s ( ) ; } , 1 2 0 0 0 ) ;  
- }  
-  
- 
-══════════════════════════════════════════════ */
+function toggleAddForm(){
+  _addFormOpen=!_addFormOpen;const form=document.getElementById('auto-add-form');const lbl=document.getElementById('add-form-btn-lbl');const btn=document.getElementById('btn-toggle-add-form');
+  if(_addFormOpen){form.style.display='block';if(lbl)lbl.textContent='Cerrar';if(btn){btn.style.background='var(--bg3)';btn.style.color='var(--mut)';btn.style.border='1px solid var(--bdr)';}}
+  else{form.style.display='none';if(lbl)lbl.textContent='Agregar ID';if(btn){btn.style.background='var(--g)';btn.style.color='#000';btn.style.border='none';}}
+}
+
+let _autoTipo='likes';
+function setAutoTipo(t){
+  _autoTipo=t;const tl=document.getElementById('auto-toggle-likes');const td=document.getElementById('auto-toggle-dias');const pl=document.getElementById('auto-panel-likes');const pd=document.getElementById('auto-panel-dias');
+  const on='flex:1;padding:.38rem .5rem;border-radius:8px;border:1px solid rgba(0,255,30,.35);background:rgba(0,255,30,.1);color:var(--g);font-family:\'Exo 2\',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s';
+  const off='flex:1;padding:.38rem .5rem;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--mut);font-family:\'Exo 2\',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s';
+  if(t==='likes'){tl.style.cssText=on;td.style.cssText=off;pl.style.display='block';pd.style.display='none';}
+  else{td.style.cssText=on;tl.style.cssText=off;pd.style.display='block';pl.style.display='none';}
+  actualizarResumen();
+}
+function setAutoLikes(n){document.getElementById('auto-likes-input').value=n;['500','1000','2000','3000'].forEach(v=>{const b=document.getElementById('al-'+v);if(b)b.classList.toggle('preset-active',parseInt(v)===n);});actualizarResumen();}
+function setAutoDias(n){document.getElementById('auto-dias-input').value=n;['7','15','30'].forEach(v=>{const b=document.getElementById('ad-'+v);if(b)b.classList.toggle('preset-active',parseInt(v)===n);});actualizarResumen();}
+function actualizarResumen(){
+  const rt=document.getElementById('auto-resumen-txt');const rc=document.getElementById('auto-resumen-costo');if(!rt||!rc) return;
+  if(_autoTipo==='likes'){const v=parseInt(document.getElementById('auto-likes-input').value)||500;rt.textContent=v.toLocaleString('es')+' likes para este ID';rc.textContent=''+v.toLocaleString('es')+' likes de tu plan';}
+  else{const v=parseInt(document.getElementById('auto-dias-input').value)||30;rt.textContent=v+' d%a'+(v!==1?'s':'')+' de env%o autom%tico';rc.textContent='Env%os diarios por '+v+'d';}
+}
+
+async function agregarAutoID(){
+  const uid=document.getElementById('auto-uid-input').value.trim();
+  if(!uid) return mostrarMsg('msg-auto-add','Ingresa el UID de Free Fire','err');
+  if(!/^\d+$/.test(uid)) return mostrarMsg('msg-auto-add','El UID solo debe contener n%Q%meros','err');
+  const likes_meta=_autoTipo==='likes'?(parseInt(document.getElementById('auto-likes-input').value)||500):0;
+  const dias_meta=_autoTipo==='dias'?(parseInt(document.getElementById('auto-dias-input').value)||30):0;
+  const btn=document.getElementById('auto-add-btn');btn.disabled=true;btn.textContent='Agregando...';
+  const res=await API.post('/api/auto/ids',{ff_uid:uid,likes_meta,dias_meta});
+  btn.disabled=false;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Confirmar y agregar ID';
+  if(!res.ok) return mostrarMsg('msg-auto-add',res.error,'err');
+  mostrarMsg('msg-auto-add',' ID agregado. Enviando likes ahora...','ok');
+  document.getElementById('auto-uid-input').value='';setAutoLikes(500);
+  _addFormOpen=true;toggleAddForm();cargarAutoIDs();
+  setTimeout(()=>{if(_ct==='auto') cargarAutoIDs();},6000);
+  setTimeout(()=>{if(_ct==='auto') cargarAutoIDs();},12000);
+}
+/* MANTENIMIENTO */
 async function verificarMantenimiento() {
   try {
     const res = await API.get('/api/mantenimiento');
@@ -1462,6 +1460,153 @@ async function canjearDesdeInicio() {
   await cargarPerfil();
 }
 
+</script>
+
+<!-- FIREBASE (vinculación Google) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, linkWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyAOS5H9Q7pdSjcNShoAElXRO2UBpBCRSxo",
+    authDomain: "boostspeed777.firebaseapp.com",
+    projectId: "boostspeed777",
+    storageBucket: "boostspeed777.firebasestorage.app",
+    messagingSenderId: "386967136986",
+    appId: "1:386967136986:web:00516df641c41d103b53e3"
+  });
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  window.vincularConGoogle = async function() {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const res = await API.post('/api/auth/google/link', { googleId: user.uid, email: user.email });
+      if (res.ok) {
+        document.getElementById('ov-g-mandatory').style.display = 'none';
+        window.checkGoogleLink = null;
+      } else {
+        const m = document.getElementById('msg-g-link');
+        if (m) { m.textContent = res.error || 'Error al vincular'; m.className = 'msg err'; m.style.display = 'block'; }
+      }
+    } catch(e) {
+      const m = document.getElementById('msg-g-link');
+      if (m) { m.textContent = 'Error con Google: ' + e.message; m.className = 'msg err'; m.style.display = 'block'; }
+    }
+  };
+
+  window.checkGoogleLink = function(u) {
+    if (u && u.requires_google_link) {
+      document.getElementById('ov-g-mandatory').style.display = 'flex';
+    }
+  };
+</script>
+</body>
+</html>
+
+let _addFormOpen = false;
+function toggleAddForm() {
+  _addFormOpen = !_addFormOpen;
+  const form = document.getElementById('auto-add-form');
+  const lbl = document.getElementById('add-form-btn-lbl');
+  const btn = document.getElementById('btn-toggle-add-form');
+  if(_addFormOpen) {
+    if(form) form.style.display = 'block';
+    if(lbl) lbl.textContent = 'Cerrar';
+    if(btn) { btn.style.background = 'var(--bg3)'; btn.style.color = 'var(--mut)'; btn.style.border = '1px solid var(--bdr)'; }
+  } else {
+    if(form) form.style.display = 'none';
+    if(lbl) lbl.textContent = 'Agregar ID';
+    if(btn) { btn.style.background = 'var(--g)'; btn.style.color = '#000'; btn.style.border = 'none'; }
+  }
+}
+
+let _autoTipo = 'likes';
+function setAutoTipo(t) {
+  _autoTipo = t;
+  const tl = document.getElementById('auto-toggle-likes');
+  const td = document.getElementById('auto-toggle-dias');
+  const pl = document.getElementById('auto-panel-likes');
+  const pd = document.getElementById('auto-panel-dias');
+  const on = 'flex:1;padding:.38rem .5rem;border-radius:8px;border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);background:color-mix(in srgb, var(--accent) 10%, transparent);color:var(--g);font-family:\'Exo 2\',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s';
+  const off = 'flex:1;padding:.38rem .5rem;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--mut);font-family:\'Exo 2\',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s';
+  if(t === 'likes') {
+    if(tl) tl.style.cssText = on;
+    if(td) td.style.cssText = off;
+    if(pl) pl.style.display = 'block';
+    if(pd) pd.style.display = 'none';
+  } else {
+    if(td) td.style.cssText = on;
+    if(tl) tl.style.cssText = off;
+    if(pd) pd.style.display = 'block';
+    if(pl) pl.style.display = 'none';
+  }
+  actualizarResumen();
+}
+
+function setAutoLikes(n) {
+  const input = document.getElementById('auto-likes-input');
+  if(input) input.value = n;
+  ['500','1000','2000','3000'].forEach(v => {
+    const b = document.getElementById('al-'+v);
+    if(b) b.classList.toggle('preset-active', parseInt(v) === n);
+  });
+  actualizarResumen();
+}
+
+function setAutoDias(n) {
+  const input = document.getElementById('auto-dias-input');
+  if(input) input.value = n;
+  ['7','15','30'].forEach(v => {
+    const b = document.getElementById('ad-'+v);
+    if(b) b.classList.toggle('preset-active', parseInt(v) === n);
+  });
+  actualizarResumen();
+}
+
+function actualizarResumen() {
+  const rt = document.getElementById('auto-resumen-txt');
+  const rc = document.getElementById('auto-resumen-costo');
+  if(!rt || !rc) return;
+  if(_autoTipo === 'likes') {
+    const v = parseInt(document.getElementById('auto-likes-input').value) || 500;
+    rt.textContent = v.toLocaleString('es') + ' likes para este ID';
+    rc.textContent = '−' + v.toLocaleString('es') + ' likes de tu plan';
+  } else {
+    const v = parseInt(document.getElementById('auto-dias-input').value) || 30;
+    rt.textContent = v + ' día' + (v !== 1 ? 's' : '') + ' de envío automático';
+    rc.textContent = 'Envíos diarios por ' + v + 'd';
+  }
+}
+
+async function agregarAutoID() {
+  const uid = document.getElementById('auto-uid-input').value.trim();
+  if(!uid) return mostrarMsg('msg-auto-add','Ingresa el UID de Free Fire','err');
+  if(!/^\d+$/.test(uid)) return mostrarMsg('msg-auto-add','El UID solo debe contener números','err');
+  const likes_meta = _autoTipo === 'likes' ? (parseInt(document.getElementById('auto-likes-input').value) || 500) : 0;
+  const dias_meta = _autoTipo === 'dias' ? (parseInt(document.getElementById('auto-dias-input').value) || 30) : 0;
+  const btn = document.getElementById('auto-add-btn');
+  if(btn) { btn.disabled = true; btn.textContent = 'Agregando...'; }
+  const res = await API.post('/api/auto/ids',{ ff_uid: uid, likes_meta, dias_meta });
+  if(btn) {
+    btn.disabled = false; 
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Confirmar y agregar ID';
+  }
+  if(!res.ok) return mostrarMsg('msg-auto-add', res.error, 'err');
+  mostrarMsg('msg-auto-add', '⚡ ID agregado. Enviando likes ahora...', 'ok');
+  document.getElementById('auto-uid-input').value = '';
+  setAutoLikes(500);
+  _addFormOpen = true; 
+  toggleAddForm(); 
+  cargarAutoIDs();
+  setTimeout(()=>{ if(_ct==='auto') cargarAutoIDs(); }, 6000);
+  setTimeout(()=>{ if(_ct==='auto') cargarAutoIDs(); }, 12000);
+}
+
+// Window wrapper to call from imported templates (partials)
+window._actualizarResumen = actualizarResumen;
+/* END RECOVERY */
 </script>
 
 <!-- FIREBASE (vinculación Google) -->
