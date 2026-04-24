@@ -584,40 +584,55 @@ function ejecutarPeticion(baseUrl, uid, apiKey, server, isKey1 = true) {
 function interpretarRespuestaFF(apiData) {
   console.log('[DEBUG API RESPONSE]', JSON.stringify(apiData));
   
+  // Soporte para HubsDev y otras APIs con objeto 'data' anidado (puede ser Array)
+  let root = apiData.data || apiData;
+  if (Array.isArray(root) && root.length > 0) {
+    root = root[0];
+  }
+
   // Detección de Likes Enviados
-  const sentMatch = String(apiData.sent || '').match(/\d+/);
+  const sentMatch = String(apiData.sent || root.sent || '').match(/\d+/);
   const fromSentStr = sentMatch ? parseInt(sentMatch[0], 10) : 0;
   
-  // Soporte para HubsDev y otras APIs con objeto 'data' anidado
-  const root = apiData.data || apiData;
-
-  let added = root.likes_enviados !== undefined ? parseInt(root.likes_enviados, 10) : parseInt(root.likes_added || root.likes_send || root.likes_sent || root.sent_likes || root.sucessos || root.sucesso || root.Likes_Enviados || fromSentStr || 0, 10);
+  let added = 0;
+  if (root.likes && root.likes.enviadas !== undefined) {
+    added = parseInt(root.likes.enviadas, 10);
+  } else {
+    added = root.likes_enviados !== undefined ? parseInt(root.likes_enviados, 10) : 
+            parseInt(root.likes_added || root.likes_send || root.likes_sent || root.sent_likes || root.sucessos || root.sucesso || root.Likes_Enviados || fromSentStr || 0, 10);
+  }
   
   // Fallback para mensajes de éxito sin campo numérico directo
-  const msgRaw = String((apiData.message || '') + (root.message || '') + (apiData.error || '') + (root.error || '') + (apiData.msg_sistema || '') + (apiData.sent || '')).toLowerCase();
-  const statusEnvio = String(apiData.status_envio || root.status_envio || '').toUpperCase();
+  const msgRaw = String((apiData.message || '') + (root.message || '') + (apiData.error || '') + (root.error || '') + (apiData.msg_sistema || '') + (apiData.sent || '') + (apiData.mensagem || '') + (root.mensagem || '')).toLowerCase();
+  const statusEnvio = String(apiData.status_envio || root.status_envio || apiData.status || '').toUpperCase();
   
-  const before = parseInt(root.likes_before || root.likes_antes || root.Likes_Iniciais || 0, 10);
-  const after  = parseInt(root.likes_after || root.likes_depois || root.Likes_Atuais || 0, 10);
+  let before = parseInt(root.likes_before || root.likes_antes || root.Likes_Iniciais || 0, 10);
+  let after  = parseInt(root.likes_after || root.likes_depois || root.Likes_Atuais || 0, 10);
 
-  const playerName = root.player_nickname || root.nickname || root.Nickname || root.player_name || root.PlayerName || root.player || '';
+  if (root.likes && root.likes.antes !== undefined) {
+    before = parseInt(root.likes.antes, 10);
+    after = parseInt(root.likes.depois || root.likes.after || 0, 10);
+  }
+
+  const playerName = (root.conta && root.conta.nome_conta) || root.player_nickname || root.nickname || root.Nickname || root.player_name || root.PlayerName || root.player || '';
   const level = root.level || root.Level || 0;
-  const region = root.region || root.Region || 'BR';
+  const region = (root.conta && root.conta.region) || root.region || root.Region || 'BR';
 
   // CRITERIOS DE ÉXITO
   const finalAdded = added || (after > before ? after - before : 0);
   let esExito = (
-    finalAdded > 0 || // Prioridad absoluta: si se sumaron likes, es éxito
+    finalAdded > 0 || 
     statusEnvio === 'SUCESSO' || 
+    statusEnvio === 'SUCESSO_LIKES' ||
     apiData.status === 1 || 
     apiData.status === 'success' || 
     apiData.status === 'ok' || 
     apiData.success === true ||
+    apiData.sucesso === true ||
     (apiData.res === 'SUCCESS' && !apiData.error)
   );
 
   if (esExito) {
-    // Caso especial para API 1 que devuelve status 2 incluso cuando suma likes
     return { tipo: 'ok', added: finalAdded, before, after, playerName, level, region };
   }
   
@@ -628,21 +643,31 @@ function interpretarRespuestaFF(apiData) {
   if (apiData.res === 'KEY_NOT_FOUND' || msgRaw.includes('chave inv') || msgRaw.includes('key not found') || msgRaw.includes('chave inválida') || apiData.status_code === 401) {
     return { tipo: 'auth_error' };
   }
-  if (apiData.res === 'TOO_MANY_REQUESTS' || msgRaw.includes('6hrs') || msgRaw.includes('recibio likes') || msgRaw.includes('a cada 24 horas') || apiData._httpStatus === 429) {
+  if (apiData.res === 'TOO_MANY_REQUESTS' || msgRaw.includes('6hrs') || msgRaw.includes('recibio likes') || msgRaw.includes('a cada 24 horas') || apiData._httpStatus === 429 || msgRaw.includes('usage limit')) {
     return { tipo: 'ya_recibio' };
   }
   
-  // Caso especial: La API dice éxito pero mandó 0 likes (Típico cuando ya recibió)
-  if (finalAdded === 0 && (apiData.success === true || apiData.status === 1 || apiData.res === 'SUCCESS' || statusEnvio === 'SUCESSO')) {
-    return { tipo: 'ya_recibio' };
-  }
-  
-  // Tratamiento para status 2 o similar (ya recibió)
-  if ((apiData.status === 2 || apiData.status === '2') && finalAdded === 0) {
+  // Caso especial: La API dice éxito o devuelve status de "ya recibió" pero mandó 0 likes
+  const esYaRecibio = (
+    finalAdded === 0 && (
+      apiData.success === true || 
+      apiData.sucesso === true || 
+      apiData.status === 1 || 
+      apiData.status === 2 || 
+      apiData.status === 3 || 
+      apiData.status === 'SUCESSO_LIKES' || 
+      apiData.res === 'SUCCESS' || 
+      statusEnvio === 'SUCESSO' ||
+      msgRaw.includes('ya recibi') ||
+      msgRaw.includes('recibió likes')
+    )
+  );
+
+  if (esYaRecibio) {
     return { tipo: 'ya_recibio' };
   }
 
-  return { tipo: 'error', error: apiData.error || apiData.message || 'Error del proveedor' };
+  return { tipo: 'error', error: apiData.error || apiData.message || apiData.mensagem || 'Error del proveedor' };
 }
 
 app.get('/api/public-stats', async (req, res) => {
