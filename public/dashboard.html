@@ -342,6 +342,26 @@ body.no-scroll footer { display: none !important; opacity:0 !important; visibili
 .cp-panel{display:none;position:absolute;top:calc(100% + 8px);right:0;background:#1a1a1a;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1rem;width:210px;z-index:500;animation:cpIn .18s cubic-bezier(.23,1,.32,1);}
 .cp-panel.open{display:block;}
 @keyframes cpIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+#hue-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #fff !important;
+  border: 2px solid #000;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+#hue-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #fff !important;
+  border: 2px solid #000;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
 </style>
 </head>
 <body>
@@ -392,8 +412,11 @@ body.no-scroll footer { display: none !important; opacity:0 !important; visibili
       <button class="tb-icobtn" title="Color" id="btn-cp-tb" onclick="toggleCP(event)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
       <div class="cp-panel" id="cp-panel">
         <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.35);text-align:center;margin-bottom:.3rem;">Color del acento</div>
-        <input type="range" id="hue-slider" min="0" max="360" value="120" oninput="onHueChange(this.value)" style="width:100%;height:14px;border-radius:7px;outline:none;-webkit-appearance:none;appearance:none;background:linear-gradient(to right,#f00 0%,#ff0 17%,#0f0 33%,#0ff 50%,#00f 67%,#f0f 83%,#f00 100%);cursor:pointer;margin:.4rem 0;">
-        <button onclick="resetColor()" style="width:100%;background:rgba(255,255,255,.07);color:#fff;border:none;border-radius:8px;padding:.45rem;font-size:.72rem;font-weight:600;cursor:pointer;margin-top:.2rem;transition:background .2s;">&#8634; Restaurar verde</button>
+        <input type="range" id="hue-slider" min="0" max="360" value="120" oninput="onHueChange(this.value)" style="width:100%;height:12px;border-radius:7px;outline:none;-webkit-appearance:none;appearance:none;background:linear-gradient(to right,#f00 0%,#ff0 17%,#0f0 33%,#0ff 50%,#00f 67%,#f0f 83%,#f00 100%);cursor:pointer;margin:.6rem 0;">
+        <div style="display:flex;gap:.4rem;margin-bottom:.5rem">
+          <button onclick="onHueChange(0,true)" style="flex:1;background:#fff;color:#000;border:none;border-radius:6px;padding:.35rem;font-size:.65rem;font-weight:800;cursor:pointer;">Blanco</button>
+          <button onclick="resetColor()" style="flex:1;background:rgba(255,255,255,.07);color:#fff;border:none;border-radius:6px;padding:.35rem;font-size:.65rem;font-weight:600;cursor:pointer;">Restaurar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -512,7 +535,7 @@ body.no-scroll footer { display: none !important; opacity:0 !important; visibili
 <div class="pane" id="pane-acceso">
   <div class="card">
     <div class="ctit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Canjear código de activación</div>
-    <p style="color:var(--mut);font-size:.8rem;line-height:1.55;margin-bottom:.9rem">Ingresa el código de tu pase o plan para activar los beneficios en tu cuenta.</p>
+    <p style="color:var(--mut);font-size:.8rem;line-height:1.55;margin-bottom:.9rem">Ingresa el codigo comprado para activar tu plan de likes.</p>
     <div class="msg" id="msg-can"></div>
     <div class="crow2"><div class="fg"><input type="text" id="cod-inp" placeholder="EJ: BS-XXXX-XXXX" style="text-transform:uppercase" autocomplete="off"/></div><button class="btn bp" onclick="canjear()" style="margin-bottom:.8rem">Canjear</button></div>
   </div>
@@ -1163,9 +1186,9 @@ async function verificarMantenimiento() {
 <script>
 function toggleCP(e){e.stopPropagation();document.getElementById('cp-panel').classList.toggle('open');}
 document.addEventListener('click',function(e){var p=document.getElementById('cp-panel');if(p&&!p.closest('.cp-wrapper').contains(e.target))p.classList.remove('open');});
-function onHueChange(h){var c='hsl('+h+',100%,50%)';document.documentElement.style.setProperty('--g',c);document.documentElement.style.setProperty('--gm',c);try{localStorage.setItem('bs_accent_hue',h);}catch(ex){}}
+function onHueChange(h,isWhite){var c=isWhite?'#fff':'hsl('+h+',100%,50%)';document.documentElement.style.setProperty('--g',c);document.documentElement.style.setProperty('--gm',c);try{localStorage.setItem('bs_accent_hue',isWhite?'white':h);}catch(ex){}}
 function resetColor(){document.documentElement.style.setProperty('--g','#00FF1E');document.documentElement.style.setProperty('--gm','#00e61a');document.getElementById('hue-slider').value=120;try{localStorage.removeItem('bs_accent_hue');}catch(ex){}}
-(function(){try{var h=localStorage.getItem('bs_accent_hue');if(h){onHueChange(h);document.getElementById('hue-slider').value=h;}}catch(ex){}})();
+(function(){try{var h=localStorage.getItem('bs_accent_hue');if(h){if(h==='white')onHueChange(0,true);else{onHueChange(h);document.getElementById('hue-slider').value=h;}}}catch(ex){}})();
 
 /* Sync sidebar .sb-it with existing tab() function */
 (function(){
