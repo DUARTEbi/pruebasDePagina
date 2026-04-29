@@ -1049,16 +1049,39 @@ async function enviarLikes(){
   box.style.display='none';spin.style.display='block';ico.style.display='none';btn.disabled=true;
   const res=await API.post('/api/enviar-likes',{ff_uid:uid});
   spin.style.display='none';ico.style.display='block';btn.disabled=false;
-  const fill=(d,warn)=>{
-    document.getElementById('r-av').textContent=(d.jugador||'?').slice(0,2).toUpperCase();
-    document.getElementById('r-nombre').textContent=d.jugador||'—';document.getElementById('r-uid').textContent=d.uid||uid;document.getElementById('r-nivel').textContent=d.nivel||'—';document.getElementById('r-region').textContent=d.region||'—';
-    document.getElementById('r-agregados').textContent=warn?'+0':'+'+(d.likes_agregados||0).toLocaleString('es');document.getElementById('r-agregados').style.color=warn?'var(--warn)':'var(--g)';
-    document.getElementById('r-antes').textContent=(d.likes_antes||0).toLocaleString('es');document.getElementById('r-despues').textContent=(d.likes_despues||0).toLocaleString('es');
-    document.getElementById('r-tiempo').textContent=warn?(d.tiempo_restante||'—'):(d.tiempo||'—');document.getElementById('r-tiempo-lbl').textContent=warn?'Disponible en':'Tiempo';box.style.display='block';
+
+  let d = res.data || {};
+  if(Array.isArray(d)) d = d[0] || {};
+  
+  let agregados = res.likes_enviados || d.likes_agregados || 0;
+  if(!agregados && d.likes && d.likes.enviadas) agregados = d.likes.enviadas;
+  
+  let antes = res.likes_antes || d.likes_antes || 0;
+  if(!antes && d.likes && d.likes.antes) antes = d.likes.antes;
+  let despues = res.likes_depois || d.likes_despues || 0;
+  if(!despues && d.likes && d.likes.depois) despues = d.likes.depois;
+
+  let jugador = res.player_nickname || res.nickname || d.jugador || '—';
+  if(jugador === '—' && d.conta && d.conta.nome_conta) jugador = d.conta.nome_conta;
+  let region = d.region || (d.conta && d.conta.region) || '—';
+  let nivel = d.nivel || (d.conta && d.conta.nivel) || '—';
+
+  const fill=(warn)=>{
+    document.getElementById('r-av').textContent=jugador.slice(0,2).toUpperCase();
+    document.getElementById('r-nombre').textContent=jugador;
+    document.getElementById('r-uid').textContent=d.uid || d.id_conta || uid;
+    document.getElementById('r-nivel').textContent=nivel;
+    document.getElementById('r-region').textContent=region;
+    document.getElementById('r-agregados').textContent=warn?'+0':'+'+agregados.toLocaleString('es');
+    document.getElementById('r-agregados').style.color=warn?'var(--warn)':'var(--g)';
+    document.getElementById('r-antes').textContent=antes.toLocaleString('es');
+    document.getElementById('r-despues').textContent=despues.toLocaleString('es');
+    document.getElementById('r-tiempo').textContent=warn?(d.tiempo_restante||'—'):(res.tiempo||d.tiempo||'—');
+    document.getElementById('r-tiempo-lbl').textContent=warn?'Disponible en':'Tiempo';box.style.display='block';
   };
-  if(!res.ok&&res.data&&res.data.ya_recibio){fill(res.data,true);mostrarMsg('msg-likes',res.error,'warn');return;}
+  if(!res.ok&&(res.data && (res.data.ya_recibio || (Array.isArray(res.data) && res.data[0] && res.data[0].ya_recibio)))){fill(true);mostrarMsg('msg-likes',res.error,'warn');return;}
   if(!res.ok)return mostrarMsg('msg-likes',res.error,'err');
-  fill(res.data,false);mostrarMsg('msg-likes',res.message,'ok');document.getElementById('ff-uid').value='';setTimeout(cargarPerfil,600);
+  fill(false);mostrarMsg('msg-likes',res.message,'ok');document.getElementById('ff-uid').value='';setTimeout(cargarPerfil,600);
 }
 
 async function actualizarPerfil(){
