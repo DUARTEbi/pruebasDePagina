@@ -25,7 +25,7 @@ body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--txt);min-he
 .bggl{position:fixed;top:-20%;left:50%;transform:translateX(-50%);width:900px;height:900px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(0,255,30,.032) 0%,transparent 65%);animation:bgp 8s ease-in-out infinite;}
 @keyframes bgp{0%,100%{opacity:.5}50%{opacity:1}}
 .nl-canvas{position:absolute;inset:0;pointer-events:none;width:100%;height:100%;z-index:3;border-radius:inherit;}
-.tb{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;min-height:56px;background:rgba(12,12,12,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:none;display:flex;align-items:center;padding:0 1rem;justify-content:space-between;flex-shrink:0;overflow:hidden;}
+.tb{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;min-height:56px;background:rgba(12,12,12,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:none;display:flex;align-items:center;padding:0 1rem;justify-content:space-between;flex-shrink:0;overflow:visible;}
 .neon-pingpong-container{width:100%;height:2px;background:rgba(255,255,255,.02);position:absolute;bottom:0;left:0;overflow:hidden;box-shadow:0 0 5px rgba(0,0,0,.5);z-index:101}
 .neon-pingpong-line{position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(to right,transparent,var(--g) 50%,transparent);box-shadow:0 0 10px rgba(0,255,30,.7),0 0 20px rgba(0,255,30,.4);animation:neon-swipe-pingpong 4s ease-in-out infinite}
 @keyframes neon-swipe-pingpong{0%{left:-100%}50%{left:100%}100%{left:-100%}}
