@@ -1173,6 +1173,14 @@ function resetColor(){document.documentElement.style.setProperty('--g','#00FF1E'
   var pcNav = document.getElementById('pc-nav');
   if(pcNav) pcNav.style.display = 'none';
 })();
+
+/* Sync sidebar active state on page load (tab restored from sessionStorage) */
+document.addEventListener('DOMContentLoaded', function(){
+  var saved = sessionStorage.getItem('bs_tab') || 'inicio';
+  document.querySelectorAll('.sb-it').forEach(function(b){
+    b.classList.toggle('active', b.id.replace('sb-','') === saved);
+  });
+});
 </script>
 </body>
 </html>
