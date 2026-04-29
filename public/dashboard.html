@@ -247,36 +247,42 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   .info-grid{grid-template-columns:repeat(2,1fr);gap:1rem}
   .card{padding:1.4rem}
   .auto-plan-grid{grid-template-columns:repeat(4,1fr)}
-  /* Layout flex row */
+  /* Layout con fixed sidebar */
   .pc-layout{
-    display:flex!important;
-    flex-direction:row;
+    display:block!important;
     margin-top:62px;
     min-height:calc(100vh - 62px);
-    align-items:stretch;
   }
-  /* Sidebar visible y pegada izquierda */
+  /* Sidebar fija a la izquierda */
   .pc-sidebar{
     display:flex!important;
-    position:sticky;
+    position:fixed;
     top:62px;
+    left:0;
+    width:100px;
     height:calc(100vh - 62px);
-    align-self:flex-start;
-    flex-shrink:0;
+    z-index:90;
     align-items:center;
     justify-content:center;
-    padding:1.5rem .6rem;
+    padding:0;
+    pointer-events:none;
   }
-  /* Main corregido: quitar centrado y max-width heredados */
+  .sb-card{
+    pointer-events:auto;
+  }
+  /* Main con margen para la sidebar */
   .pc-layout main{
     flex:1!important;
     max-width:none!important;
     width:auto!important;
-    margin:0!important;
+    margin-left:100px!important;
+    margin-right:0!important;
+    margin-top:0!important;
+    margin-bottom:0!important;
     padding:1.8rem 2.5rem 2.5rem!important;
   }
 }
-/* Defaults mobile-first (sidebar oculto, layout normal) */
+/* Defaults mobile-first (sidebar oculto) */
 .pc-layout{display:block;}
 .pc-sidebar{display:none;}
 .sb-card{
