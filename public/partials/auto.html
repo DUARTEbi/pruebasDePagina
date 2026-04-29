@@ -36,12 +36,12 @@
     <div class="msg" id="msg-auto-add"></div>
     <div style="margin-bottom:.65rem">
       <label style="display:block;font-size:.68rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.3rem">UID de Free Fire</label>
-      <input type="text" id="auto-uid-input" placeholder="Ej: 273968086" inputmode="numeric" autocomplete="off" style="width:100%;background:var(--bg3);border:1px solid var(--bdr);border-radius:9px;padding:.62rem .9rem;color:var(--txt);font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.5px;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s;" onfocus="this.style.borderColor='var(--g)';this.style.boxShadow='0 0 0 3px color-mix(in srgb, var(--g) 9%, transparent)'" onblur="this.style.borderColor='';this.style.boxShadow=''"/>
+      <input type="text" id="auto-uid-input" placeholder="Ej: 273968086" inputmode="numeric" autocomplete="off" style="width:100%;background:var(--bg3);border:1px solid var(--bdr);border-radius:9px;padding:.62rem .9rem;color:var(--txt);font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.5px;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s;" onfocus="this.style.borderColor='var(--g)';this.style.boxShadow='0 0 0 3px rgba(0,255,30,.09)'" onblur="this.style.borderColor='';this.style.boxShadow=''"/>
     </div>
     <div style="background:var(--bg3);border:none;border-radius:10px;padding:.75rem;margin-bottom:.65rem">
       <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.65rem"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span style="font-size:.72rem;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.5px">Configurar envío</span></div>
       <div style="display:flex;gap:.4rem;margin-bottom:.7rem">
-        <button onclick="setAutoTipo('likes')" id="auto-toggle-likes" style="flex:1;padding:.38rem .5rem;border-radius:8px;border:1px solid color-mix(in srgb, var(--g) 35%, transparent);background:color-mix(in srgb, var(--g) 10%, transparent);color:var(--g);font-family:'Exo 2',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s">
+        <button onclick="setAutoTipo('likes')" id="auto-toggle-likes" style="flex:1;padding:.38rem .5rem;border-radius:8px;border:1px solid rgba(0,255,30,.35);background:rgba(0,255,30,.1);color:var(--g);font-family:'Exo 2',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
           Por Likes
         </button>
@@ -64,7 +64,7 @@
         <p style="color:var(--mut);font-size:.7rem;margin-top:.45rem;line-height:1.5"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" style="vertical-align:middle"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> El sistema enviará likes a este ID cada 24h durante los días configurados.</p>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:.55rem;background:color-mix(in srgb, var(--g) 5%, transparent);border:1px solid color-mix(in srgb, var(--g) 15%, transparent);border-radius:9px;padding:.6rem .8rem;margin-bottom:.65rem">
+    <div style="display:flex;align-items:center;gap:.55rem;background:rgba(0,255,30,.05);border:1px solid rgba(0,255,30,.15);border-radius:9px;padding:.6rem .8rem;margin-bottom:.65rem">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       <span style="font-size:.75rem;color:var(--mut);flex:1">Resumen: <strong style="color:var(--txt)" id="auto-resumen-txt">500 likes para este ID</strong></span>
       <span style="font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;color:var(--g)" id="auto-resumen-costo">−500 likes de tu plan</span>
@@ -79,5 +79,5 @@
     <div class="auto-log-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Últimos envíos automáticos</div>
     <div class="log-live-chip"><div class="status-dot-anim" style="width:5px;height:5px;background:var(--g)"></div>Auto</div>
   </div>
-  <div id="auto-log-list" style="max-height:220px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:color-mix(in srgb, var(--g) 20%, transparent) transparent;"><div class="ldg"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div></div>
+  <div id="auto-log-list" style="max-height:220px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,255,30,.2) transparent;"><div class="ldg"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div></div>
 </div>
