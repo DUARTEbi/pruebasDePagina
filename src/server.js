@@ -206,6 +206,10 @@ async function initDB() {
 
 setInterval(async () => {
   try {
+    const today = new Date().toISOString().slice(0, 10);
+    // Asegurar que envios_hoy se resetee para usuarios que no han enviado hoy
+    await pool.query(`UPDATE usuarios SET envios_hoy=0 WHERE fecha_ultimo_envio IS NULL OR fecha_ultimo_envio < $1`, [today]);
+
     await pool.query(
       `DELETE FROM notificaciones_likes WHERE creado_en < NOW() - INTERVAL '24 hours'`
     );
@@ -215,7 +219,7 @@ setInterval(async () => {
   } catch (e) {
     console.error('Cleanup error:', e.message);
   }
-}, 60 * 60 * 1000);
+}, 10 * 60 * 1000); // Revisión cada 10 minutos
 
 async function getApiPriority() {
   try {
@@ -1090,13 +1094,13 @@ app.post('/api/enviar-likes', authMiddleware, async (req, res) => {
 
     if (likesAdded > 0) {
       if (u.ilimitado) {
-        await pool.query(`UPDATE usuarios SET envios_hoy=envios_hoy+1, likes_enviados_plan=likes_enviados_plan+$1, fecha_ultimo_envio=$2 WHERE id=$3`, [likesAdded, today, req.user.id]);
+        await pool.query(`UPDATE usuarios SET envios_hoy=CASE WHEN fecha_ultimo_envio IS NULL OR fecha_ultimo_envio < $2 THEN 1 ELSE envios_hoy+1 END, likes_enviados_plan=likes_enviados_plan+$1, fecha_ultimo_envio=$2 WHERE id=$3`, [likesAdded, today, req.user.id]);
       } else if (u.plan_tipo === 'likes') {
         const newDisp = Math.max((u.likes_disponibles || 0) - likesAdded, 0);
         const newEnv  = (u.likes_enviados_plan || 0) + likesAdded;
-        await pool.query(`UPDATE usuarios SET envios_hoy=envios_hoy+1, likes_disponibles=$1, likes_enviados_plan=$2, plan_activo=$3, fecha_ultimo_envio=$4 WHERE id=$5`, [newDisp, newEnv, newDisp > 0, today, req.user.id]);
+        await pool.query(`UPDATE usuarios SET envios_hoy=CASE WHEN fecha_ultimo_envio IS NULL OR fecha_ultimo_envio < $4 THEN 1 ELSE envios_hoy+1 END, likes_disponibles=$1, likes_enviados_plan=$2, plan_activo=$3, fecha_ultimo_envio=$4 WHERE id=$5`, [newDisp, newEnv, newDisp > 0, today, req.user.id]);
       } else {
-        await pool.query(`UPDATE usuarios SET envios_hoy=envios_hoy+1, likes_enviados_plan=likes_enviados_plan+$1, fecha_ultimo_envio=$2 WHERE id=$3`, [likesAdded, today, req.user.id]);
+        await pool.query(`UPDATE usuarios SET envios_hoy=CASE WHEN fecha_ultimo_envio IS NULL OR fecha_ultimo_envio < $2 THEN 1 ELSE envios_hoy+1 END, likes_enviados_plan=likes_enviados_plan+$1, fecha_ultimo_envio=$2 WHERE id=$3`, [likesAdded, today, req.user.id]);
       }
       await pool.query(`INSERT INTO historial (usuario_id,ff_uid,player_name,likes_antes,likes_despues,likes_agregados,nivel,region,auto_envio) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,false)`, [req.user.id, cleanUID, player, before, after, likesAdded, level, region]);
       pool.query(`INSERT INTO notificaciones_likes (username, ff_uid, player_name, likes_agregados) VALUES ($1,$2,$3,$4)`, [u.username, cleanUID, player, likesAdded]).catch(() => {});
@@ -1220,10 +1224,10 @@ async function procesarAutoID(autoId) {
     if (likesAdded > 0) {
       if (!row.ilimitado && row.plan_tipo === 'likes') {
         const newDisp = Math.max((row.likes_disponibles || 0) - likesAdded, 0);
-        await pool.query(`UPDATE usuarios SET likes_disponibles=$1, likes_enviados_plan=likes_enviados_plan+$2, plan_activo=$3, envios_hoy=envios_hoy+1, fecha_ultimo_envio=$4 WHERE id=$5`, [newDisp, likesAdded, newDisp > 0, today, row.usuario_id]);
+        await pool.query(`UPDATE usuarios SET likes_disponibles=$1, likes_enviados_plan=likes_enviados_plan+$2, plan_activo=$3, envios_hoy=CASE WHEN fecha_ultimo_envio IS NULL OR fecha_ultimo_envio < $4 THEN 1 ELSE envios_hoy+1 END, fecha_ultimo_envio=$4 WHERE id=$5`, [newDisp, likesAdded, newDisp > 0, today, row.usuario_id]);
         if (newDisp <= 0) await pool.query('UPDATE auto_ids SET activo=false WHERE id=$1', [autoId]);
       } else {
-        await pool.query(`UPDATE usuarios SET likes_enviados_plan=likes_enviados_plan+$1, envios_hoy=CASE WHEN ilimitado THEN envios_hoy ELSE envios_hoy+1 END, fecha_ultimo_envio=CASE WHEN ilimitado THEN fecha_ultimo_envio ELSE $2 END WHERE id=$3`, [likesAdded, today, row.usuario_id]);
+        await pool.query(`UPDATE usuarios SET likes_enviados_plan=likes_enviados_plan+$1, envios_hoy=CASE WHEN ilimitado THEN envios_hoy WHEN fecha_ultimo_envio IS NULL OR fecha_ultimo_envio < $2 THEN 1 ELSE envios_hoy+1 END, fecha_ultimo_envio=CASE WHEN ilimitado THEN fecha_ultimo_envio ELSE $2 END WHERE id=$3`, [likesAdded, today, row.usuario_id]);
       }
       await pool.query(`INSERT INTO historial (usuario_id,ff_uid,player_name,likes_antes,likes_despues,likes_agregados,nivel,region,auto_envio) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,true)`, [row.usuario_id, row.ff_uid, player, before, after, likesAdded, level, region]);
       
