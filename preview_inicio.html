@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title data-id="th-modified">SpeedMax7</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Yellowtail&display=swap" rel="stylesheet">
+<style>
+/* ── COLOR DE ACENTO ── */
+:root{ --accent:#39FF14; }
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*:focus{outline:none}
+*{-webkit-font-smoothing:antialiased}
+button{outline:none;cursor:pointer;border:none;font-family:inherit;background:none}
+body{
+  font-family:'Inter',sans-serif;
+  background:#111113;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+}
+
+/* ══ TOPBAR ══ */
+.topbar{
+  height:58px;background:#1A1A1D;
+  display:flex;align-items:center;
+  padding:0 1.2rem;flex-shrink:0;
+  position:sticky;top:0;z-index:300;
+}
+.topbar-spacer{width:76px;flex-shrink:0}
+.topbar-name{
+  flex:1;text-align:center;
+  font-family:'Yellowtail',cursive;
+  font-size:1.75rem;font-weight:400;letter-spacing:.5px;
+  color:#ffffff;
+}
+.topbar-name .accent{ color:var(--accent); transition:color .3s; }
+.tb-right{display:flex;align-items:center;gap:.35rem;flex-shrink:0}
+.tb-btn{
+  width:34px;height:34px;border-radius:9px;
+  background:rgba(255,255,255,.06);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.6);transition:all .2s;
+}
+.tb-btn:hover{background:rgba(255,255,255,.11);color:#fff}
+.tb-btn:active{transform:scale(.9)}
+
+/* ══ COLOR PICKER PANEL ══ */
+.cp-wrap{position:relative}
+.cp-panel{
+  position:absolute;top:calc(100% + 10px);right:0;
+  background:#1C1C20;border-radius:20px;
+  padding:1.2rem;
+  display:none;flex-direction:column;gap:.4rem;
+  min-width:200px;
+  z-index:400;
+  animation:cpIn .2s cubic-bezier(.23,1,.32,1);
+}
+.cp-panel.open{display:flex}
+@keyframes cpIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.cp-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.3)}
+.hue-slider {
+  -webkit-appearance: none;
+  width: 100%; height: 16px;
+  border-radius: 8px; outline: none; margin: .5rem 0;
+  background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+}
+.hue-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid var(--accent);
+  box-shadow: 0 2px 5px rgba(0,0,0,.5);
+  cursor: pointer;
+}
+.hue-slider::-moz-range-thumb {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid var(--accent);
+  box-shadow: 0 2px 5px rgba(0,0,0,.5);
+  cursor: pointer;
+}
+.btn-res {
+  background: rgba(255,255,255,.06); color: #fff;
+  padding: .5rem; border-radius: 8px; font-size: .75rem; font-weight: 600;
+  width: 100%; text-align: center; margin-top: .4rem; transition: all .2s;
+}
+.btn-res:hover { background: rgba(255,255,255,.12); }
+.btn-res:active { transform: scale(.95); }
+
+/* ══ LAYOUT ══ */
+.layout{
+  display:flex;flex:1;
+  min-height:calc(100vh - 58px);
+  padding:1.5rem 1rem;
+  gap:1rem;align-items:center;
+}
+
+/* ══ SIDEBAR ══ */
+.sidebar-wrap{display:flex;align-items:center;flex-shrink:0;align-self:center}
+.sidebar{
+  background:#1C1C20;border-radius:22px;
+  display:flex;flex-direction:column;align-items:center;
+  padding:1rem .55rem;gap:.1rem;width:68px;
+}
+.sb-item{
+  width:48px;display:flex;flex-direction:column;align-items:center;
+  gap:.26rem;padding:.6rem .35rem;border-radius:14px;
+  color:rgba(255,255,255,.4);font-size:.44rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.4px;
+  transition:all .22s cubic-bezier(.23,1,.32,1);position:relative;
+}
+.sb-item svg{width:19px;height:19px;flex-shrink:0}
+.sb-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.sb-item.active{background:rgba(255,255,255,.1);color:#fff}
+.sb-item.active svg{
+  stroke:var(--accent)!important;
+  filter:drop-shadow(0 0 5px var(--accent));
+  transition:stroke .3s,filter .3s;
+}
+.sb-div{width:28px;height:1px;background:rgba(255,255,255,.08);margin:.35rem 0}
+
+/* ══ CONTENIDO ══ */
+.content{flex:1;padding:1.5rem;overflow-y:auto}
+.pane{display:none}
+.pane.active{
+  display:flex;flex-direction:column;gap:.75rem;
+  animation:paneIn .28s cubic-bezier(.23,1,.32,1);
+}
+@keyframes paneIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ STATS CARD ══ */
+.stats-card{
+  background:#1C1C20;border-radius:18px;
+  display:flex;align-items:center;padding:.9rem 1rem;gap:0;
+}
+.stat-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:.22rem}
+.stat-ico{
+  width:30px;height:30px;border-radius:9px;
+  background:rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);margin-bottom:.1rem;
+  transition:color .3s;
+}
+.stat-val{
+  font-size:1.2rem;font-weight:800;
+  color:var(--accent);letter-spacing:-.5px;line-height:1;
+  transition:color .3s;
+}
+.stat-lbl{
+  font-size:.58rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.5px;
+  color:rgba(255,255,255,.35);
+}
+.stat-sep{width:1px;height:40px;background:rgba(255,255,255,.07);flex-shrink:0}
+
+/* ══ SIN PLAN CARD ══ */
+.noplan-card{
+  background:#1C1C20;border-radius:18px;
+  padding:1.1rem 1.2rem;display:flex;align-items:center;gap:1rem;
+}
+.noplan-ico{
+  width:44px;height:44px;flex-shrink:0;border-radius:12px;
+  background:rgba(255,255,255,.06);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);transition:color .3s;
+}
+.noplan-text{flex:1;min-width:0}
+.noplan-title{font-size:.9rem;font-weight:700;color:#fff;margin-bottom:.22rem}
+.noplan-sub{font-size:.72rem;color:rgba(255,255,255,.4);line-height:1.5}
+.noplan-btn{
+  background:#fff;color:#111113;
+  border-radius:10px;padding:.5rem 1rem;
+  font-size:.78rem;font-weight:700;
+  white-space:nowrap;flex-shrink:0;transition:all .2s;
+}
+.noplan-btn:hover{opacity:.88;transform:translateY(-1px)}
+.noplan-btn:active{transform:scale(.95)}
+
+/* ══ RESPONSIVE (CELULAR Y TABLET) ══ */
+@media (max-width: 850px) {
+  .layout {
+    flex-direction: column;
+    padding: 1rem 1rem 6rem; /* Espacio bottom para la barra de nav */
+    align-items: stretch;
+  }
+  /* La sidebar se convierte en nav flotante abajo */
+  .sidebar-wrap {
+    position: fixed;
+    bottom: 1rem; left: 1rem; right: 1rem;
+    z-index: 400;
+  }
+  .sidebar {
+    flex-direction: row; justify-content: space-around;
+    width: 100%; padding: .5rem;
+    border-radius: 20px;
+    background: rgba(28,28,32,.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.6);
+  }
+  /* Solo mostramos los íconos limpios */
+  .sb-item {
+    font-size: 0; gap: 0; padding: .6rem; width: auto;
+  }
+  .sb-item svg { width: 22px; height: 22px; }
+  .sb-div { display: none; }
+  
+  /* Ajuste del contenido */
+  .content { padding: 0.5rem 0; }
+  .stats-card { padding: 1rem 0; }
+  
+  /* El noplan card fluye mejor vertical en móviles delgaditos */
+  .noplan-card { flex-wrap: wrap; text-align: center; padding: 1.5rem 1rem; justify-content: center; }
+  .noplan-text { min-width: 100%; }
+}
+</style>
+<meta property="og:title" content="SpeedMax7" data-id="th-modified" ><meta property="og:image" content="https://tiiny.host/assets/logo-purple-bg.png" data-id="th-modified" ><meta property="og:image:width" content="1501" data-id="th-modified" ><meta property="og:image:height" content="1501" data-id="th-modified" ><meta property="og:image:type" content="image/png" data-id="th-modified" ><meta property="og:url" content="https://tomato-malvina-9.tiiny.site/" data-id="th-modified" ><meta property="og:type" content="website" data-id="th-modified" ><script defer data-domain="tomato-malvina-9.tiiny.site" src="https://analytics.tiiny.site/js/plausible.js"></script><script type="text/javascript" src="https://tiiny.host/ad-script.js"></script></head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-spacer"></div>
+
+  <div class="topbar-name">
+    <span class="accent">Speed</span>Max<span class="accent">7</span>
+  </div>
+
+  <div class="tb-right">
+    <!-- Usuario -->
+    <button class="tb-btn" title="Mi perfil">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+    </button>
+
+    <!-- Configuración + Color Picker -->
+    <div class="cp-wrap">
+      <button class="tb-btn" title="Configuración" onclick="toggleCP()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+
+      <!-- Panel de colores -->
+      <div class="cp-panel" id="cp-panel">
+        <div class="cp-label" style="text-align:center;">Desliza para color</div>
+        <input type="range" class="hue-slider" min="0" max="360" value="0" oninput="setHue(this.value)">
+        <button class="btn-res" onclick="setAccent('#39FF14')">Restaurar Neón</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar-wrap">
+  <aside class="sidebar">
+
+    <button class="sb-item active" onclick="goTab('inicio',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      Inicio
+    </button>
+
+    <button class="sb-item" onclick="goTab('likes',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+      Likes
+    </button>
+
+    <button class="sb-item" onclick="goTab('auto',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+      </svg>
+      Auto
+    </button>
+
+    <div class="sb-div"></div>
+
+    <button class="sb-item" onclick="goTab('hist',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      Historial
+    </button>
+
+    <button class="sb-item" onclick="goTab('tienda',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <path d="M16 10a4 4 0 0 1-8 0"></path>
+      </svg>
+      Tienda
+    </button>
+
+  </aside>
+  </div>
+
+  <!-- CONTENIDO -->
+  <main class="content">
+
+    <!-- INICIO -->
+    <div id="pane-inicio" class="pane active">
+
+      <!-- STATS -->
+      <div class="stats-card">
+        <div class="stat-item">
+          <div class="stat-ico">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div class="stat-val">2.4k</div>
+          <div class="stat-lbl">Usuarios</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+          <div class="stat-ico">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+            </svg>
+          </div>
+          <div class="stat-val">18k</div>
+          <div class="stat-lbl">Likes hoy</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+          <div class="stat-ico">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+              <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+          </div>
+          <div class="stat-val">342</div>
+          <div class="stat-lbl">Mis likes</div>
+        </div>
+      </div>
+
+      <!-- SIN PLAN -->
+      <div class="noplan-card">
+        <div class="noplan-ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div class="noplan-text">
+          <div class="noplan-title">Sin plan activo</div>
+          <div class="noplan-sub">Adquiere un plan para comenzar a enviar likes automáticamente.</div>
+        </div>
+        <button class="noplan-btn">Ver planes</button>
+      </div>
+
+    </div>
+
+    <div id="pane-likes"  class="pane"></div>
+    <div id="pane-auto"   class="pane"></div>
+    <div id="pane-hist"   class="pane"></div>
+    <div id="pane-tienda" class="pane"></div>
+
+  </main>
+</div>
+
+<script>
+/* ── tabs ── */
+const TABS = ['inicio','likes','auto','hist','tienda'];
+function goTab(id, el){
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  TABS.forEach(t => {
+    const p = document.getElementById('pane-' + t);
+    if(p) p.classList.toggle('active', t === id);
+  });
+}
+
+/* ── color picker ── */
+function toggleCP(){
+  document.getElementById('cp-panel').classList.toggle('open');
+}
+// cerrar al click afuera
+document.addEventListener('click', e => {
+  const wrap = document.querySelector('.cp-wrap');
+  if(!wrap.contains(e.target)) document.getElementById('cp-panel').classList.remove('open');
+});
+
+function setAccent(color){
+  document.documentElement.style.setProperty('--accent', color);
+}
+function setHue(hue){
+  setAccent(`hsl(${hue}, 100%, 60%)`);
+}
+</script>
+</body>
+</html>
